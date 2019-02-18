@@ -32,3 +32,6 @@ pandas==0.23.4 # 0.20.3
 scikit-learn==0.19.1
 scipy==1.1.0 # 1.0.1
 pillow==4.2.1
+
+# for deploying app
+gunicorn=19.9.0

@@ -1,1 +1,3 @@
 scripts/data
+.ropeproject/
+dash-app/__pycache__/

@@ -23,6 +23,9 @@ app = dash.Dash(__name__) #, external_stylesheets=external_stylesheets)
 app.css.config.serve_locally = True
 app.scripts.config.serve_locally = True
 
+# for running app with `gunicorn`, should define `server` instance:
+server = app.server
+
 
 @app.server.route('/static/<path:path>')
 def static_file(path):
@@ -79,7 +82,7 @@ def generate_bar_chart():
 app.layout = html.Div(children=[
     html.Link(
         rel='stylesheet',
-        href='/static/stylesheet.css'
+        href='/static/dash-app.css'
     ),
 
     # Scatter plot indicators selection
