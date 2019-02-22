@@ -1,3 +1,8 @@
 scripts/data
+scripts/embeddings
+scripts/__pycache__/
 .ropeproject/
+dash-app/embeddings
 dash-app/__pycache__/
+.history/
+.vscode/
