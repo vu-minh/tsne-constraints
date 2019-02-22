@@ -25,6 +25,9 @@ def callback(app, embedding_dir, labels):
         [Input('perp_val', 'value')]
     )
     def update_scatter(perp):
+        if perp is None:
+            return
+        
         in_name = f"{embedding_dir}/DIGITS_perp={perp}.z"
         Z = joblib.load(in_name)
         
@@ -34,14 +37,16 @@ def callback(app, embedding_dir, labels):
             mode = 'markers',
             marker = dict(
                 size = 10,
+                opacity = 0.3,
                 color = labels, # 'rgba(255, 182, 193, .3)',
                 colorscale='Rainbow', # https://plot.ly/r/reference/#heatmap-colorscale
                 line = dict(width = 0,)
-            )
+            ),
+            selected = dict (marker = dict ( opacity = 1.0) ),
         )
         data = [trace0]
 
-        layout = dict(title = 'Scatter',
+        layout = dict(title = f"Perplexity = {perp}",
                     clickmode='event+select', # https://plot.ly/python/reference/#layout-clickmode
                     yaxis = dict(zeroline = False),
                     xaxis = dict(zeroline = False),
