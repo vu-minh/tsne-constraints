@@ -9,17 +9,14 @@ from dash.dependencies import Input, Output, State
 
 
 def layout():
-    return html.Div([
-        html.Pre(id='lbl_perp', children='Choosen perp'),
-
-        html.Div([
-            dcc.Graph(id='scatter')
-        ],style=dict(width=1000, height=1200, display='inline-block')),
+    return html.Div(style=dict(height='90vh'), children=[
+        dcc.Graph(id='scatter', style=dict(height='85vh'))
+        # dcc.Graph(stype={'height':'inherit'}) to make graph have
+        # the same height as its parent.
     ])
 
 
 def callback(app, embedding_dir, labels):
-
     @app.callback(
         Output('scatter', 'figure'),
         [Input('perp_val', 'value')]
@@ -27,10 +24,10 @@ def callback(app, embedding_dir, labels):
     def update_scatter(perp):
         if perp is None:
             return
-        
+
         in_name = f"{embedding_dir}/DIGITS_perp={perp}.z"
         Z = joblib.load(in_name)
-        
+
         trace0 = go.Scatter(
             x = Z[:,0],
             y = Z[:,1],
@@ -46,18 +43,15 @@ def callback(app, embedding_dir, labels):
         )
         data = [trace0]
 
-        layout = dict(title = f"Perplexity = {perp}",
-                    clickmode='event+select', # https://plot.ly/python/reference/#layout-clickmode
-                    yaxis = dict(zeroline = False),
-                    xaxis = dict(zeroline = False),
-                    autosize=False,
-                    width=800,
-                    height=800,
-                    )
+        layout = dict(
+            title = f"Perplexity = {perp}",
+            clickmode='event+select', # https://plot.ly/python/reference/#layout-clickmode
+            yaxis = dict(zeroline = False),
+            xaxis = dict(zeroline = False),
+        )
 
         fig = dict(data=data, layout=layout)
         return fig
-
 
     @app.callback(
         Output('lbl_perp', 'children'),

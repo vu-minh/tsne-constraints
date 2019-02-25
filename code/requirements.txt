@@ -23,6 +23,10 @@ plotly==3.6.1
 # https://github.com/plotly/plotly.py
 
 
+# using boostrap
+dash-bootstrap-components==0.3.4
+
+
 # notebook
 notebook>=5.3
 ipywidgets>=7.2
@@ -34,4 +38,4 @@ scipy==1.1.0 # 1.0.1
 pillow==4.2.1
 
 # for deploying app
-gunicorn=19.9.0
+gunicorn==19.9.0
