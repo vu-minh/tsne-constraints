@@ -19,6 +19,7 @@ import ssl
 from app_layout import layout as main_layout
 from link_buttons import callback as link_buttons_callback
 from main_scatter import callback as main_scatter_callback
+from cytoplot import callback as cytoplot_callback
 
 
 # avoid certificate-verify SSL error in urllib
@@ -50,14 +51,14 @@ X, labels = load_digits(return_X_y=True)
 ###############################################################################
 # app layout, combine layouts of all component
 
-
 app.layout = main_layout
 
 ###############################################################################
 # callback of all components
 
-main_scatter_callback(app, embedding_dir, labels)
-link_buttons_callback(app)
+cytoplot_callback(app, embedding_dir, labels)
+# main_scatter_callback(app, embedding_dir, labels)
+# link_buttons_callback(app)
 
 
 if __name__ == '__main__':

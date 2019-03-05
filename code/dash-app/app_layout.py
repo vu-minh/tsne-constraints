@@ -4,12 +4,14 @@ import dash_html_components as html
 
 from link_buttons import layout as link_buttons_layout
 from main_scatter import layout as main_scatter_layout
+from cytoplot import layout as cytoplot_layout
 
 
 def _scatter_plot_with_control_buttons():
     return html.Div([
-        link_buttons_layout(),
-        main_scatter_layout(),
+        cytoplot_layout()
+        # link_buttons_layout(),
+        # main_scatter_layout(),
     ])
 
 
