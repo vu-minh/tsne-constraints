@@ -27,6 +27,10 @@ plotly==3.6.1
 dash-bootstrap-components==0.3.4
 
 
+# dash graph viz
+dash-cytoscape==0.0.4
+
+
 # notebook
 notebook>=5.3
 ipywidgets>=7.2

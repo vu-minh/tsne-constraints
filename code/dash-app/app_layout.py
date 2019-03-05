@@ -8,8 +8,8 @@ from main_scatter import layout as main_scatter_layout
 
 def _scatter_plot_with_control_buttons():
     return html.Div([
-        main_scatter_layout(),
         link_buttons_layout(),
+        main_scatter_layout(),
     ])
 
 
