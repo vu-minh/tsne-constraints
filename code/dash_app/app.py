@@ -4,8 +4,8 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_cytoscape as cyto
 
-from .server import app, server
-from . import cytoplot_callbacks
+from server import app, server
+import cytoplot_callbacks
 
 
 list_datasets = [
@@ -24,10 +24,24 @@ default_cyto_node_style = dict(
     selector='.img_node',
     style={
         # 'label': 'data(label)',
-        'width': 6, 'height': 6,
+        # 'width': 6,
+        # 'height': 6,
+        'shape': 'rectangle',  # 'ellipse'
         'background-color': 'white',
-        'background-fit': 'cover',
+        'background-fit': 'contain',  # 'cover',
         'background-image': 'data(url)'
+    }
+)
+
+
+default_cyto_selected_node_style = dict(
+    selector='.selected_node',
+    style={
+        'width': 12,
+        'height': 12,
+        'shape': 'ellipse',
+        'border-width': 1,
+        'border-color': 'blue',
     }
 )
 
@@ -45,7 +59,7 @@ default_cyto_sim_link_style = dict(
     selector='.sim-link',
     style={
         'line-color': 'green',
-        'line-style': 'dashed',
+        'line-style': 'dotted',
     }
 )
 
@@ -85,7 +99,7 @@ control_cyto_layout = html.Div([
     ),
     dcc.Slider(
         id='slider_img_size', min=0.0, max=8.0, step=0.5,
-        value=5.0, included=False,
+        value=3.0, included=False,
         marks={i * 0.1: '' if i < 10 else i * 0.1
                for i in list(range(1, 6)) + list(range(10, 85, 5))}
     ),
@@ -101,6 +115,7 @@ cytoplot_layout = cyto.Cytoscape(
         default_cyto_edge_style,
         default_cyto_sim_link_style,
         default_cyto_dissim_link_style,
+        default_cyto_selected_node_style
     ],
     elements=[],
     autoungrabify=True,  # can not move nodes
@@ -116,4 +131,4 @@ app.layout = html.Div(style=dict(height='90vh'), children=[
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, threaded=True, processes=1)

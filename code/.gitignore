@@ -1,9 +1,11 @@
 scripts/data
 scripts/embeddings
 scripts/__pycache__/
-.ropeproject/
+
 dash_app/embeddings
 dash_app/__pycache__/
 dash_app/bk/
+
+.ropeproject/
 .history/
 .vscode/
