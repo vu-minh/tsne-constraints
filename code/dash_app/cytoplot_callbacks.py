@@ -8,6 +8,7 @@ embedding_dir = f"{dir_path}/embeddings"
 
 
 def _add_or_edit_style_for_tap_node(tap_id, styles):
+    '''[NOT USED] use css selector to add style for node by id'''
     found = False
     target_node_selector = 'node[id="{}"]'.format(tap_id)
     selected_node_style = {
@@ -33,13 +34,11 @@ def _add_or_edit_style_for_tap_node(tap_id, styles):
     Output('cytoplot', 'stylesheet'),
     [
         Input('slider_img_size', 'value'),
-        Input('cytoplot', 'tapNode')
     ], [
         State('cytoplot', 'stylesheet'),
-        State('cytoplot', 'selectedNodeData')
     ]
 )
-def change_cyto_style(img_scale_factor, tap_node, current_styles, selected_nodes):
+def change_cyto_style(img_scale_factor, current_styles):
     style_list = current_styles
     if img_scale_factor:
         for style in style_list:
@@ -48,22 +47,15 @@ def change_cyto_style(img_scale_factor, tap_node, current_styles, selected_nodes
                 style['style']['height'] = img_scale_factor
             if style['selector'] == 'edge':
                 style['style']['width'] = 0.1 * img_scale_factor
-
-    print('Tab node:', 'NOTHING' if not tap_node else tap_node['data']['id'])
-    print('Selected nodes', selected_nodes)
-
     return style_list
 
 
-def _build_cyto_nodes(dataset_name, perp, cmap_type, touched_ids):
+def _build_cyto_nodes(dataset_name, perp, cmap_type):
     in_name = f"{embedding_dir}/{dataset_name}_perp={perp}.z"
     Z = joblib.load(in_name)[:200]
-    print('touched_ids: ', touched_ids)
-
     return [dict(
         group='nodes',
-        classes=('img_node' if idx not in touched_ids
-                 else 'selected_node img_node'),
+        classes='img_node',
         data=dict(id=str(idx), label=f"node_{idx}",
                   url=f"/static/svg/{dataset_name}_{cmap_type}.svg#{idx}"),
         position=dict(x=x, y=y),
@@ -94,31 +86,24 @@ def _create_or_edit_edges(old_edges, selected_nodes, edge_type):
 @app.callback(
     Output('cytoplot', 'elements'),
     [
-        Input('cytoplot', 'tapNode'),
         Input('btn-sim', 'n_clicks_timestamp'),
         Input('btn-dissim', 'n_clicks_timestamp'),
         Input('select_dataset', 'value'),
         Input('perp_val', 'value'),
         Input('select_cmap', 'value')
     ], [
-        State('cytoplot', 'selectedNodeData'),
+        State('cytoplot', 'selectedNodeData'), # OLD STATE
         State('cytoplot', 'elements')
     ]
 )
-def update_cytoplot(tap_node,
-                    sim_btn_time, dissim_btn_time,
+def update_cytoplot(sim_btn_time, dissim_btn_time,
                     dataset_name, perp, cmap_type,
                     selected_nodes, current_elems):
     if None in [perp, dataset_name, cmap_type]:
         return
 
-    # build a list of touched points
-    touched_ids = [int(tap_node['data']['id'])] if tap_node else []
-    touched_ids += list(map(lambda n: int(n['id']),
-                            selected_nodes if selected_nodes else []))
-
     # always update new nodes (to update img_size, update position or cmap)
-    nodes = _build_cyto_nodes(dataset_name, perp, cmap_type, touched_ids)
+    nodes = _build_cyto_nodes(dataset_name, perp, cmap_type)
     # filter the current edges
     old_edges = [e for e in current_elems if e['group'] == 'edges']
 

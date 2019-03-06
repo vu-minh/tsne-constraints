@@ -35,13 +35,23 @@ default_cyto_node_style = dict(
 
 
 default_cyto_selected_node_style = dict(
-    selector='.selected_node',
+    # auto supported selector: http://js.cytoscape.org/#selectors/state
+    selector='node:selected',
     style={
         'width': 12,
         'height': 12,
         'shape': 'ellipse',
         'border-width': 1,
         'border-color': 'blue',
+    }
+)
+
+
+default_cyto_selected_edge_style = dict(
+    selector='edge:selected',
+    style={
+        'width':1.5,
+        'line-style': 'solid'
     }
 )
 
@@ -115,11 +125,12 @@ cytoplot_layout = cyto.Cytoscape(
         default_cyto_edge_style,
         default_cyto_sim_link_style,
         default_cyto_dissim_link_style,
-        default_cyto_selected_node_style
+        default_cyto_selected_node_style,
+        default_cyto_selected_edge_style
     ],
     elements=[],
     autoungrabify=True,  # can not move nodes
-    autounselectify=False,  # can select nodes
+    #autounselectify=True,  # can select nodes
 )
 
 
