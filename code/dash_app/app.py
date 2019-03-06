@@ -6,6 +6,7 @@ import dash_cytoscape as cyto
 
 from server import app, server
 import cytoplot_callbacks
+import local_storage_callbacks
 
 
 list_datasets = [
@@ -18,7 +19,8 @@ list_datasets = [
 
 list_perps = [5, 10, 20, 50, 100, 200, 500]
 
-
+###############################################################################
+# cytoscape stylesheet
 # ref for cytospace js style: http://js.cytoscape.org/
 default_cyto_node_style = dict(
     selector='.img_node',
@@ -33,7 +35,6 @@ default_cyto_node_style = dict(
     }
 )
 
-
 default_cyto_selected_node_style = dict(
     # auto supported selector: http://js.cytoscape.org/#selectors/state
     selector='node:selected',
@@ -46,7 +47,6 @@ default_cyto_selected_node_style = dict(
     }
 )
 
-
 default_cyto_selected_edge_style = dict(
     selector='edge:selected',
     style={
@@ -54,7 +54,6 @@ default_cyto_selected_edge_style = dict(
         'line-style': 'solid'
     }
 )
-
 
 default_cyto_edge_style = dict(
     selector='edge',
@@ -64,7 +63,6 @@ default_cyto_edge_style = dict(
     }
 )
 
-
 default_cyto_sim_link_style = dict(
     selector='.sim-link',
     style={
@@ -72,7 +70,6 @@ default_cyto_sim_link_style = dict(
         'line-style': 'dotted',
     }
 )
-
 
 default_cyto_dis_link_style = dict(
     selector='.dis-link',
@@ -83,6 +80,9 @@ default_cyto_dis_link_style = dict(
 )
 
 
+###############################################################################
+# layout components
+
 control_app_layout = html.Div([
     dcc.Dropdown(id='select_dataset', value='DIGITS',
                  options=[{'label': name, 'value': name}
@@ -90,6 +90,9 @@ control_app_layout = html.Div([
     dcc.Dropdown(id='perp_val', value=5,
                  options=[{'label': perp, 'value': perp}
                           for perp in list_perps]),
+])
+
+control_cyto_layout = html.Div([
     dbc.Button(id='btn-sim', children='Similar', n_clicks_timestamp=0,
                outline=True, color='success', className='mr-2'),
     dbc.Button(id='btn-dis', children='Dissimilar', n_clicks_timestamp=0,
@@ -98,14 +101,13 @@ control_app_layout = html.Div([
                outline=True, color='primary', className='mr-2'),
 ])
 
-
-control_cyto_layout = html.Div([
+cytoplot_option_layout = html.Div([
     dcc.RadioItems(
         id='select_cmap', value='gray_r',
         options=[{'label': label, 'value': value}
                  for label, value in [
-                     ('Gray scale', 'gray'),
-                     ('Gray scale invert', 'gray_r'),
+                     ('Gray', 'gray'),
+                     ('Gray invert', 'gray_r'),
                      ('Color', 'color')]],
         labelStyle={'display': 'inline-block'}
     ),
@@ -113,10 +115,9 @@ control_cyto_layout = html.Div([
         id='slider_img_size', min=0.0, max=8.0, step=0.5,
         value=3.0, included=False,
         marks={i * 0.1: '' if i < 10 else i * 0.1
-               for i in list(range(1, 6)) + list(range(10, 85, 5))}
-    ),
-])
-
+               for i in list(range(1, 6)) + list(range(10, 85, 5))},
+    )
+], style={'display': 'inline'})
 
 cytoplot_layout = cyto.Cytoscape(
     id='cytoplot',
@@ -135,18 +136,43 @@ cytoplot_layout = cyto.Cytoscape(
     autounselectify=False,  # can select nodes
 )
 
-
 debug_layout = html.Pre(id='txt_debug', children='Debug',
                         style={'display': 'inline', 'overflow': 'scroll',
-                               'width': '500px', 'height': '100px'})
+                               'border': '1px solid #ccc'})
 
 
-app.layout = html.Div(style=dict(height='90vh'), children=[
+###############################################################################
+# local storage for storing links
+links_storage_memory = dcc.Store(id='links_memory', storage_type='memory')
+
+
+###############################################################################
+# app layout
+
+left_layout = html.Div([
     control_app_layout,
-    control_cyto_layout,
-    cytoplot_layout,
+])
+
+right_layout = html.Div([
     debug_layout
 ])
+
+center_layout = html.Div([
+    control_cyto_layout,
+    cytoplot_option_layout,
+    cytoplot_layout,
+], style=dict(height='90vh'))
+
+app.layout = dbc.Container([
+    dbc.Row([
+        links_storage_memory
+    ]),
+    dbc.Row([
+        dbc.Col([left_layout], md=3),
+        dbc.Col([center_layout], md=6),
+        dbc.Col([right_layout], md=3)
+    ]),
+], fluid=True)
 
 
 if __name__ == '__main__':
