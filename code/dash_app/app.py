@@ -50,7 +50,7 @@ default_cyto_selected_node_style = dict(
 default_cyto_selected_edge_style = dict(
     selector='edge:selected',
     style={
-        'width':1.5,
+        'width': 1.5,
         'line-style': 'solid'
     }
 )
@@ -90,10 +90,12 @@ control_app_layout = html.Div([
     dcc.Dropdown(id='perp_val', value=5,
                  options=[{'label': perp, 'value': perp}
                           for perp in list_perps]),
-    dbc.Button(id='btn-sim', children='Similar pair',
+    dbc.Button(id='btn-sim', children='Similar', n_clicks_timestamp=0,
                outline=True, color='success', className='mr-2'),
-    dbc.Button(id='btn-dissim', children='Dissimilar pair',
+    dbc.Button(id='btn-dissim', children='Dissimilar', n_clicks_timestamp=0,
                outline=True, color='danger', className='mr-2'),
+    dbc.Button(id='btn-del-link', children='Delete link', n_clicks_timestamp=0,
+               outline=True, color='primary', className='mr-2'),
 ])
 
 
@@ -130,7 +132,7 @@ cytoplot_layout = cyto.Cytoscape(
     ],
     elements=[],
     autoungrabify=True,  # can not move nodes
-    #autounselectify=True,  # can select nodes
+    autounselectify=False,  # can select nodes
 )
 
 

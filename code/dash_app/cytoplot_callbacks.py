@@ -83,24 +83,33 @@ def _create_or_edit_edges(old_edges, selected_nodes, edge_type):
     return old_edges + new_edge
 
 
+def _delete_edges(all_edges, edges_to_del):
+    target_node_pairs = [set([e['source'], e['target']]) for e in edges_to_del]
+    return [e for e in all_edges
+            if set([e['data']['source'], e['data']['target']])
+            not in target_node_pairs]
+
+
 @app.callback(
     Output('cytoplot', 'elements'),
     [
         Input('btn-sim', 'n_clicks_timestamp'),
         Input('btn-dissim', 'n_clicks_timestamp'),
+        Input('btn-del-link', 'n_clicks_timestamp'),
         Input('select_dataset', 'value'),
         Input('perp_val', 'value'),
         Input('select_cmap', 'value')
     ], [
-        State('cytoplot', 'selectedNodeData'), # OLD STATE
+        State('cytoplot', 'selectedNodeData'),
+        State('cytoplot', 'selectedEdgeData'),
         State('cytoplot', 'elements')
     ]
 )
-def update_cytoplot(sim_btn_time, dissim_btn_time,
+def update_cytoplot(btn_sim, btn_dis, btn_del,
                     dataset_name, perp, cmap_type,
-                    selected_nodes, current_elems):
+                    selected_nodes, selected_edges, current_elems):
     if None in [perp, dataset_name, cmap_type]:
-        return
+        return []
 
     # always update new nodes (to update img_size, update position or cmap)
     nodes = _build_cyto_nodes(dataset_name, perp, cmap_type)
@@ -108,18 +117,13 @@ def update_cytoplot(sim_btn_time, dissim_btn_time,
     old_edges = [e for e in current_elems if e['group'] == 'edges']
 
     # determine which button is click
-    (sim, dissim) = (sim_btn_time is not None, dissim_btn_time is not None)
-    if (sim, dissim) == (True, True):  # both are clicked before
-        if sim_btn_time > dissim_btn_time:
-            (sim, dissim) = (True, False)
-        else:
-            (sim, dissim) = (False, True)
+    if int(btn_sim) > int(btn_dis) and int(btn_sim) > int(btn_del):
+        edges = _create_or_edit_edges(old_edges, selected_nodes, 'sim-link')
+    elif int(btn_dis) > int(btn_sim) and int(btn_dis) > int(btn_del):
+        edges = _create_or_edit_edges(old_edges, selected_nodes, 'dissim-link')
+    elif int(btn_del) > int(btn_sim) and int(btn_del) > int(btn_dis):
+        edges = _delete_edges(old_edges, selected_edges)
+    else:  # no button clicked
+        edges = old_edges
 
-    edge_type = None
-    if (sim, dissim) == (True, False):
-        edge_type = 'sim-link'
-    elif (sim, dissim) == (False, True):
-        edge_type = 'dissim-link'
-
-    edges = _create_or_edit_edges(old_edges, selected_nodes, edge_type)
     return nodes + edges
