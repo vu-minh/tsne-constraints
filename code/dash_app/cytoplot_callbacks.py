@@ -1,3 +1,4 @@
+import json
 import joblib
 from dash.dependencies import Input, Output, State
 from server import app
@@ -83,18 +84,21 @@ def _create_or_edit_edges(old_edges, selected_nodes, edge_type):
     return old_edges + new_edge
 
 
-def _delete_edges(all_edges, edges_to_del):
-    target_node_pairs = [set([e['source'], e['target']]) for e in edges_to_del]
-    return [e for e in all_edges
-            if set([e['data']['source'], e['data']['target']])
-            not in target_node_pairs]
+def _delete_edges(old_edges, edges_to_del):
+    new_edges = old_edges
+    if edges_to_del:
+        del_pairs = [set([e['source'], e['target']]) for e in edges_to_del]
+        new_edges = [e for e in old_edges
+                     if set([e['data']['source'], e['data']['target']])
+                     not in del_pairs]
+    return new_edges
 
 
 @app.callback(
     Output('cytoplot', 'elements'),
     [
         Input('btn-sim', 'n_clicks_timestamp'),
-        Input('btn-dissim', 'n_clicks_timestamp'),
+        Input('btn-dis', 'n_clicks_timestamp'),
         Input('btn-del-link', 'n_clicks_timestamp'),
         Input('select_dataset', 'value'),
         Input('perp_val', 'value'),
@@ -120,10 +124,24 @@ def update_cytoplot(btn_sim, btn_dis, btn_del,
     if int(btn_sim) > int(btn_dis) and int(btn_sim) > int(btn_del):
         edges = _create_or_edit_edges(old_edges, selected_nodes, 'sim-link')
     elif int(btn_dis) > int(btn_sim) and int(btn_dis) > int(btn_del):
-        edges = _create_or_edit_edges(old_edges, selected_nodes, 'dissim-link')
+        edges = _create_or_edit_edges(old_edges, selected_nodes, 'dis-link')
     elif int(btn_del) > int(btn_sim) and int(btn_del) > int(btn_dis):
         edges = _delete_edges(old_edges, selected_edges)
     else:  # no button clicked
         edges = old_edges
 
     return nodes + edges
+
+
+@app.callback(
+    Output('txt_debug', 'children'),
+    [Input('cytoplot', 'elements')]
+)
+def show_links(elems):
+    def _filter_link_by_type(edge_type):
+        return [(e['data']['source'], e['data']['target']) for e in elems
+                if e['group'] == 'edges' and edge_type in e['classes']]
+    return json.dumps({
+        'sim_links': _filter_link_by_type('sim-link'),
+        'dis_links': _filter_link_by_type('dis-link')
+    }, indent=2)

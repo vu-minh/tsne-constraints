@@ -1,16 +1,7 @@
-# Core
-# dash-auth==1.2.0
-# dash==0.28.5
-# dash-renderer==0.14.3
-# dash-html-components==0.13.2
-# dash-core-components==0.34.0
-# gunicorn==19.9.0
-# plotly==2.7.0
-
 # Base HTTP Server
 Flask==1.0.2
 
-# newest version:
+# Dash newest version (022019):
 dash==0.37.0  # The core dash backend
 dash-renderer==0.18.0
 dash-html-components==0.13.5  # HTML components
