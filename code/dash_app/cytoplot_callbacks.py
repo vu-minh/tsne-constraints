@@ -133,15 +133,3 @@ def update_cytoplot(btn_sim, btn_dis, btn_del,
     return nodes + edges
 
 
-@app.callback(
-    Output('txt_debug', 'children'),
-    [Input('cytoplot', 'elements')]
-)
-def show_links(elems):
-    def _filter_link_by_type(edge_type):
-        return [(e['data']['source'], e['data']['target']) for e in elems
-                if e['group'] == 'edges' and edge_type in e['classes']]
-    return json.dumps({
-        'sim_links': _filter_link_by_type('sim-link'),
-        'dis_links': _filter_link_by_type('dis-link')
-    }, indent=2)

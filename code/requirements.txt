@@ -2,11 +2,11 @@
 Flask==1.0.2
 
 # Dash newest version (022019):
-dash==0.37.0  # The core dash backend
-dash-renderer==0.18.0
-dash-html-components==0.13.5  # HTML components
-dash-core-components==0.43.1  # Supercharged components
-dash-table==3.4.0 # 3.1.11  # Interactive DataTable component (new!)
+dash==0.39.0  # The core dash backend
+dash-renderer==0.20.0
+dash-html-components==0.14.0  # HTML components
+dash-core-components==0.44.0  # Supercharged components
+dash-table==3.6.0  # Interactive DataTable component (new!)
 dash-daq==0.1.0  # DAQ components (newly open-sourced!)
 
 plotly==3.6.1
