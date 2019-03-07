@@ -73,7 +73,7 @@ def test_metric_results(dataset_name):
 
 
 if __name__ == '__main__':
-    dataset_name = 'FASHION200'
+    dataset_name = 'FASHION500'
     metric_names = [
         'auc_rnx',
         'pearsonr',
@@ -81,5 +81,5 @@ if __name__ == '__main__':
         'cca_stress',
         'sammon_nlm'
     ]
-    # calculate_metrics(dataset_name, metric_names)
+    calculate_metrics(dataset_name, metric_names)
     test_metric_results(dataset_name)
