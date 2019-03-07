@@ -31,15 +31,18 @@ def _add_or_edit_style_for_tap_node(tap_id, styles):
     [Input('slider-img-size', 'value')],
     [State('cytoplot', 'stylesheet')]
 )
-def change_cyto_style(img_scale_factor, current_styles):
+def change_cyto_style(img_size, current_styles):
     style_list = current_styles
-    if img_scale_factor:
+    if img_size:
+        scale_factor = {'.img-node': 1.0, 'node:selected': 2.0,
+                        'edge': 0.1, 'edge:selected': 0.1}
         for style in style_list:
-            if style['selector'] == '.img-node':
-                style['style']['width'] = img_scale_factor
-                style['style']['height'] = img_scale_factor
-            if style['selector'] == 'edge':
-                style['style']['width'] = 0.1 * img_scale_factor
+            selector = style['selector']
+            if selector in scale_factor.keys():
+                scaled_size = img_size * scale_factor[selector]
+                style['style']['width'] = scaled_size
+                style['style']['height'] = scaled_size
+                style['style']['border-width'] = 0.1 * scaled_size
     return style_list
 
 

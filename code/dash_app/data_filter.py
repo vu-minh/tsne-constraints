@@ -14,7 +14,6 @@ DEV = True
 
 def get_embedding(dataset_name, perp):
     in_name = f"{embedding_dir}/{dataset_name}/{int(perp)}.z"
-    tsne = joblib.load(in_name)
-    print(type(tsne))
-    Z = tsne.embedding_
+    data = joblib.load(in_name)
+    Z = data if dataset_name == 'DIGITS' else data['embedding']
     return Z[:200] if DEV else Z

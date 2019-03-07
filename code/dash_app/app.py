@@ -22,10 +22,8 @@ list_datasets = [
 default_cyto_node_style = dict(
     selector='.img-node',
     style={
-        # 'label': 'data(label)',
-        # 'width': 6,
-        # 'height': 6,
         'shape': 'rectangle',  # 'ellipse'
+        'border-color': 'white',
         'background-color': 'white',
         'background-fit': 'contain',  # 'cover',
         'background-image': 'data(url)'
@@ -36,10 +34,8 @@ default_cyto_selected_node_style = dict(
     # auto supported selector: http://js.cytoscape.org/#selectors/state
     selector='node:selected',
     style={
-        'width': 12,
-        'height': 12,
         'shape': 'ellipse',
-        'border-width': 1,
+        'border-width': 0.5,
         'border-color': 'blue',
     }
 )
@@ -47,7 +43,7 @@ default_cyto_selected_node_style = dict(
 default_cyto_selected_edge_style = dict(
     selector='edge:selected',
     style={
-        'width': 1.5,
+        'width': 0.2,
         'line-style': 'solid'
     }
 )
@@ -55,8 +51,8 @@ default_cyto_selected_edge_style = dict(
 default_cyto_edge_style = dict(
     selector='edge',
     style={
+        'width': 0.2,
         'z-index': 100,  # does not work, edges are always rendered under nodes
-        'width': 1,
     }
 )
 
@@ -111,10 +107,10 @@ cytoplot_option_layout = html.Div([
         labelStyle={'display': 'inline-block'}
     ),
     dcc.Slider(
-        id='slider-img-size', min=0.0, max=8.0, step=0.5,
-        value=3.0, included=False,
-        marks={i * 0.1: '' if i < 10 else i * 0.1
-               for i in list(range(1, 6)) + list(range(10, 85, 5))},
+        id='slider-img-size', min=0.0, max=3.0, step=0.2,
+        value=1.0, included=False,
+        marks={i * 0.1: '{:.1f}'.format(i * 0.1)
+               for i in list(range(1, 12)) + list(range(12, 32, 2))},
     )
 ], style={'display': 'inline'})
 
