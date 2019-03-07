@@ -8,10 +8,12 @@ from MulticoreTSNE import MulticoreTSNE
 from sklearn.manifold import TSNE
 from matplotlib import pyplot as plt
 from common.dataset import dataset
+import multiprocessing
 
 
 USE_MULTICORE = True
 fixed_seed = 2019
+n_cpu_using = int(0.75 * multiprocessing.cpu_count())
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 data_dir = f"{dir_path}/data"
@@ -28,7 +30,7 @@ def run_dataset(dataset_name):
         start_time = time()
         if USE_MULTICORE:
             tsne = MulticoreTSNE(random_state=fixed_seed, perplexity=perp,
-                                 n_jobs=4)
+                                 n_jobs=n_cpu_using)
         else:
             tsne = TSNE(random_state=fixed_seed, perplexity=perp)
         tsne.fit_transform(X)
