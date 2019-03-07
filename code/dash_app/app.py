@@ -11,7 +11,7 @@ import local_storage_callbacks
 
 list_datasets = [
     'DIGITS',
-    'FASHION100', 'FASHION200',
+    'FASHION100', 'FASHION200', 'FASHION500',
     'QUICKDRAW100', 'QUICKDRAW200',
     'COIL20_100', 'COIL20_200'
 ]

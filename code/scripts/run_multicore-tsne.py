@@ -64,6 +64,6 @@ def test_load_data(dataset_name, perp=30):
 
 
 if __name__ == '__main__':
-    dataset_name = 'FASHION200'
+    dataset_name = 'FASHION500'
     run_dataset(dataset_name)
     # test_load_data(dataset_name, perp=20)
