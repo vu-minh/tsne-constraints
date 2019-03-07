@@ -9,13 +9,13 @@ import pandas as pd
 import numpy as np
 
 
-#Available cufflinks thems: ['pearl', 'white', 'ggplot', 'solar', 'space']
-cf.set_config_file(theme='white')
+cf.go_offline()
 
 
 def _create_figure_from_df(df, perp):
     n_metrics = len(df.columns)
-    figure = df.iplot(kind='scatter', asFigure=True,
+    #Available cufflinks thems: ['pearl', 'white', 'ggplot', 'solar', 'space']
+    figure = df.iplot(kind='scatter', asFigure=True, theme='white',
                       vline=[perp],
                       subplots=True, shape=(n_metrics, 1), shared_xaxes=True,
                       subplot_titles=True, legend=False, fill=True,

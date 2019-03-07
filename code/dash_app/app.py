@@ -25,9 +25,10 @@ default_cyto_node_style = dict(
     style={
         'shape': 'rectangle',  # 'ellipse'
         'border-color': 'white',
+        'overlay-opacity': 0,
         'background-color': 'white',
         'background-fit': 'contain',  # 'cover',
-        'background-image': 'data(url)'
+        'background-image': 'data(url)',
     }
 )
 
@@ -44,8 +45,8 @@ default_cyto_selected_node_style = dict(
 default_cyto_selected_edge_style = dict(
     selector='edge:selected',
     style={
-        'width': 0.2,
-        'line-style': 'solid'
+        'width': 0.4,
+        'line-style': 'dotted'
     }
 )
 
@@ -61,7 +62,7 @@ default_cyto_sim_link_style = dict(
     selector='.sim-link',
     style={
         'line-color': 'green',
-        'line-style': 'dotted',
+        'line-style': 'solid',  # 'dotted',
     }
 )
 
@@ -69,16 +70,18 @@ default_cyto_dis_link_style = dict(
     selector='.dis-link',
     style={
         'line-color': 'red',
-        'line-style': 'dotted',
+        'line-style': 'solid',  # 'dotted',
     }
 )
+
+additional_cyto_css = []
 
 
 ###############################################################################
 # layout components
 
 control_app_layout = html.Div([
-    dcc.Dropdown(id='select-dataset',
+    dcc.Dropdown(id='select-dataset', value='FASHION200',
                  options=[{'label': name, 'value': name}
                           for name in list_datasets]),
     dcc.Dropdown(id='select-perp-val',
@@ -128,7 +131,7 @@ cytoplot_layout = cyto.Cytoscape(
         default_cyto_dis_link_style,
         default_cyto_selected_node_style,
         default_cyto_selected_edge_style
-    ],
+    ] + additional_cyto_css,
     elements=[],
     autoungrabify=True,  # can not move nodes
     autounselectify=False,  # can select nodes
@@ -174,7 +177,7 @@ center_layout = html.Div([
 
 bottom_layout = html.Div([
     debug_layout
-    #metric_view_layout
+    # metric_view_layout
 ], style=dict(height='10vh'))
 
 app.layout = dbc.Container([
