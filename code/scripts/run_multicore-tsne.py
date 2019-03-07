@@ -14,8 +14,8 @@ import multiprocessing
 USE_MULTICORE = True
 fixed_seed = 2019
 n_cpu_using = int(0.75 * multiprocessing.cpu_count())
-dir_path = os.path.dirname(os.path.realpath(__file__))
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 data_dir = f"{dir_path}/data"
 dataset.set_data_home(data_dir)
 
