@@ -33,17 +33,14 @@ def _add_or_edit_style_for_tap_node(tap_id, styles):
 
 @app.callback(
     Output('cytoplot', 'stylesheet'),
-    [
-        Input('slider_img_size', 'value'),
-    ], [
-        State('cytoplot', 'stylesheet'),
-    ]
+    [Input('slider-img-size', 'value')],
+    [State('cytoplot', 'stylesheet')]
 )
 def change_cyto_style(img_scale_factor, current_styles):
     style_list = current_styles
     if img_scale_factor:
         for style in style_list:
-            if style['selector'] == '.img_node':
+            if style['selector'] == '.img-node':
                 style['style']['width'] = img_scale_factor
                 style['style']['height'] = img_scale_factor
             if style['selector'] == 'edge':
@@ -56,7 +53,7 @@ def _build_cyto_nodes(dataset_name, perp, cmap_type):
     Z = joblib.load(in_name)[:200]
     return [dict(
         group='nodes',
-        classes='img_node',
+        classes='img-node',
         data=dict(id=str(idx), label=f"node_{idx}",
                   url=f"/static/svg/{dataset_name}_{cmap_type}.svg#{idx}"),
         position=dict(x=x, y=y),
@@ -100,9 +97,9 @@ def _delete_edges(old_edges, edges_to_del):
         Input('btn-sim', 'n_clicks_timestamp'),
         Input('btn-dis', 'n_clicks_timestamp'),
         Input('btn-del-link', 'n_clicks_timestamp'),
-        Input('select_dataset', 'value'),
-        Input('select_perp_val', 'value'),
-        Input('select_cmap', 'value')
+        Input('select-dataset', 'value'),
+        Input('select-perp-val', 'value'),
+        Input('select-cmap', 'value')
     ], [
         State('cytoplot', 'selectedNodeData'),
         State('cytoplot', 'selectedEdgeData'),
@@ -131,5 +128,3 @@ def update_cytoplot(btn_sim, btn_dis, btn_del,
         edges = old_edges
 
     return nodes + edges
-
-

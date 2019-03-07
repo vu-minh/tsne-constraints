@@ -23,7 +23,7 @@ list_perps = [5, 10, 20, 50, 100, 200, 500]
 # cytoscape stylesheet
 # ref for cytospace js style: http://js.cytoscape.org/
 default_cyto_node_style = dict(
-    selector='.img_node',
+    selector='.img-node',
     style={
         # 'label': 'data(label)',
         # 'width': 6,
@@ -84,10 +84,10 @@ default_cyto_dis_link_style = dict(
 # layout components
 
 control_app_layout = html.Div([
-    dcc.Dropdown(id='select_dataset', value='DIGITS',
+    dcc.Dropdown(id='select-dataset', value='DIGITS',
                  options=[{'label': name, 'value': name}
                           for name in list_datasets]),
-    dcc.Dropdown(id='select_perp_val', value=5,
+    dcc.Dropdown(id='select-perp-val', value=5,
                  options=[{'label': perp, 'value': perp}
                           for perp in list_perps]),
 ])
@@ -105,7 +105,7 @@ control_cyto_layout = html.Div([
 
 cytoplot_option_layout = html.Div([
     dcc.RadioItems(
-        id='select_cmap', value='gray_r',
+        id='select-cmap', value='gray_r',
         options=[{'label': label, 'value': value}
                  for label, value in [
                      ('Gray', 'gray'),
@@ -114,7 +114,7 @@ cytoplot_option_layout = html.Div([
         labelStyle={'display': 'inline-block'}
     ),
     dcc.Slider(
-        id='slider_img_size', min=0.0, max=8.0, step=0.5,
+        id='slider-img-size', min=0.0, max=8.0, step=0.5,
         value=3.0, included=False,
         marks={i * 0.1: '' if i < 10 else i * 0.1
                for i in list(range(1, 6)) + list(range(10, 85, 5))},
@@ -138,17 +138,17 @@ cytoplot_layout = cyto.Cytoscape(
     autounselectify=False,  # can select nodes
 )
 
-links_view_layout = dbc.ListGroup(id='list_links_view', children=[])
+links_view_layout = dbc.ListGroup(id='list-links-view', children=[])
 
-debug_layout = html.Pre(id='txt_debug', children='Debug',
+debug_layout = html.Pre(id='txt-debug', children='Debug',
                         style={'display': 'inline', 'overflow': 'scroll',
                                'border': '1px solid #ccc'})
 
 
 ###############################################################################
 # local storage for storing links
-links_storage_memory = dcc.Store(id='links_memory', storage_type='memory')
-best_perp_storage_memory = dcc.Store(id='best_perp_memory',
+links_storage_memory = dcc.Store(id='links-memory', storage_type='memory')
+best_perp_storage_memory = dcc.Store(id='best-perp-memory',
                                      storage_type='memory')
 
 ###############################################################################

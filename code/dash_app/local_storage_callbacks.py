@@ -7,7 +7,7 @@ from server import app
 
 
 @app.callback(
-    Output('links_memory', 'data'),
+    Output('links-memory', 'data'),
     [Input('cytoplot', 'elements')]
 )
 def store_links(elems):
@@ -16,10 +16,10 @@ def store_links(elems):
 
 
 @app.callback(
-    [Output('txt_debug', 'children'),
-     Output('list_links_view', 'children')],
-    [Input('links_memory', 'modified_timestamp')],
-    [State('links_memory', 'data')]
+    [Output('txt-debug', 'children'),
+     Output('list-links-view', 'children')],
+    [Input('links-memory', 'modified_timestamp')],
+    [State('links-memory', 'data')]
 )
 def on_links_data(ts, links):
     if ts is None:
@@ -33,9 +33,9 @@ def on_links_data(ts, links):
 
 
 @app.callback(
-    Output('select_perp_val', 'value'),
+    Output('select-perp-val', 'value'),
     [Input('btn-submit', 'n_clicks')],
-    [State('links_memory', 'data')]
+    [State('links-memory', 'data')]
 )
 def update_selected_perp(is_submit, links):
     print('User constraints: ', links)
