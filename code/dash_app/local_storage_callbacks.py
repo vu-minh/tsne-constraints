@@ -30,3 +30,15 @@ def on_links_data(ts, links):
                        for link in links]
 
     return txt_debug, list_links_view
+
+
+@app.callback(
+    Output('select_perp_val', 'value'),
+    [Input('btn-submit', 'n_clicks')],
+    [State('links_memory', 'data')]
+)
+def update_selected_perp(is_submit, links):
+    print('User constraints: ', links)
+    if not is_submit:
+        return 20  # default perp value
+    return 50

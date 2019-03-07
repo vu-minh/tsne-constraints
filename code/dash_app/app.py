@@ -87,7 +87,7 @@ control_app_layout = html.Div([
     dcc.Dropdown(id='select_dataset', value='DIGITS',
                  options=[{'label': name, 'value': name}
                           for name in list_datasets]),
-    dcc.Dropdown(id='perp_val', value=5,
+    dcc.Dropdown(id='select_perp_val', value=5,
                  options=[{'label': perp, 'value': perp}
                           for perp in list_perps]),
 ])
@@ -99,6 +99,8 @@ control_cyto_layout = html.Div([
                outline=True, color='danger', className='mr-2'),
     dbc.Button(id='btn-del-link', children='Delete link', n_clicks_timestamp=0,
                outline=True, color='primary', className='mr-2'),
+    dbc.Button(id='btn-submit', children='Find best viz',
+               outline=True, className='mr-2')
 ])
 
 cytoplot_option_layout = html.Div([
@@ -121,7 +123,7 @@ cytoplot_option_layout = html.Div([
 
 cytoplot_layout = cyto.Cytoscape(
     id='cytoplot',
-    layout={'name': 'preset', 'animate': True},
+    layout={'name': 'preset', 'animate': True, 'fit': True},
     style={'width': '100%', 'height': '85vh'},
     stylesheet=[
         default_cyto_node_style,
@@ -146,7 +148,8 @@ debug_layout = html.Pre(id='txt_debug', children='Debug',
 ###############################################################################
 # local storage for storing links
 links_storage_memory = dcc.Store(id='links_memory', storage_type='memory')
-
+best_perp_storage_memory = dcc.Store(id='best_perp_memory',
+                                     storage_type='memory')
 
 ###############################################################################
 # app layout
@@ -168,7 +171,8 @@ center_layout = html.Div([
 
 app.layout = dbc.Container([
     dbc.Row([
-        links_storage_memory
+        links_storage_memory,
+        best_perp_storage_memory
     ]),
     dbc.Row([
         dbc.Col([left_layout], md=3),

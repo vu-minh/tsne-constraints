@@ -101,7 +101,7 @@ def _delete_edges(old_edges, edges_to_del):
         Input('btn-dis', 'n_clicks_timestamp'),
         Input('btn-del-link', 'n_clicks_timestamp'),
         Input('select_dataset', 'value'),
-        Input('perp_val', 'value'),
+        Input('select_perp_val', 'value'),
         Input('select_cmap', 'value')
     ], [
         State('cytoplot', 'selectedNodeData'),
