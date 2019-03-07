@@ -1,11 +1,6 @@
-import json
-import joblib
 from dash.dependencies import Input, Output, State
 from server import app
-
-import os
-dir_path = os.path.dirname(os.path.realpath(__file__))
-embedding_dir = f"{dir_path}/embeddings"
+from data_filter import get_embedding
 
 
 def _add_or_edit_style_for_tap_node(tap_id, styles):
@@ -49,8 +44,7 @@ def change_cyto_style(img_scale_factor, current_styles):
 
 
 def _build_cyto_nodes(dataset_name, perp, cmap_type):
-    in_name = f"{embedding_dir}/{dataset_name}_perp={perp}.z"
-    Z = joblib.load(in_name)[:200]
+    Z = get_embedding(dataset_name, perp)
     return [dict(
         group='nodes',
         classes='img-node',

@@ -16,9 +16,6 @@ list_datasets = [
     'COIL20_100', 'COIL20_200'
 ]
 
-
-list_perps = [5, 10, 20, 50, 100, 200, 500]
-
 ###############################################################################
 # cytoscape stylesheet
 # ref for cytospace js style: http://js.cytoscape.org/
@@ -84,7 +81,7 @@ default_cyto_dis_link_style = dict(
 # layout components
 
 control_app_layout = html.Div([
-    dcc.Dropdown(id='select-dataset', value='DIGITS',
+    dcc.Dropdown(id='select-dataset',
                  options=[{'label': name, 'value': name}
                           for name in list_datasets]),
     dcc.Dropdown(id='select-perp-val',
