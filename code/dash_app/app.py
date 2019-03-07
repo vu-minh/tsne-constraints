@@ -141,42 +141,56 @@ debug_layout = html.Pre(id='txt-debug', children='Debug',
                                'border': '1px solid #ccc'})
 
 metric_view_layout = dcc.Graph(id='metric-view')
+constraint_score_view_layout = dcc.Graph(id='constraint-score-view')
 
 ###############################################################################
 # local storage for storing links
 links_storage_memory = dcc.Store(id='links-memory', storage_type='memory')
-best_perp_storage_memory = dcc.Store(id='best-perp-memory',
-                                     storage_type='memory')
+# best_perp_storage_memory = dcc.Store(id='best-perp-memory',
+#                                      storage_type='memory')
 
 ###############################################################################
 # app layout
 
 left_layout = html.Div([
     control_app_layout,
-])
-
-right_layout = html.Div([
-    metric_view_layout,
+    control_cyto_layout,
     links_view_layout,
-    debug_layout
-])
+    # debug_layout
+], style=dict(height='90vh'))
+
+right1_layout = html.Div([
+    constraint_score_view_layout
+], style=dict(height='90vh'))
+
+right2_layout = html.Div([
+    metric_view_layout
+], style=dict(height='90vh'))
 
 center_layout = html.Div([
-    control_cyto_layout,
     cytoplot_option_layout,
     cytoplot_layout,
 ], style=dict(height='90vh'))
 
+bottom_layout = html.Div([
+    debug_layout
+    #metric_view_layout
+], style=dict(height='10vh'))
+
 app.layout = dbc.Container([
     dbc.Row([
         links_storage_memory,
-        best_perp_storage_memory
+        # best_perp_storage_memory
     ]),
     dbc.Row([
-        dbc.Col([left_layout], md=3),
+        dbc.Col([left_layout], md=2),
         dbc.Col([center_layout], md=6),
-        dbc.Col([right_layout], md=3)
+        dbc.Col([right1_layout], md=2),
+        dbc.Col([right2_layout], md=2),
     ]),
+    dbc.Row([
+        dbc.Col([bottom_layout])
+    ])
 ], fluid=True)
 
 
