@@ -136,6 +136,8 @@ cytoplot_layout = cyto.Cytoscape(
     autounselectify=False,  # can select nodes
 )
 
+links_view_layout = dbc.ListGroup(id='list_links_view', children=[])
+
 debug_layout = html.Pre(id='txt_debug', children='Debug',
                         style={'display': 'inline', 'overflow': 'scroll',
                                'border': '1px solid #ccc'})
@@ -154,6 +156,7 @@ left_layout = html.Div([
 ])
 
 right_layout = html.Div([
+    links_view_layout,
     debug_layout
 ])
 

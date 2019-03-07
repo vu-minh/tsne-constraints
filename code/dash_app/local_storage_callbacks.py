@@ -2,6 +2,7 @@ import json
 import joblib
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
+import dash_bootstrap_components as dbc
 from server import app
 
 
@@ -15,11 +16,17 @@ def store_links(elems):
 
 
 @app.callback(
-    Output('txt_debug', 'children'),
+    [Output('txt_debug', 'children'),
+     Output('list_links_view', 'children')],
     [Input('links_memory', 'modified_timestamp')],
     [State('links_memory', 'data')]
 )
 def on_links_data(ts, links):
     if ts is None:
         raise PreventUpdate
-    return json.dumps(links or [], indent=2)
+    txt_debug = json.dumps(links or [], indent=2)
+    list_links_view = [dbc.ListGroupItem(id=str(link), children=str(link),
+                                         n_clicks_timestamp=0, action=True)
+                       for link in links]
+
+    return txt_debug, list_links_view
