@@ -7,6 +7,7 @@ import dash_cytoscape as cyto
 from server import app, server
 import cytoplot_callbacks
 import local_storage_callbacks
+import metric_view_callbacks
 
 
 list_datasets = [
@@ -93,6 +94,8 @@ control_cyto_layout = html.Div([
     dbc.Button(id='btn-del-link', children='Delete link', n_clicks_timestamp=0,
                outline=True, color='primary', className='mr-2'),
     dbc.Button(id='btn-submit', children='Find best viz',
+               outline=True, className='mr-2'),
+    dbc.Button(id='btn-metrics', children='Show Metrics',
                outline=True, className='mr-2')
 ])
 
@@ -137,6 +140,7 @@ debug_layout = html.Pre(id='txt-debug', children='Debug',
                         style={'display': 'inline', 'overflow': 'scroll',
                                'border': '1px solid #ccc'})
 
+metric_view_layout = dcc.Graph(id='metric-view')
 
 ###############################################################################
 # local storage for storing links
@@ -152,6 +156,7 @@ left_layout = html.Div([
 ])
 
 right_layout = html.Div([
+    metric_view_layout,
     links_view_layout,
     debug_layout
 ])

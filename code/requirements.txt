@@ -22,6 +22,9 @@ dash-bootstrap-components==0.3.4
 dash-cytoscape==0.0.4
 
 
+# cufflinks to viz dataframe
+cufflinks==0.14.6
+
 # notebook
 notebook>=5.3
 ipywidgets>=7.2
