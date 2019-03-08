@@ -124,7 +124,7 @@ cytoplot_option_layout = html.Div([
 cytoplot_layout = cyto.Cytoscape(
     id='cytoplot',
     layout={'name': 'preset', 'animate': True, 'fit': True},
-    style={'width': '100%', 'height': '85vh'},
+    style={'width': '100%', 'height': '95vh'},
     stylesheet=[
         default_cyto_node_style,
         default_cyto_edge_style,

@@ -58,7 +58,6 @@ def update_constraint_score_view(btn_submit, dataset_name, user_links):
         raise PreventUpdate
 
     df = get_constraint_scores_df(dataset_name, user_links)
-    idx_max = df['score_all_links'].idxmax()
-    best_perp = df.index.values[idx_max]
+    best_perp = df['score_all_links'].idxmax()
     fig_scores = _create_figure_from_df(df, best_perp, subplot_height=125)
     return best_perp, fig_scores

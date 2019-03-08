@@ -1,3 +1,4 @@
+from itertools import combinations
 from dash.dependencies import Input, Output, State
 from server import app
 from data_filter import get_embedding
@@ -58,24 +59,25 @@ def _build_cyto_nodes(dataset_name, perp, cmap_type):
 
 
 def _create_or_edit_edges(old_edges, selected_nodes, edge_type):
-    if (not edge_type) or (not selected_nodes) or len(selected_nodes) != 2:
+    if (not edge_type) or (not selected_nodes) or len(selected_nodes) < 2:
         return old_edges
+    
+    pairs = combinations([n['id'] for n in selected_nodes], 2)
+    new_edges = []
+    for pair in pairs:
+        existed = False
+        for e in old_edges:
+            if set((e['data']['source'], e['data']['target'])) == set(pair):
+                e['data']['source'], e['data']['target'] = pair
+                e['classes'] = edge_type
+                existed = True
 
-    pair = (selected_nodes[0]['id'], selected_nodes[1]['id'])
-    existed = False
-    new_edge = []
-    for e in old_edges:
-        if set((e['data']['source'], e['data']['target'])) == set(pair):
-            e['data']['source'], e['data']['target'] = pair
-            e['classes'] = edge_type
-            existed = True
-
-    if not existed:
-        new_edge = [{
-            'classes': edge_type, 'group': 'edges',
-            'data': {'source': pair[0], 'target': pair[1]}
-        }]
-    return old_edges + new_edge
+        if not existed:
+            new_edges.append({
+                'classes': edge_type, 'group': 'edges',
+                'data': {'source': pair[0], 'target': pair[1]}
+            })
+    return old_edges + new_edges
 
 
 def _delete_edges(old_edges, edges_to_del):
