@@ -1,6 +1,6 @@
 from dash.dependencies import Input, Output, State
 from server import app
-from data_filter import get_embedding, get_metrics_df
+from data_filter import get_embedding, get_metrics_df, get_constraint_scores_df
 from dash.exceptions import PreventUpdate
 
 import plotly.plotly as py
@@ -47,14 +47,18 @@ def update_metric_view(dataset_name, perp):
 
 
 @app.callback(
-    Output('constraint-score-view', 'figure'),
-    [Input('select-dataset', 'value'),
-     Input('select-perp-val', 'value')],
-    []
+    [Output('select-perp-val', 'value'),
+     Output('constraint-score-view', 'figure')],
+    [Input('btn-submit', 'n_clicks')],
+    [State('select-dataset', 'value'),
+     State('links-memory', 'data')]
 )
-def update_constraint_score_view(dataset_name, perp):
-    if None in [dataset_name, perp]:
-        return {'data': []}
+def update_constraint_score_view(btn_submit, dataset_name, user_links):
+    if None in [btn_submit, dataset_name, user_links]:
+        raise PreventUpdate
 
-    df = cf.datagen.lines(3, columns=['test1','test2','test4'], dateIndex=False)
-    return _create_figure_from_df(df, perp)
+    df = get_constraint_scores_df(dataset_name, user_links)
+    idx_max = df['score_all_links'].idxmax()
+    best_perp = df.index.values[idx_max]
+    fig_scores = _create_figure_from_df(df, best_perp)
+    return best_perp, fig_scores

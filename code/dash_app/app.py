@@ -84,9 +84,9 @@ control_app_layout = html.Div([
     dcc.Dropdown(id='select-dataset', value='FASHION200',
                  options=[{'label': name, 'value': name}
                           for name in list_datasets]),
-    dcc.Dropdown(id='select-perp-val',
+    dcc.Dropdown(id='select-perp-val', value=30,
                  options=[{'label': perp, 'value': perp}
-                          for perp in range(1, 1001)]),
+                          for perp in range(1, 500)]),
 ])
 
 control_cyto_layout = html.Div([
