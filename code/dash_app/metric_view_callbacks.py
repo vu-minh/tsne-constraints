@@ -12,22 +12,22 @@ import numpy as np
 cf.go_offline()
 
 
-def _create_figure_from_df(df, perp):
+def _create_figure_from_df(df, perp, subplot_height=115):
     n_metrics = len(df.columns)
     #Available cufflinks thems: ['pearl', 'white', 'ggplot', 'solar', 'space']
     figure = df.iplot(kind='scatter', asFigure=True, theme='white',
                       vline=[perp],
                       subplots=True, shape=(n_metrics, 1), shared_xaxes=True,
                       subplot_titles=True, legend=False, fill=True,
-                      vertical_spacing=0.06)
+                      vertical_spacing=0.1)
     limit_yaxes = {
         f"yaxis{i+1}":{'range':[df[df.columns[i]].min(),
                                 df[df.columns[i]].max()]}
         for i in range(n_metrics)
     }
     figure['layout'].update(dict(
-        margin=dict(b=50, l=30, t=40, r=10),
-        height=n_metrics * 115,
+        margin=dict(b=60, l=30, t=40, r=10),
+        height=n_metrics * subplot_height,
         xaxis=dict(title='Log Perplexity', tickprefix='', type='log'),
     )).update(limit_yaxes)
     return figure
@@ -43,7 +43,7 @@ def update_metric_view(dataset_name, perp):
         raise PreventUpdate
 
     df = get_metrics_df(dataset_name)
-    return _create_figure_from_df(df, perp)
+    return _create_figure_from_df(df, perp, subplot_height=115)
 
 
 @app.callback(
@@ -60,5 +60,5 @@ def update_constraint_score_view(btn_submit, dataset_name, user_links):
     df = get_constraint_scores_df(dataset_name, user_links)
     idx_max = df['score_all_links'].idxmax()
     best_perp = df.index.values[idx_max]
-    fig_scores = _create_figure_from_df(df, best_perp)
+    fig_scores = _create_figure_from_df(df, best_perp, subplot_height=125)
     return best_perp, fig_scores

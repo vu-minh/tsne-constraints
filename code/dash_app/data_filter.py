@@ -6,13 +6,29 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import squareform
+from scipy.spatial.distance import pdist, squareform
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 embedding_dir = f"{dir_path}/embeddings"
 metric_dir = f"{dir_path}/metrics"
+MACHINE_EPSILON = np.finfo(np.double).eps
 DEV = False
+
+
+def compute_Q(X2d):
+    #TODO cache this function
+    """ Matrix Q in t-sne, used to calculate the prob. that a point `j`
+    being neighbor of a point `i` (the value of Q[i,j])
+    Make sure to call squareform(Q) before using it.
+    """
+    degrees_of_freedom = 1
+    dist = pdist(X2d, "sqeuclidean")
+    dist /= degrees_of_freedom
+    dist += 1.
+    dist **= (degrees_of_freedom + 1.0) / -2.0
+    Q = np.maximum(dist / (2.0 * np.sum(dist)), MACHINE_EPSILON)
+    return squareform(Q)
 
 
 def get_list_embeddings(dataset_name):
@@ -21,31 +37,24 @@ def get_list_embeddings(dataset_name):
             for f in os.listdir(target_dir) if f.endswith('.z')]
 
 
-def get_all_Q(list_embeddings):
-    res = {}
-    for in_name in list_embeddings:
-        data = joblib.load(in_name)
-        perp = data['perplexity']
-        res[perp] = squareform(data['Q'])
-    return res
-
-
 def constraint_score(Q, sim, dis):
+    Q = squareform(Q)
     s_sim = (0 if len(sim) == 0
              else np.sum(np.log(Q[sim[:, 0], sim[:, 1]])) / len(sim))
     s_dis = (0 if len(dis) == 0
              else - np.sum(np.log(Q[dis[:, 0], dis[:, 1]])) / len(dis))
+    del Q
     return s_sim, s_dis
 
 
 def calculate_constraint_scores(dataset_name, sim_links, dis_links):
-    list_embeddings = get_list_embeddings(dataset_name)
-    all_Q = get_all_Q(list_embeddings)
     scores = []
-    for perp, Q in all_Q.items():
+    for in_name in get_list_embeddings(dataset_name):
+        data = joblib.load(in_name)
+        Q = data.get('Q', compute_Q(data['embedding']))
         s_sim, s_dis = constraint_score(Q, sim_links, dis_links)
         scores.append({
-            'perplexity': perp,
+            'perplexity': data['perplexity'],
             'score_similar_links': s_sim,
             'score_dissimilar_links': s_dis,
             'score_all_links': 0.5 * (s_sim + s_dis)

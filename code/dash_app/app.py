@@ -11,10 +11,11 @@ import metric_view_callbacks
 
 
 list_datasets = [
-    'DIGITS',
-    'FASHION100', 'FASHION200', 'FASHION500',
-    'QUICKDRAW100', 'QUICKDRAW200',
-    'COIL20_100', 'COIL20_200'
+   #  'DIGITS',
+   'FASHION200',
+   #  'FASHION100', 'FASHION500',
+   #  'QUICKDRAW100', 'QUICKDRAW200',
+   #  'COIL20_100', 'COIL20_200'
 ]
 
 ###############################################################################
@@ -62,7 +63,7 @@ default_cyto_sim_link_style = dict(
     selector='.sim-link',
     style={
         'line-color': 'green',
-        'line-style': 'solid',  # 'dotted',
+        'line-style': 'solid',
     }
 )
 
@@ -70,7 +71,7 @@ default_cyto_dis_link_style = dict(
     selector='.dis-link',
     style={
         'line-color': 'red',
-        'line-style': 'solid',  # 'dotted',
+        'line-style': 'solid',
     }
 )
 
@@ -98,7 +99,7 @@ control_cyto_layout = html.Div([
                outline=True, color='primary', className='mr-2'),
     dbc.Button(id='btn-submit', children='Find best viz',
                outline=True, className='mr-2'),
-    dbc.Button(id='btn-metrics', children='Show Metrics',
+    dbc.Button(id='btn-auto-constraint', children='Generate Constraints',
                outline=True, className='mr-2')
 ])
 

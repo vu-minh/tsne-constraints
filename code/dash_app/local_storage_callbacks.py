@@ -1,5 +1,4 @@
 import json
-import joblib
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
@@ -8,9 +7,10 @@ from server import app
 
 @app.callback(
     Output('links-memory', 'data'),
-    [Input('cytoplot', 'elements')]
+    [Input('cytoplot', 'elements')],
 )
 def store_links(elems):
+    # TODO cannot distinguish which is the source of current event
     return [(e['data']['source'], e['data']['target'], e['classes'])
             for e in (elems or []) if e['group'] == 'edges'][::-1]
 
@@ -30,5 +30,3 @@ def on_links_data(ts, links):
                        for link in links]
 
     return txt_debug, list_links_view
-
-

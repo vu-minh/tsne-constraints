@@ -34,8 +34,8 @@ def _add_or_edit_style_for_tap_node(tap_id, styles):
 def change_cyto_style(img_size, current_styles):
     style_list = current_styles
     if img_size:
-        scale_factor = {'.img-node': 1.0, 'node:selected': 2.0,
-                        'edge': 0.1, 'edge:selected': 0.1}
+        scale_factor = {'.img-node': 1.0, 'node:selected': 1.4,
+                        'edge': 0.1, 'edge:selected': 0.3}
         for style in style_list:
             selector = style['selector']
             if selector in scale_factor.keys():
