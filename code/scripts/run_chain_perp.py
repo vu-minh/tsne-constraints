@@ -71,7 +71,7 @@ def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101)):
             perplexity=perp,
             running_time=running_time,
             embedding=tsne.embedding_,
-            Q=compute_Q(tsne.embedding_),
+            # Q=compute_Q(tsne.embedding_),
             kl_divergence=tsne.kl_divergence_,
             n_jobs=tsne.n_jobs,
             n_iter=tsne.n_iter_,
@@ -250,7 +250,7 @@ def viz_kl_compare_chain_normal(dataset_name, base_perp, key_names, out_name):
 
 
 if __name__ == '__main__':
-    dataset_name = 'FASHION200'
+    dataset_name = 'DIGITS'
     _, X, y = dataset.load_dataset(dataset_name)
     N = X.shape[0]
 
@@ -258,7 +258,7 @@ if __name__ == '__main__':
     full_range = range(min_perp, max_perp)
     test_range = [29, 30, 31]
 
-    for base_perp in [10, 20, 25, 30, 40]:
+    for base_perp in [10, 20, 25, 30, 40, 50, 75, 100, 200]:
         run_dataset(dataset_name, base_perp, run_range=full_range)
         # backward_range = range(min_perp, base_perp)
         # forward_range = range(base_perp+1, max_perp)

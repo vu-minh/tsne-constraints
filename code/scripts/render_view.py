@@ -126,11 +126,11 @@ def gen_page(template_name, out_name):
 
 
 if __name__ == "__main__":
-    dataset_name = 'FASHION200'
-    max_perp = 65
+    dataset_name = 'DIGITS'
+    max_perp = 600
     template_name = 'view_chain.template'
 
-    for base_perp in [10, 20, 25, 30, 40]:
+    for base_perp in [10, 20, 25, 30, 40, 50, 75, 100, 200]:
         for fig_scale in ['', '_autoscale']:
             out_name = f"html/{dataset_name}_base{base_perp}{fig_scale}.html"
             get_kl_data()
