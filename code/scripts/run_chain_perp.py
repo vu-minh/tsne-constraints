@@ -1,6 +1,7 @@
 # run tsne in chain
 
 import os
+import shutil  # for copying file
 import joblib
 import numpy as np
 import pandas as pd
@@ -251,6 +252,10 @@ def viz_kl_compare_chain_normal(dataset_name, base_perp, key_names, out_name):
 
 if __name__ == '__main__':
     dataset_name = 'DIGITS'
+    chain_path = f"{dir_path}/chain/{dataset_name}"
+    if not os.path.exists(chain_path):
+        os.mkdir(chain_path)
+
     _, X, y = dataset.load_dataset(dataset_name)
     N = X.shape[0]
 
@@ -259,6 +264,17 @@ if __name__ == '__main__':
     test_range = [29, 30, 31]
 
     for base_perp in [10, 20, 25, 30, 40, 50, 75, 100, 200]:
+        # check if file {base_perp}_to_{base_perp}.z exists in chain dir
+        target_file = f"{dir_path}/chain/{dataset_name}/{base_perp}_to_{base_perp}.z"
+        if not os.path.exists(target_file):
+            src_file = f"{dir_path}/normal/{dataset_name}/{base_perp}.z"
+            if not os.path.exists(src_file):
+                raise ValueError(f"{src_file} does not exist")
+            shutil.copy2(src_file, target_file)
+            print(f"Copy {src_file} to\n{target_file}")
+        else:
+            print(f"File {target_file} existed")
+
         run_dataset(dataset_name, base_perp, run_range=full_range)
         # backward_range = range(min_perp, base_perp)
         # forward_range = range(base_perp+1, max_perp)
