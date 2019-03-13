@@ -1,0 +1,1041 @@
+<!doctype html>
+<html>
+  <head>
+	<title>tSNE chain</title>
+
+    <style>
+table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+/*tr:hover {background-color: #ddd;}*/
+
+th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.fullsize_img {
+    max-width: 100%;
+    height: auto;
+}
+    
+    </style>
+
+  </head>
+  <body>
+    <div style="display:inline-block; width:20%; overflow:scroll">
+        
+<table id=tbl_base>
+    <thead> <th>Base perplexity = 10</th> </thead>
+    <tbody> <tr><td><p>(Q_base)</p></td></tr>
+<tr><td>
+<img id='img_base_10' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_10_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>tSNE chain</td></tr>
+<tr><td><p>Compare tSNE chain & normal</p></td></tr>
+<tr><td>
+<img id='img_base_10' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_10_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>tSNE normal</td></tr>
+<tr><td><p>(Q_base)</p></td></tr> </tbody>
+</table>
+
+    </div>
+    <div style="display:inline-block; width:78%; overflow:scroll">
+        
+<table id=tbl_chains>
+    <thead> <th>Perplexity = 2</th><th>Perplexity = 3</th><th>Perplexity = 4</th><th>Perplexity = 5</th><th>Perplexity = 6</th><th>Perplexity = 7</th><th>Perplexity = 8</th><th>Perplexity = 9</th><th>Perplexity = 10</th><th>Perplexity = 11</th><th>Perplexity = 12</th><th>Perplexity = 13</th><th>Perplexity = 14</th><th>Perplexity = 15</th><th>Perplexity = 16</th><th>Perplexity = 17</th><th>Perplexity = 18</th><th>Perplexity = 19</th><th>Perplexity = 20</th><th>Perplexity = 21</th><th>Perplexity = 22</th><th>Perplexity = 23</th><th>Perplexity = 24</th><th>Perplexity = 25</th><th>Perplexity = 26</th><th>Perplexity = 27</th><th>Perplexity = 28</th><th>Perplexity = 29</th><th>Perplexity = 30</th><th>Perplexity = 31</th><th>Perplexity = 32</th><th>Perplexity = 33</th><th>Perplexity = 34</th><th>Perplexity = 35</th><th>Perplexity = 36</th><th>Perplexity = 37</th><th>Perplexity = 38</th><th>Perplexity = 39</th><th>Perplexity = 40</th><th>Perplexity = 41</th><th>Perplexity = 42</th><th>Perplexity = 43</th><th>Perplexity = 44</th><th>Perplexity = 45</th><th>Perplexity = 46</th><th>Perplexity = 47</th><th>Perplexity = 48</th><th>Perplexity = 49</th><th>Perplexity = 50</th><th>Perplexity = 51</th><th>Perplexity = 52</th><th>Perplexity = 53</th><th>Perplexity = 54</th><th>Perplexity = 55</th><th>Perplexity = 56</th><th>Perplexity = 57</th><th>Perplexity = 58</th><th>Perplexity = 59</th><th>Perplexity = 60</th><th>Perplexity = 61</th><th>Perplexity = 62</th><th>Perplexity = 63</th><th>Perplexity = 64</th><th>Perplexity = 65</th> </thead>
+    <tbody> <tr style="color:#ff4b0d"><td><p>KL[Q_base||Q_chain] = 0.538</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.279</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.201</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.173</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.106</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.090</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.069</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.084</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.000</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.072</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.053</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.069</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.099</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.097</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.096</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.099</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.124</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.114</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.140</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.131</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.146</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.142</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.151</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.176</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.177</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.197</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.188</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.209</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.214</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.223</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.241</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.266</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.248</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.257</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.280</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.276</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.289</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.295</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.317</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.306</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.325</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.323</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.349</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.359</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.369</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.368</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.386</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.397</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.391</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.397</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.406</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.433</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.439</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.420</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.428</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.451</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.458</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.466</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.469</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.478</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.488</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.511</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.503</p></td>
+<td><p>KL[Q_base||Q_chain] = 0.530</p></td></tr>
+<tr><td>
+<img id='img_base_2' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_2_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_3' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_3_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_4' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_4_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_5' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_5_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_6' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_6_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_7' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_7_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_8' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_8_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_9' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_9_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_10' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_10_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_11' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_11_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_12' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_12_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_13' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_13_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_14' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_14_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_15' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_15_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_16' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_16_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_17' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_17_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_18' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_18_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_19' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_19_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_20' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_20_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_21' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_21_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_22' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_22_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_23' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_23_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_24' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_24_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_25' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_25_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_26' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_26_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_27' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_27_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_28' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_28_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_29' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_29_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_30' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_30_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_31' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_31_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_32' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_32_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_33' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_33_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_34' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_34_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_35' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_35_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_36' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_36_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_37' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_37_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_38' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_38_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_39' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_39_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_40' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_40_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_41' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_41_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_42' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_42_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_43' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_43_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_44' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_44_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_45' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_45_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_46' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_46_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_47' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_47_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_48' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_48_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_49' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_49_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_50' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_50_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_51' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_51_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_52' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_52_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_53' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_53_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_54' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_54_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_55' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_55_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_56' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_56_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_57' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_57_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_58' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_58_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_59' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_59_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_60' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_60_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_61' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_61_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_62' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_62_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_63' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_63_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_64' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_64_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_65' class='img-thumbnail' alt='xxx'
+    src='..//chain/FASHION200/10_to_65_autoscale.png',
+    height='30%'}
+/>
+</td></tr>
+<tr style="color:black"><td><p>KL[Q_chain||Q_normal] = 0.110</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.153</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.065</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.134</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.068</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.075</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.057</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.094</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.000</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.124</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.099</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.077</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.106</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.107</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.074</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.101</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.137</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.098</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.099</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.066</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.077</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.140</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.100</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.143</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.092</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.088</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.077</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.124</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.047</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.113</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.067</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.127</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.086</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.097</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.090</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.136</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.082</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.100</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.106</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.079</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.072</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.057</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.125</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.123</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.072</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.060</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.193</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.097</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.033</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.066</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.032</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.129</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.042</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.048</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.106</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.048</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.102</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.132</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.045</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.064</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.061</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.046</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.037</p></td>
+<td><p>KL[Q_chain||Q_normal] = 0.063</p></td></tr>
+<tr><td>
+<img id='img_base_2' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_2_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_3' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_3_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_4' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_4_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_5' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_5_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_6' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_6_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_7' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_7_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_8' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_8_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_9' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_9_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_10' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_10_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_11' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_11_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_12' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_12_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_13' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_13_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_14' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_14_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_15' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_15_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_16' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_16_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_17' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_17_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_18' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_18_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_19' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_19_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_20' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_20_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_21' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_21_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_22' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_22_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_23' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_23_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_24' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_24_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_25' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_25_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_26' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_26_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_27' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_27_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_28' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_28_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_29' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_29_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_30' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_30_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_31' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_31_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_32' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_32_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_33' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_33_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_34' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_34_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_35' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_35_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_36' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_36_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_37' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_37_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_38' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_38_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_39' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_39_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_40' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_40_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_41' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_41_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_42' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_42_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_43' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_43_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_44' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_44_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_45' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_45_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_46' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_46_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_47' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_47_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_48' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_48_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_49' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_49_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_50' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_50_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_51' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_51_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_52' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_52_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_53' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_53_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_54' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_54_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_55' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_55_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_56' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_56_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_57' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_57_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_58' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_58_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_59' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_59_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_60' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_60_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_61' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_61_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_62' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_62_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_63' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_63_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_64' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_64_autoscale.png',
+    height='30%'}
+/>
+</td>
+<td>
+<img id='img_base_65' class='img-thumbnail' alt='xxx'
+    src='..//normal/FASHION200/10_to_65_autoscale.png',
+    height='30%'}
+/>
+</td></tr>
+<tr style="color:blue"><td><p>KL[Q_base||Q_normal] = 0.743</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.446</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.225</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.225</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.140</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.112</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.097</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.106</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.000</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.117</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.106</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.074</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.096</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.127</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.078</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.164</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.175</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.146</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.151</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.162</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.158</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.251</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.220</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.299</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.216</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.220</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.239</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.294</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.228</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.313</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.316</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.339</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.309</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.313</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.327</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.413</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.374</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.368</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.402</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.332</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.409</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.369</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.476</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.414</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.404</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.384</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.526</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.510</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.422</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.453</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.428</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.546</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.441</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.467</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.506</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.491</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.510</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.509</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.503</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.530</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.524</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.519</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.556</p></td>
+<td><p>KL[Q_base||Q_normal] = 0.547</p></td></tr> </tbody>
+</table>
+
+    </div>
+
+    <center>
+    <div>
+        <h3>Compare KL[Q_chain || Q_normal], running time</h3>
+        <img class='fullsize_img' src="../plot_chain/FASHION200_10-kl_chain_normal.png" />
+    </div>
+    <div>
+        <h3>Compare KL[Q_base || Q_chain] and KL[Q_base || Q_normal]</h3>
+        <img class='fullsize_img' src="../plot_chain/FASHION200_10-kl_base_chain.png" />
+    </div>
+    </center>
+  </body>
+</html>
