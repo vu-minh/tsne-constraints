@@ -6,13 +6,15 @@ import joblib
 import numpy as np
 import pandas as pd
 from time import time
-from MulticoreTSNE import MulticoreTSNE
-from matplotlib import pyplot as plt
-
-# from matplotlib import ticker
-from common.dataset import dataset
 import multiprocessing
+
+from matplotlib import pyplot as plt
 from scipy.spatial.distance import pdist  # , squareform
+from sklearn.preprocessing import MinMaxScaler
+
+from MulticoreTSNE import MulticoreTSNE
+
+from common.dataset import dataset
 from common.metric.dr_metrics import DRMetric
 
 
@@ -47,14 +49,14 @@ def compute_Q(X2d):
     return Q
 
 
-def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101)):
+def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101), plot=True):
     _, X, y = dataset.load_dataset(dataset_name)
     chain_dir = f"{dir_path}/chain/{dataset_name}"
     if not os.path.exists(chain_dir):
         os.mkdir(chain_dir)
 
     # load init from perp=base_perp
-    base_data = joblib.load(f"{dir_path}/normal/{dataset_name}/{base_perp}.z")
+    base_data = joblib.load(f"{dir_path}/normal/{dataset_name}/{base_perp}_earlystop.z")
     Z_base = base_data["embedding"]
 
     for perp in run_range:
@@ -63,12 +65,34 @@ def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101)):
 
         start_time = time()
         tsne = MulticoreTSNE(
-            random_state=fixed_seed, perplexity=perp, n_jobs=n_cpu_using, init=Z_base
+            random_state=fixed_seed,
+            perplexity=perp,
+            init=Z_base,
+            n_iter_without_progress=150,
+            min_grad_norm=1e-05,
+            n_jobs=n_cpu_using,
         )
         tsne.fit_transform(X)
         running_time = time() - start_time
         print(f"{dataset_name}, {perp}, time: {running_time}s")
 
+        error_per_point = None
+        error_as_point_size = None
+        progress_errors = None
+        try:
+            error_per_point = tsne.error_per_point_
+            error_as_point_size = (
+                MinMaxScaler(feature_range=(25, 150))
+                .fit_transform(error_per_point.reshape(-1, 1))
+                .reshape(1, -1)
+            )
+
+            progress_errors = tsne.progress_errors_
+            progress_errors = progress_errors[np.where(progress_errors > 0)]
+        except AttributeError:
+            print("`error_per_point_` or `progress_errors_` are not available.")
+
+        out_name = f"{chain_dir}/{base_perp}_to_{perp}_earlystop"
         result = dict(
             perplexity=perp,
             running_time=running_time,
@@ -79,8 +103,18 @@ def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101)):
             n_iter=tsne.n_iter_,
             learning_rate=tsne.learning_rate,
             random_state=tsne.random_state,
+            progress_errors=progress_errors,
+            error_per_point=error_per_point,
         )
-        joblib.dump(value=result, filename=f"{chain_dir}/{base_perp}_to_{perp}.z")
+        joblib.dump(value=result, filename=f"{out_name}.z")
+
+        if plot:
+            Z = tsne.embedding_
+            plt.figure(figsize=(8, 8))
+            plt.scatter(
+                Z[:, 0], Z[:, 1], c=y, s=error_as_point_size, alpha=0.25, cmap="jet"
+            )
+            plt.savefig(f"{out_name}_autoscale.png")
 
 
 def _scatter(Z, name, x_min=None, x_max=None, y_min=None, y_max=None, y=None):
@@ -264,7 +298,7 @@ def viz_kl_compare_chain_normal(dataset_name, base_perp, key_names, out_name):
 
 
 if __name__ == "__main__":
-    dataset_name = "DIGITS"
+    dataset_name = "COIL20"
     chain_path = f"{dir_path}/chain/{dataset_name}"
     if not os.path.exists(chain_path):
         os.mkdir(chain_path)
@@ -275,12 +309,15 @@ if __name__ == "__main__":
     min_perp, max_perp = 1, N // 3
     full_range = range(min_perp, max_perp)
     test_range = [29, 30, 31]
+    base_perps = [20, 30, 50, 100]
 
-    for base_perp in [10, 20, 25, 30, 40, 50, 75, 100, 200]:
+    for base_perp in base_perps:
         # check if file {base_perp}_to_{base_perp}.z exists in chain dir
-        target_file = f"{dir_path}/chain/{dataset_name}/{base_perp}_to_{base_perp}.z"
+        target_file = (
+            f"{dir_path}/chain/{dataset_name}/{base_perp}_to_{base_perp}_earlystop.z"
+        )
         if not os.path.exists(target_file):
-            src_file = f"{dir_path}/normal/{dataset_name}/{base_perp}.z"
+            src_file = f"{dir_path}/normal/{dataset_name}/{base_perp}_earlystop.z"
             if not os.path.exists(src_file):
                 raise ValueError(f"{src_file} does not exist")
             shutil.copy2(src_file, target_file)
@@ -288,25 +325,25 @@ if __name__ == "__main__":
         else:
             print(f"File {target_file} existed")
 
-        run_dataset(dataset_name, base_perp, run_range=full_range)
+        run_dataset(dataset_name, base_perp, run_range=full_range, plot=True)
         # backward_range = range(min_perp, base_perp)
         # forward_range = range(base_perp+1, max_perp)
         # run_dataset(dataset_name, base_perp, run_range=backward_range)
         # run_dataset(dataset_name, base_perp, run_range=forward_range)
 
-        compare_kl_normal_chain(dataset_name, base_perp, run_range=full_range)
+        # compare_kl_normal_chain(dataset_name, base_perp, run_range=full_range)
 
-        compare_kl_with_a_base(dataset_name, base_perp, "normal", full_range)
-        compare_kl_with_a_base(dataset_name, base_perp, "chain", full_range)
+        # compare_kl_with_a_base(dataset_name, base_perp, "normal", full_range)
+        # compare_kl_with_a_base(dataset_name, base_perp, "chain", full_range)
 
-        key_names = ["kl_Qbase_Q", "kl_Q_Qbase", "kl_sum"]
-        out_name = f"plot_chain/{dataset_name}_{base_perp}-kl_base_chain.png"
-        viz_kl(dataset_name, base_perp, key_names, out_name)
+        # key_names = ["kl_Qbase_Q", "kl_Q_Qbase", "kl_sum"]
+        # out_name = f"plot_chain/{dataset_name}_{base_perp}-kl_base_chain.png"
+        # viz_kl(dataset_name, base_perp, key_names, out_name)
 
-        key_names = [
-            ("running_time_normal", "running_time_chain"),
-            ("kl_normal_chain", "kl_chain_normal"),
-            ("aucrnx_normal", "aucrnx_chain"),
-        ]
-        out_name = f"plot_chain/{dataset_name}_{base_perp}-kl_chain_normal.png"
-        viz_kl_compare_chain_normal(dataset_name, base_perp, key_names, out_name)
+        # key_names = [
+        #     ("running_time_normal", "running_time_chain"),
+        #     ("kl_normal_chain", "kl_chain_normal"),
+        #     ("aucrnx_normal", "aucrnx_chain"),
+        # ]
+        # out_name = f"plot_chain/{dataset_name}_{base_perp}-kl_chain_normal.png"
+        # viz_kl_compare_chain_normal(dataset_name, base_perp, key_names, out_name)
