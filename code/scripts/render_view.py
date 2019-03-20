@@ -139,7 +139,7 @@ def gen_page(template_name, out_name):
 
 if __name__ == "__main__":
     dataset_name = "DIGITS"
-    max_perp = 600
+    max_perp = 1797 // 3
     template_name = "view_chain.template"
 
     for base_perp in [10, 20, 25, 30, 40, 50, 75, 100, 200]:

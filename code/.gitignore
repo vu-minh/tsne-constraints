@@ -1,6 +1,11 @@
 scripts/data
-scripts/embeddings
+scripts/embeddings/
 scripts/__pycache__/
+scripts/plot_chain/
+scripts/chain/
+scripts/normal
+scripts/html/
+scripts/common
 
 dash_app/embeddings
 dash_app/__pycache__/
