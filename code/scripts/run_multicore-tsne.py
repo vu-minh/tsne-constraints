@@ -26,6 +26,14 @@ data_dir = f"{dir_path}/data"
 dataset.set_data_home(data_dir)
 
 
+def _simple_scatter(Z, out_name, figsize=(6, 6), point_sizes=None, labels=None):
+    plt.figure(figsize=figsize)
+    plt.scatter(Z[:, 0], Z[:, 1], c=labels, s=point_sizes, alpha=0.25, cmap="jet")
+    plt.tight_layout()
+    plt.savefig(out_name)
+    plt.close()
+
+
 def run_dataset(dataset_name, plot=True):
     _, X, y = dataset.load_dataset(dataset_name)
     embedding_dir = f"{dir_path}/embeddings/{dataset_name}"
@@ -39,8 +47,8 @@ def run_dataset(dataset_name, plot=True):
                 verbose=1 if DEV else 0,
                 random_state=fixed_seed,
                 perplexity=perp,
-                n_iter_without_progress=150,
-                min_grad_norm=1e-05,
+                n_iter_without_progress=120,
+                min_grad_norm=1e-04,
                 n_jobs=n_cpu_using,
             )
         else:
@@ -79,38 +87,51 @@ def run_dataset(dataset_name, plot=True):
             error_per_point=error_per_point,
         )
         joblib.dump(value=result, filename=f"{out_name}.z")
-        print("Create embedding file: ", f"{out_name}.z")
 
         if plot:
-            Z = tsne.embedding_
-            plt.figure(figsize=(8, 8))
-            plt.scatter(
-                Z[:, 0], Z[:, 1], c=y, s=error_as_point_size, alpha=0.25, cmap="jet"
+            _simple_scatter(
+                Z=tsne.embedding_,
+                labels=y,
+                point_sizes=error_as_point_size,
+                out_name=f"{out_name}.png",
             )
-            plt.savefig(f"{out_name}.png")
 
 
 def test_load_data(dataset_name, perp=30):
     _, _, y = dataset.load_dataset(dataset_name)
     embedding_dir = f"{dir_path}/embeddings/{dataset_name}"
     out_name = f"{embedding_dir}/{perp}_earlystop.z"
-    print("Test saved data from ", out_name)
+    print("\nTest loading saved data from ", out_name)
 
     loaded = joblib.load(filename=out_name)
     for k, v in loaded.items():
-        if k == "embedding":
-            Z = loaded[k]
-            plt.scatter(Z[:, 0], Z[:, 1], c=y, alpha=0.3)
-            plt.savefig(f"test_{'multicore' if USE_MULTICORE else 'sk'}.png")
-        else:
+        if k not in ["embedding"]:
             print(k, v)
+
+    error_per_point = loaded["error_per_point"]
+    error_as_point_size = (
+        None
+        if error_per_point is None
+        else (
+            MinMaxScaler(feature_range=(10, 200))
+            .fit_transform(error_per_point.reshape(-1, 1))
+            .reshape(1, -1)
+        )
+    )
+
+    _simple_scatter(
+        Z=loaded["embedding"],
+        labels=y,
+        point_sizes=error_as_point_size,
+        out_name=f"test_{'multicore' if USE_MULTICORE else 'sk'}.png",
+    )
 
 
 if __name__ == "__main__":
     if USE_MULTICORE:
         print("Runing MulticoreTSNE ", MulticoreTSNE.__version__)
 
-    dataset_name = "COIL20"
+    dataset_name = "DIGITS"
     test_perp = 40
     run_dataset(dataset_name, plot=True)
     if DEV:
