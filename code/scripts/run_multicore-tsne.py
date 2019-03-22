@@ -131,8 +131,8 @@ if __name__ == "__main__":
     if USE_MULTICORE:
         print("Runing MulticoreTSNE ", MulticoreTSNE.__version__)
 
-    dataset_name = "DIGITS"
+    dataset_name = "FASHION200"
     test_perp = 40
-    run_dataset(dataset_name, plot=True)
+    run_dataset(dataset_name, plot=False)
     if DEV:
         test_load_data(dataset_name, perp=test_perp)
