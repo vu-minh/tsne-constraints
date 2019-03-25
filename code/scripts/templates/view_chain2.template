@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+	<title>{{ title }}</title>
+
+    <style>
+table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+/*tr:hover {background-color: #ddd;}*/
+
+th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.fullsize_img {
+    max-width: 100%;
+    height: auto;
+}
+    
+    </style>
+
+</head>
+<body>
+    <div style="display: inline-block; width:100%; overflow-x:scroll">
+        <div style="display: inline-block; width:50%; overflow:scroll;">
+            {{ embedding_figures }}
+        </div>
+        <div style="display: inline-block; width:30%; overflow:scroll;">
+            {{ dataset_name }}
+        </div>
+        <div style="width:30%; overflow:scroll;">
+            {{ dataset_name }}
+        </div>
+    </div>
+</body>
+</html>
