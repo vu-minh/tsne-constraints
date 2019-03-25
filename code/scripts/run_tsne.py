@@ -16,8 +16,8 @@ X, y = load_digits(return_X_y=True)
 X = StandardScaler().fit_transform(X)
 # X = PCA(0.95).fit_transform(X)
 
-for perp in [30]: # [5, 10, 20, 50, 100]:
-    print('Run with perp=', perp)
+for perp in [30]:  # [5, 10, 20, 50, 100]:
+    print("Run with perp=", perp)
 
     tic = time()
     tsne = TSNE(perplexity=perp)

@@ -4,11 +4,9 @@ import numpy as np
 
 from sklearn.preprocessing import MinMaxScaler
 from matplotlib import pyplot as plt
-
 from common.dataset import dataset
+from icommon import hyper_params
 
-
-DEV = False
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 data_dir = f"{dir_path}/data"
@@ -63,13 +61,19 @@ def _scatter_with_loss(
     plt.close()
 
 
-def plot_embeddings():
+def plot_embeddings(run_range=None, base_perp=None):
     _, X, y = dataset.load_dataset(dataset_name)
-    embedding_dir = f"{dir_path}/embeddings/{dataset_name}"
 
-    for perp in test_range if DEV else range(1, X.shape[0] // 3):
+    for perp in hyper_params[dataset_name][
+        "base_perps"
+    ]:  # range(1, X.shape[0] // 3) if run_range is None else run_range:
         for earlystop in ["", "_earlystop"]:
-            file_name = f"{embedding_dir}/{perp}{earlystop}"
+            if base_perp is None:
+                embedding_dir = f"{dir_path}/normal/{dataset_name}"
+                file_name = f"{embedding_dir}/{perp}{earlystop}"
+            else:
+                embedding_dir = f"{dir_path}/chain/{dataset_name}"
+                file_name = f"{embedding_dir}/{base_perp}_to_{perp}{earlystop}"
             print("Processing: ", file_name)
             data = joblib.load(f"{file_name}.z")
 
@@ -95,13 +99,12 @@ def plot_embeddings():
                         + f"  n_iter={data['n_iter']+1}"
                     ),
                 )
-
             except KeyError:  # Exception:
                 print("`error_per_point` or `progress_errors` are not available.")
 
 
 if __name__ == "__main__":
     dataset_name = "FASHION200"
-    DEV = True
-    test_range = [10]
-    plot_embeddings()
+    test_range = None  # [10]
+    for base_perp in hyper_params[dataset_name]["base_perps"] + [None]:
+        plot_embeddings(run_range=test_range, base_perp=base_perp)

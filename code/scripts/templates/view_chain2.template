@@ -35,7 +35,7 @@ th {
 
 </head>
 <body>
-    <div style="display: inline-block; width:100%; overflow-x:scroll">
+    <div style="display: inline-block; width:100%; max-height:960px; overflow:scroll">
         <div style="display: inline-block; width:50%; overflow:scroll;">
             {{ embedding_figures }}
         </div>

@@ -84,9 +84,6 @@ def run_dataset(
 if __name__ == "__main__":
     DEV = False
     dataset_name = "FASHION200"
-    chain_path = f"{dir_path}/chain/{dataset_name}"
-    if not os.path.exists(chain_path):
-        os.mkdir(chain_path)
 
     _, X, y = dataset.load_dataset(dataset_name)
     N = X.shape[0]
@@ -95,6 +92,7 @@ if __name__ == "__main__":
     list_perps = [29, 30, 31] if DEV else hyper_params[dataset_name]["base_perps"]
     for base_perp in list_perps:
         run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
+
         run_dataset(
             dataset_name,
             base_perp,

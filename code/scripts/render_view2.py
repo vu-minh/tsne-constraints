@@ -10,6 +10,8 @@ import pandas as pd
 from flask import render_template
 from string import Template
 from common.dataset import dataset
+from icommon import hyper_params
+
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 data_dir = f"{dir_path}/data"
@@ -29,7 +31,7 @@ TABLE = """
 
 FIG_IMG = """
 <img id='img_${idx}' class='img-thumbnail' alt='xxx'
-    src='${fig_type}/${dataset_name}/${base_perp}_to_${perp}${scale}.png',
+    src='../${fig_type}/${dataset_name}/${img_name}',
     height='30%'}
 />
 """
@@ -61,37 +63,63 @@ def html_table(tbl_id, thead, tbody):
 def _gen_thead():
     return "".join(
         [
-            "<th>TSNE original</th>",
-            "<th>TSNE original (early-stop)</th>",
-            "<th>TSNE-chain original</th>",
-            "<th>TSNE-chain original (early-stop)</th>",
+            "<th>Perplexity</th>",
+            "<th>TSNE-original</th>",
+            "<th>TSNE-original (early-stop)</th>",
+            "<th>TSNE-chain (early-stop)</th>",
+            "<th>TSNE-chain</th>",
         ]
     )
 
 
-def _gen_row(perp):
+def _gen_row(perp, base_perp):
     imgs = [
-        FIG_IMG.format(
-            idx=f"img_{perp}_normal",
+        Template(FIG_IMG).substitute(
+            idx=f"img_{perp}",
             fig_type="normal",
             dataset_name=dataset_name,
-            perp=perp,
-        )
+            img_name=f"{perp}_all.png",
+        ),
+        Template(FIG_IMG).substitute(
+            idx=f"img_{perp}",
+            fig_type="normal",
+            dataset_name=dataset_name,
+            img_name=f"{perp}_earlystop_all.png",
+        ),
+        Template(FIG_IMG).substitute(
+            idx=f"img_{base_perp}-{perp}",
+            fig_type="chain",
+            dataset_name=dataset_name,
+            img_name=f"{base_perp}_to_{perp}_earlystop_all.png",
+        ),
+        Template(FIG_IMG).substitute(
+            idx=f"img_{base_perp}-{perp}",
+            fig_type="chain",
+            dataset_name=dataset_name,
+            img_name=f"{base_perp}_to_{perp}_all.png",
+        ),
     ]
+    return TR.format("".join([TD.format(perp)] + [TD.format(img) for img in imgs]))
 
 
-def gen_embedding_figures_table():
-    return html_table(tbl_id="embedding_figures", thead=_gen_thead(), tbody="")
+def _gen_tbody(run_range, base_perp):
+    return "\n".join([_gen_row(perp, base_perp) for perp in run_range])
 
 
-def gen_page(template_name, out_name, base_perp):
+def gen_embedding_figures_table(run_range, base_perp):
+    thead = _gen_thead()
+    tbody = _gen_tbody(run_range, base_perp)
+    return html_table(tbl_id="embedding_figures", thead=thead, tbody=tbody)
+
+
+def gen_page(template_name, out_name, run_range, base_perp):
     with app.app_context():
         rendered = render_template(
             template_name,
             title="tSNE chain",
             base_perp=base_perp,
             dataset_name=dataset_name,
-            embedding_figures=gen_embedding_figures_table(),
+            embedding_figures=gen_embedding_figures_table(run_range, base_perp),
         )
 
     with open(out_name, "w") as out_file:
@@ -99,19 +127,17 @@ def gen_page(template_name, out_name, base_perp):
     print(f"Write to {out_name}")
 
 
-hyper_params = {"FASHION200": {"base_perps": [10, 20, 30, 40]}}
-
-
 if __name__ == "__main__":
+    DEV = False
     dataset_name = "FASHION200"
     _, X, _ = dataset.load_dataset(dataset_name)
-    max_perp = X.shape[0] // 3
+    run_range = [29, 30, 31] if DEV else range(2, X.shape[0] // 3)
     template_name = "view_chain2.template"
-    is_earlystop = "_earlystop"  # or ""
+    earlystop = "_earlystop"  # or ""
 
     base_perp = 40
-    out_name = f"./html/{dataset_name}_base{base_perp}{is_earlystop}.html"
-    gen_page(template_name, out_name, base_perp=base_perp)
+    out_name = f"./html/{dataset_name}_base{base_perp}{earlystop}.html"
+    gen_page(template_name, out_name, run_range=run_range, base_perp=base_perp)
 
     # for base_perp in hyper_params[dataset_name]["base_perp"]:
     #     for fig_scale in ["", "_autoscale"]:
