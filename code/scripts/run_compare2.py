@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist  # , squareform
 from common.dataset import dataset
-from common import hyper_params
+from icommon import hyper_params
 
 
 # embeddings when run tSNE normal: in `normal` dir
@@ -80,21 +80,14 @@ def compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop=""):
 
 
 if __name__ == "__main__":
+    DEV = False
     dataset_name = "FASHION200"
-    chain_path = f"{dir_path}/chain/{dataset_name}"
-    if not os.path.exists(chain_path):
-        os.mkdir(chain_path)
-
     _, X, _ = dataset.load_dataset(dataset_name)
     N = X.shape[0]
-
-    min_perp, max_perp = 1, N // 3
-    full_range = range(min_perp, max_perp)
-    test_range = [29, 30, 31]
-    base_perps = hyper_params[dataset_name]["base_perps"]
+    run_range = [29, 30, 31] if DEV else range(1, N // 3)
 
     for earlystop in ["", "_earlystop"]:
-        for base_perp in base_perps:
+        for base_perp in hyper_params[dataset_name]["base_perps"]:
             target_file = _get_filename_template("chain").format(
                 base_perp=base_perp, perp=base_perp, earlystop=earlystop
             )
@@ -108,4 +101,4 @@ if __name__ == "__main__":
                     except Exception:
                         print(f"Error copying file: {src_file} -> {target_file}")
 
-                compare_kl_with_a_base(base_perp, full_range, embedding_type, earlystop)
+                compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop)

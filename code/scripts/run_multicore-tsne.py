@@ -10,7 +10,7 @@ import multiprocessing
 from MulticoreTSNE import MulticoreTSNE
 from sklearn.manifold import TSNE
 from common.dataset import dataset
-from common import hyper_params
+from icommon import hyper_params
 
 
 DEV = True

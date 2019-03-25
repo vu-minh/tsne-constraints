@@ -7,7 +7,7 @@ import multiprocessing
 
 from MulticoreTSNE import MulticoreTSNE
 from common.dataset import dataset
-from common import hyper_params
+from icommon import hyper_params
 
 
 # embeddings when run tSNE normal: in `normal` dir
