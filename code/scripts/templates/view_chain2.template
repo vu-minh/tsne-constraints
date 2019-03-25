@@ -38,7 +38,7 @@ img {
 </head>
 <body>
     <div style="display: width:100%;">
-        <div style="display: inline-block; width:74%; height:960px; overflow:scroll;">
+        <div style="display: inline-block; width:64%; height:960px; overflow:scroll;">
             {{ embedding_figures }}
         </div>
         <div style="display: inline-block; width:12%;">

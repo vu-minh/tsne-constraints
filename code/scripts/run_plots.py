@@ -101,6 +101,14 @@ def plot_embeddings(run_range=None, base_perp=None):
                 print("`error_per_point` or `progress_errors` are not available.")
 
 
+def plot_running_time(base_perp):
+    pass
+
+
+def plot_compare_kl_to_base(base_perp):
+    pass
+
+
 if __name__ == "__main__":
     dataset_name = "FASHION200"
     DEV = False
