@@ -12,7 +12,7 @@ from sklearn.manifold import TSNE
 from common.dataset import dataset
 
 
-DEV = False
+DEV = True
 USE_MULTICORE = True
 fixed_seed = 2019
 n_cpu_using = int(0.75 * multiprocessing.cpu_count())
@@ -85,9 +85,22 @@ def test_load_data(dataset_name, perp=30):
 
 
 hyper_params = {
-    "DIGITS": {"n_iter_without_progress": 150, "min_grad_norm": 1e-04},
-    "FASHION200": {"n_iter_without_progress": 120, "min_grad_norm": 5e-04},
+    "DIGITS": {
+        "early_stop_conditions": {
+            "n_iter_without_progress": 150,
+            "min_grad_norm": 1e-04,
+        },
+        "base_perps": [20, 30, 50, 75],
+    },
+    "FASHION200": {
+        "early_stop_conditions": {
+            "n_iter_without_progress": 120,
+            "min_grad_norm": 5e-04,
+        },
+        "base_perps": [10, 20, 30, 40],
+    },
 }
+
 
 if __name__ == "__main__":
     if USE_MULTICORE:
@@ -96,7 +109,11 @@ if __name__ == "__main__":
     dataset_name = "FASHION200"
     test_perp = 40
     run_dataset(dataset_name, early_stop=False)
-    run_dataset(dataset_name, early_stop=True, **hyper_params[dataset_name])
+    run_dataset(
+        dataset_name,
+        early_stop=True,
+        **hyper_params[dataset_name]["early_stop_conditions"],
+    )
 
     if DEV:
         test_load_data(dataset_name, perp=test_perp)

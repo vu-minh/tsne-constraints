@@ -2,15 +2,10 @@
 
 import os
 import joblib
-import numpy as np
 from time import time
 import multiprocessing
 
-from matplotlib import pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
-
 from MulticoreTSNE import MulticoreTSNE
-
 from common.dataset import dataset
 
 
@@ -25,22 +20,23 @@ data_dir = f"{dir_path}/data"
 dataset.set_data_home(data_dir)
 
 
-def _simple_scatter(Z, out_name, figsize=(6, 6), point_sizes=None, labels=None):
-    plt.figure(figsize=figsize)
-    plt.scatter(Z[:, 0], Z[:, 1], c=labels, s=point_sizes, alpha=0.25, cmap="jet")
-    plt.tight_layout()
-    plt.savefig(out_name)
-    plt.close()
-
-
-def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101), plot=True):
+def run_dataset(
+    dataset_name,
+    base_perp=30,
+    run_range=range(31, 101),
+    n_iter_without_progress=1000,
+    min_grad_norm=1e-9,
+    early_stop=False,
+):
     _, X, y = dataset.load_dataset(dataset_name)
     chain_dir = f"{dir_path}/chain/{dataset_name}"
     if not os.path.exists(chain_dir):
         os.mkdir(chain_dir)
 
     # load init from perp=base_perp
-    base_data = joblib.load(f"{dir_path}/normal/{dataset_name}/{base_perp}_earlystop.z")
+    user_early_stop = "_earlystop" if early_stop else ""
+    in_name = f"{dir_path}/normal/{dataset_name}/{base_perp}{user_early_stop}.z"
+    base_data = joblib.load(in_name)
     Z_base = base_data["embedding"]
 
     for perp in run_range:
@@ -52,31 +48,22 @@ def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101), plot=True)
             random_state=fixed_seed,
             perplexity=perp,
             init=Z_base,
-            n_iter_without_progress=120,
-            min_grad_norm=1e-04,
+            n_iter_without_progress=n_iter_without_progress,
+            min_grad_norm=min_grad_norm,
             n_jobs=n_cpu_using,
         )
         tsne.fit_transform(X)
         running_time = time() - start_time
-        print(f"{dataset_name}, {perp}, time: {running_time}s")
+        print(f"{dataset_name}, perp={perp}, {user_early_stop}, t={running_time:.3}s")
 
         error_per_point = None
-        error_as_point_size = None
         progress_errors = None
         try:
             error_per_point = tsne.error_per_point_
-            error_as_point_size = (
-                MinMaxScaler(feature_range=(25, 150))
-                .fit_transform(error_per_point.reshape(-1, 1))
-                .reshape(1, -1)
-            )
-
             progress_errors = tsne.progress_errors_
-            progress_errors = progress_errors[np.where(progress_errors > 0)]
         except AttributeError:
             print("`error_per_point_` or `progress_errors_` are not available.")
 
-        out_name = f"{chain_dir}/{base_perp}_to_{perp}_earlystop"
         result = dict(
             perplexity=perp,
             running_time=running_time,
@@ -89,21 +76,30 @@ def run_dataset(dataset_name, base_perp=30, run_range=range(31, 101), plot=True)
             progress_errors=progress_errors,
             error_per_point=error_per_point,
         )
-        joblib.dump(value=result, filename=f"{out_name}.z")
-
-        if plot:
-            _simple_scatter(
-                Z=tsne.embedding_,
-                labels=y,
-                point_sizes=error_as_point_size,
-                out_name=f"{out_name}_autoscale.png",
-            )
+        out_name = f"{chain_dir}/{base_perp}_to_{perp}{user_early_stop}.z"
+        joblib.dump(value=result, filename=out_name)
 
 
-hyper_params = {"FASHION200": {"base_perps": [10, 20, 30, 40]}}
+hyper_params = {
+    "DIGITS": {
+        "early_stop_conditions": {
+            "n_iter_without_progress": 150,
+            "min_grad_norm": 1e-04,
+        },
+        "base_perps": [20, 30, 50, 75],
+    },
+    "FASHION200": {
+        "early_stop_conditions": {
+            "n_iter_without_progress": 120,
+            "min_grad_norm": 5e-04,
+        },
+        "base_perps": [10, 20, 30, 40],
+    },
+}
 
 
 if __name__ == "__main__":
+    DEV = False
     dataset_name = "FASHION200"
     chain_path = f"{dir_path}/chain/{dataset_name}"
     if not os.path.exists(chain_path):
@@ -112,10 +108,14 @@ if __name__ == "__main__":
     _, X, y = dataset.load_dataset(dataset_name)
     N = X.shape[0]
 
-    min_perp, max_perp = 1, N // 3
-    full_range = range(min_perp, max_perp)
-    test_range = [29, 30, 31]
-    base_perps = hyper_params[dataset_name]["base_perps"]
-
-    for base_perp in base_perps:
-        run_dataset(dataset_name, base_perp, run_range=full_range, plot=False)
+    run_range = [20] if DEV else range(1, N // 3)
+    list_perps = [29, 30, 31] if DEV else hyper_params[dataset_name]["base_perps"]
+    for base_perp in list_perps:
+        run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
+        run_dataset(
+            dataset_name,
+            base_perp,
+            run_range=run_range,
+            early_stop=True,
+            **(hyper_params[dataset_name]["early_stop_conditions"]),
+        )
