@@ -5,14 +5,10 @@
 import os
 import joblib
 from time import time
-import numpy as np
 import multiprocessing
 
 from MulticoreTSNE import MulticoreTSNE
 from sklearn.manifold import TSNE
-from sklearn.preprocessing import MinMaxScaler
-from matplotlib import pyplot as plt
-
 from common.dataset import dataset
 
 
@@ -26,15 +22,9 @@ data_dir = f"{dir_path}/data"
 dataset.set_data_home(data_dir)
 
 
-def _simple_scatter(Z, out_name, figsize=(6, 6), point_sizes=None, labels=None):
-    plt.figure(figsize=figsize)
-    plt.scatter(Z[:, 0], Z[:, 1], c=labels, s=point_sizes, alpha=0.25, cmap="jet")
-    plt.tight_layout()
-    plt.savefig(out_name)
-    plt.close()
-
-
-def run_dataset(dataset_name, plot=True):
+def run_dataset(
+    dataset_name, n_iter_without_progress=1000, min_grad_norm=1e-9, early_stop=False
+):
     _, X, y = dataset.load_dataset(dataset_name)
     embedding_dir = f"{dir_path}/embeddings/{dataset_name}"
     if not os.path.exists(embedding_dir):
@@ -47,8 +37,8 @@ def run_dataset(dataset_name, plot=True):
                 verbose=1 if DEV else 0,
                 random_state=fixed_seed,
                 perplexity=perp,
-                n_iter_without_progress=120,
-                min_grad_norm=1e-04,
+                n_iter_without_progress=n_iter_without_progress,
+                min_grad_norm=min_grad_norm,
                 n_jobs=n_cpu_using,
             )
         else:
@@ -58,22 +48,14 @@ def run_dataset(dataset_name, plot=True):
         print(f"{dataset_name}, {perp}, time: {running_time}s")
 
         error_per_point = None
-        error_as_point_size = None
         progress_errors = None
         try:
             error_per_point = tsne.error_per_point_
-            error_as_point_size = (
-                MinMaxScaler(feature_range=(25, 150))
-                .fit_transform(error_per_point.reshape(-1, 1))
-                .reshape(1, -1)
-            )
-
             progress_errors = tsne.progress_errors_
-            progress_errors = progress_errors[np.where(progress_errors > 0)]
         except AttributeError:
             print("`error_per_point_` or `progress_errors_` are not available.")
 
-        out_name = f"{embedding_dir}/{perp}_earlystop"
+        out_name = f"{embedding_dir}/{perp}{'_earlystop' if early_stop else ''}"
         result = dict(
             perplexity=perp,
             running_time=running_time,
@@ -88,14 +70,6 @@ def run_dataset(dataset_name, plot=True):
         )
         joblib.dump(value=result, filename=f"{out_name}.z")
 
-        if plot:
-            _simple_scatter(
-                Z=tsne.embedding_,
-                labels=y,
-                point_sizes=error_as_point_size,
-                out_name=f"{out_name}.png",
-            )
-
 
 def test_load_data(dataset_name, perp=30):
     _, _, y = dataset.load_dataset(dataset_name)
@@ -104,28 +78,16 @@ def test_load_data(dataset_name, perp=30):
     print("\nTest loading saved data from ", out_name)
 
     loaded = joblib.load(filename=out_name)
+    print(loaded.keys())
     for k, v in loaded.items():
-        if k not in ["embedding"]:
+        if k not in ["embedding", "error_per_point", "progress_errors"]:
             print(k, v)
 
-    error_per_point = loaded["error_per_point"]
-    error_as_point_size = (
-        None
-        if error_per_point is None
-        else (
-            MinMaxScaler(feature_range=(10, 200))
-            .fit_transform(error_per_point.reshape(-1, 1))
-            .reshape(1, -1)
-        )
-    )
 
-    _simple_scatter(
-        Z=loaded["embedding"],
-        labels=y,
-        point_sizes=error_as_point_size,
-        out_name=f"test_{'multicore' if USE_MULTICORE else 'sk'}.png",
-    )
-
+hyper_params = {
+    "DIGITS": {"n_iter_without_progress": 150, "min_grad_norm": 1e-04},
+    "FASHION200": {"n_iter_without_progress": 120, "min_grad_norm": 5e-04},
+}
 
 if __name__ == "__main__":
     if USE_MULTICORE:
@@ -133,6 +95,8 @@ if __name__ == "__main__":
 
     dataset_name = "FASHION200"
     test_perp = 40
-    run_dataset(dataset_name, plot=False)
+    run_dataset(dataset_name, early_stop=False)
+    run_dataset(dataset_name, early_stop=True, **hyper_params[dataset_name])
+
     if DEV:
         test_load_data(dataset_name, perp=test_perp)
