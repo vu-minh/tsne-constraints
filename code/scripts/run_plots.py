@@ -64,9 +64,7 @@ def _scatter_with_loss(
 def plot_embeddings(run_range=None, base_perp=None):
     _, X, y = dataset.load_dataset(dataset_name)
 
-    for perp in hyper_params[dataset_name][
-        "base_perps"
-    ]:  # range(1, X.shape[0] // 3) if run_range is None else run_range:
+    for perp in range(1, X.shape[0] // 3) if run_range is None else run_range:
         for earlystop in ["", "_earlystop"]:
             if base_perp is None:
                 embedding_dir = f"{dir_path}/normal/{dataset_name}"
