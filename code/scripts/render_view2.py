@@ -35,7 +35,7 @@ FIG_IMG = """
     height='30%'}
 />
 """
-TD = "<td>{}</td>"
+TD = "<td align='center'>{}</td>"
 TDP = "<td><p>{}</p></td>"
 TR = "<tr>{}</tr>"
 TRC = '<tr style="color:{color}">{data}</tr>'

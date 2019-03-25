@@ -17,7 +17,7 @@ def _simple_scatter(Z, out_name, figsize=(6, 6), point_sizes=None, labels=None):
     plt.figure(figsize=figsize)
     plt.scatter(Z[:, 0], Z[:, 1], c=labels, s=point_sizes, alpha=0.25, cmap="jet")
     plt.tight_layout()
-    plt.savefig(out_name)
+    plt.savefig(out_name, bbox_inches="tight", pad_inches=0)
     plt.close()
 
 
@@ -25,7 +25,7 @@ def _simple_loss(loss, out_name, figsize=(6, 1)):
     plt.figure(figsize=figsize)
     plt.plot(loss)
     plt.tight_layout()
-    plt.savefig(out_name)
+    plt.savefig(out_name, bbox_inches="tight", pad_inches=0)
     plt.close()
 
 
@@ -57,7 +57,7 @@ def _scatter_with_loss(
     ax2.plot(loss[25:], color=color2)
     ax2.tick_params(axis="y", labelcolor=color2)
 
-    plt.savefig(out_name)
+    plt.savefig(out_name, bbox_inches="tight", pad_inches=0)
     plt.close()
 
 
@@ -105,6 +105,7 @@ def plot_embeddings(run_range=None, base_perp=None):
 
 if __name__ == "__main__":
     dataset_name = "FASHION200"
-    test_range = None  # [10]
+    DEV = False
+    run_range = [10] if DEV else None
     for base_perp in hyper_params[dataset_name]["base_perps"] + [None]:
-        plot_embeddings(run_range=test_range, base_perp=base_perp)
+        plot_embeddings(run_range=run_range, base_perp=base_perp)
