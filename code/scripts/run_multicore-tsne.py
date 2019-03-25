@@ -10,6 +10,7 @@ import multiprocessing
 from MulticoreTSNE import MulticoreTSNE
 from sklearn.manifold import TSNE
 from common.dataset import dataset
+from common import hyper_params
 
 
 DEV = True
@@ -82,24 +83,6 @@ def test_load_data(dataset_name, perp=30):
     for k, v in loaded.items():
         if k not in ["embedding", "error_per_point", "progress_errors"]:
             print(k, v)
-
-
-hyper_params = {
-    "DIGITS": {
-        "early_stop_conditions": {
-            "n_iter_without_progress": 150,
-            "min_grad_norm": 1e-04,
-        },
-        "base_perps": [20, 30, 50, 75],
-    },
-    "FASHION200": {
-        "early_stop_conditions": {
-            "n_iter_without_progress": 120,
-            "min_grad_norm": 5e-04,
-        },
-        "base_perps": [10, 20, 30, 40],
-    },
-}
 
 
 if __name__ == "__main__":

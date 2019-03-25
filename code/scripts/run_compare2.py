@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist  # , squareform
 from common.dataset import dataset
+from common import hyper_params
 
 
 # embeddings when run tSNE normal: in `normal` dir
@@ -76,9 +77,6 @@ def compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop=""):
         result.append(record)
     df = pd.DataFrame(result).set_index("perplexity")
     df.to_csv(f"plot_chain/{dataset_name}_{embedding_type}_{base_perp}{earlystop}.csv")
-
-
-hyper_params = {"FASHION200": {"base_perps": [10, 20, 30, 40]}}
 
 
 if __name__ == "__main__":
