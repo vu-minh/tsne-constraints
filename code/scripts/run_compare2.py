@@ -125,18 +125,25 @@ def extract_from_csv(base_perp, run_range, key="kl_Qbase_Q"):
 
 
 if __name__ == "__main__":
-    DEV = False
-    dataset_name = "FASHION200"
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-x", "--dev", action="store_true")
+    ap.add_argument("-p", "--test_perp")
+    args = vars(ap.parse_args())
+
+    dataset_name = args.get("dataset_name", "FASHION200")
+    test_perp = args.get("test_perp", 30)
+    DEV = args.get("dev", False)
+
     _, X, _ = dataset.load_dataset(dataset_name)
-    run_range = [29, 30, 31] if DEV else range(1, X.shape[0] // 3)
+    run_range = (
+        [test_perp - 1, test_perp, test_perp + 1] if DEV else range(1, X.shape[0] // 3)
+    )
 
+    # compare KL, make sure to copy the needed files
     for base_perp in hyper_params[dataset_name]["base_perps"]:
-        # extract running_time in 4cases: normal,normal_earlystop, chain,chain_earlystop
-        extract_from_embeddings(base_perp, run_range, keys=["running_time", "n_iter"])
-
-        # extract the comparation KL[Qbase||Q] for these 4 cases
-        extract_from_csv(base_perp, run_range, key="kl_Qbase_Q")
-
         for earlystop in ["", "_earlystop"]:
             target_file = _get_filename_template("chain").format(
                 base_perp=base_perp, perp=base_perp, earlystop=earlystop
@@ -153,3 +160,11 @@ if __name__ == "__main__":
                         print(f"Error copying file: {src_file} -> {target_file}")
 
                 compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop)
+
+    # create chart to compare running_time, n_iter, KL
+    for base_perp in hyper_params[dataset_name]["base_perps"]:
+        # extract running_time in 4cases: normal,normal_earlystop, chain,chain_earlystop
+        extract_from_embeddings(base_perp, run_range, keys=["running_time", "n_iter"])
+
+        # extract the comparation KL[Qbase||Q] for these 4 cases
+        extract_from_csv(base_perp, run_range, key="kl_Qbase_Q")

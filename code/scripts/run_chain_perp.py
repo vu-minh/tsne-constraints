@@ -82,15 +82,30 @@ def run_dataset(
 
 
 if __name__ == "__main__":
-    DEV = False
-    dataset_name = "FASHION200"
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-x", "--dev", action="store_true")
+    ap.add_argument("-p", "--test_perp")
+    args = vars(ap.parse_args())
+
+    dataset_name = args.get("dataset_name", "FASHION200")
+    test_perp = args.get("test_perp", 30)
+    DEV = args.get("dev", False)
 
     _, X, y = dataset.load_dataset(dataset_name)
     N = X.shape[0]
 
-    run_range = [20] if DEV else range(1, N // 3)
-    list_perps = [29, 30, 31] if DEV else hyper_params[dataset_name]["base_perps"]
+    run_range = [test_perp] if DEV else range(1, N // 3)
+    list_perps = (
+        [test_perp - 1, test_perp, test_perp + 1]
+        if DEV
+        else hyper_params[dataset_name]["base_perps"]
+    )
+
     for base_perp in list_perps:
+
         run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
 
         run_dataset(

@@ -126,10 +126,22 @@ def gen_page(template_name, out_name, run_range, base_perp):
 
 
 if __name__ == "__main__":
-    DEV = False
-    dataset_name = "FASHION200"
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-x", "--dev", action="store_true")
+    ap.add_argument("-p", "--test_perp")
+    args = vars(ap.parse_args())
+
+    dataset_name = args.get("dataset_name", "FASHION200")
+    test_perp = args.get("test_perp", 30)
+    DEV = args.get("dev", False)
+
     _, X, _ = dataset.load_dataset(dataset_name)
-    run_range = [29, 30, 31] if DEV else range(2, X.shape[0] // 3)
+    run_range = (
+        [test_perp - 1, test_perp, test_perp + 1] if DEV else range(2, X.shape[0] // 3)
+    )
     template_name = "view_chain2.template"
 
     for base_perp in hyper_params[dataset_name]["base_perps"]:

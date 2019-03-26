@@ -13,7 +13,6 @@ from common.dataset import dataset
 from icommon import hyper_params
 
 
-DEV = True
 USE_MULTICORE = True
 fixed_seed = 2019
 n_cpu_using = int(0.75 * multiprocessing.cpu_count())
@@ -86,12 +85,23 @@ def test_load_data(dataset_name, perp=30):
 
 
 if __name__ == "__main__":
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-x", "--dev", action="store_true")
+    ap.add_argument("-p", "--test_perp")
+    args = vars(ap.parse_args())
+
+    dataset_name = args.get("dataset_name", "FASHION200")
+    test_perp = args.get("test_perp", 30)
+    DEV = args.get("dev", False)
+
     if USE_MULTICORE:
         print("Runing MulticoreTSNE ", MulticoreTSNE.__version__)
 
-    dataset_name = "FASHION200"
-    test_perp = 40
     run_dataset(dataset_name, early_stop=False)
+
     run_dataset(
         dataset_name,
         early_stop=True,

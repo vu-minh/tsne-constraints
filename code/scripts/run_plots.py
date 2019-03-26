@@ -133,9 +133,19 @@ def plot_compare_kl_to_base(base_perp, key="kl_Qbase_Q", title="KL[Qbase || Q]")
 
 
 if __name__ == "__main__":
-    DEV = False
-    dataset_name = "FASHION200"
-    run_range = [10] if DEV else None
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-x", "--dev", action="store_true")
+    ap.add_argument("-p", "--test_perp")
+    args = vars(ap.parse_args())
+
+    dataset_name = args.get("dataset_name", "FASHION200")
+    test_perp = args.get("test_perp", 30)
+    DEV = args.get("dev", False)
+
+    run_range = [test_perp] if DEV else None
 
     for base_perp in [None] + [40] if DEV else hyper_params[dataset_name]["base_perps"]:
         plot_embeddings(run_range=run_range, base_perp=base_perp)
