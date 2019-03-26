@@ -1,0 +1,612 @@
+<!doctype html>
+<html>
+  <head>
+	<title>tSNE chain</title>
+
+    <style>
+table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 1600px;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  text-align: center;
+  /* width: 20%; */
+}
+
+th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+img {
+    width: auto;
+    max-height: 50%;
+}
+
+.fullsize_img {
+    max-width: 100%;
+    height: auto;
+}
+
+    </style>
+
+</head>
+<body>
+<center>
+	<h3>MPI Base perplexity = 5</h3>
+    <div style="display: max-width:1400px; height:60px;">
+    	
+<table id="">
+    <thead> <th width='10%'>perp</th><th align='center' width='22%'>TSNE-original</th><th align='center' width='22%'>TSNE-original (early-stop)</th><th align='center' width='22%'>TSNE-chain (early-stop)</th><th align='center' width='22%'>TSNE-chain</th> </thead>
+    <tbody>  </tbody>
+</table>
+
+	</div>
+    <div style="display: max-width:1400px; height:760px; overflow:scroll;">
+    	
+<table id="">
+    <thead>  </thead>
+    <tbody> <tr><td width='10%'>2</td><td align='center' width='22%'>
+<img id='img_img_2' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/2_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_2' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/2_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-2' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_2_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-2' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_2_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>3</td><td align='center' width='22%'>
+<img id='img_img_3' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/3_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_3' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/3_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-3' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_3_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-3' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_3_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>4</td><td align='center' width='22%'>
+<img id='img_img_4' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/4_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_4' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/4_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-4' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_4_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-4' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_4_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>5</td><td align='center' width='22%'>
+<img id='img_img_5' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/5_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/5_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-5' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_5_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-5' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_5_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>6</td><td align='center' width='22%'>
+<img id='img_img_6' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/6_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_6' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/6_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-6' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_6_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-6' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_6_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>7</td><td align='center' width='22%'>
+<img id='img_img_7' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/7_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_7' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/7_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-7' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_7_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-7' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_7_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>8</td><td align='center' width='22%'>
+<img id='img_img_8' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/8_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_8' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/8_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-8' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_8_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-8' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_8_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>9</td><td align='center' width='22%'>
+<img id='img_img_9' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/9_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_9' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/9_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-9' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_9_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-9' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_9_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>10</td><td align='center' width='22%'>
+<img id='img_img_10' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/10_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_10' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/10_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-10' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_10_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-10' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_10_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>11</td><td align='center' width='22%'>
+<img id='img_img_11' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/11_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_11' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/11_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-11' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_11_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-11' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_11_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>12</td><td align='center' width='22%'>
+<img id='img_img_12' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/12_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_12' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/12_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-12' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_12_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-12' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_12_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>13</td><td align='center' width='22%'>
+<img id='img_img_13' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/13_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_13' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/13_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-13' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_13_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-13' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_13_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>14</td><td align='center' width='22%'>
+<img id='img_img_14' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/14_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_14' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/14_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-14' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_14_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-14' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_14_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>15</td><td align='center' width='22%'>
+<img id='img_img_15' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/15_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_15' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/15_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-15' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_15_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-15' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_15_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>16</td><td align='center' width='22%'>
+<img id='img_img_16' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/16_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_16' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/16_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-16' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_16_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-16' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_16_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>17</td><td align='center' width='22%'>
+<img id='img_img_17' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/17_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_17' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/17_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-17' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_17_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-17' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_17_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>18</td><td align='center' width='22%'>
+<img id='img_img_18' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/18_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_18' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/18_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-18' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_18_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-18' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_18_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>19</td><td align='center' width='22%'>
+<img id='img_img_19' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/19_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_19' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/19_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-19' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_19_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-19' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_19_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>20</td><td align='center' width='22%'>
+<img id='img_img_20' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/20_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_20' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/20_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-20' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_20_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-20' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_20_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>21</td><td align='center' width='22%'>
+<img id='img_img_21' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/21_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_21' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/21_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-21' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_21_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-21' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_21_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>22</td><td align='center' width='22%'>
+<img id='img_img_22' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/22_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_22' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/22_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-22' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_22_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-22' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_22_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>23</td><td align='center' width='22%'>
+<img id='img_img_23' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/23_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_23' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/23_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-23' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_23_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-23' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_23_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>24</td><td align='center' width='22%'>
+<img id='img_img_24' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/24_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_24' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/24_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-24' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_24_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-24' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_24_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>25</td><td align='center' width='22%'>
+<img id='img_img_25' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/25_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_25' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/25_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-25' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_25_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-25' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_25_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>26</td><td align='center' width='22%'>
+<img id='img_img_26' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/26_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_26' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/26_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-26' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_26_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-26' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_26_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>27</td><td align='center' width='22%'>
+<img id='img_img_27' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/27_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_27' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/27_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-27' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_27_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-27' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_27_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>28</td><td align='center' width='22%'>
+<img id='img_img_28' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/28_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_28' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/28_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-28' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_28_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-28' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_28_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>29</td><td align='center' width='22%'>
+<img id='img_img_29' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/29_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_29' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/29_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-29' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_29_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-29' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_29_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>30</td><td align='center' width='22%'>
+<img id='img_img_30' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/30_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/30_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-30' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_30_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-30' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_30_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>31</td><td align='center' width='22%'>
+<img id='img_img_31' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/31_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_31' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/31_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-31' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_31_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-31' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_31_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>32</td><td align='center' width='22%'>
+<img id='img_img_32' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/32_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_32' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/32_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-32' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_32_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-32' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_32_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>33</td><td align='center' width='22%'>
+<img id='img_img_33' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/33_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_33' class='img-thumbnail' alt='xxx'
+    src='../normal/MPI/33_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-33' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_33_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5-33' class='img-thumbnail' alt='xxx'
+    src='../chain/MPI/5_to_33_all.png'
+/>
+</td></tr> </tbody>
+</table>
+
+	</div>
+	<div>
+        <div style="display: inline-block; max-width:1200px;">
+            <img src="../plot_chain/MPI_base5_running_time.png" style=" width:100%; height:auto;">
+            <img src="../plot_chain/MPI_base5_n_iter.png" style=" width:100%; height:auto;">
+            <img src="../plot_chain/MPI_base5_kl_Qbase_Q.png" style=" width:100%; height:auto;">
+        </div>
+    </div>
+</center>
+</body>
+</html>

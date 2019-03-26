@@ -1,0 +1,1156 @@
+<!doctype html>
+<html>
+  <head>
+	<title>tSNE chain</title>
+
+    <style>
+table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 1600px;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  text-align: center;
+  /* width: 20%; */
+}
+
+th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+img {
+    width: auto;
+    max-height: 50%;
+}
+
+.fullsize_img {
+    max-width: 100%;
+    height: auto;
+}
+
+    </style>
+
+</head>
+<body>
+<center>
+	<h3>FASHION200 Base perplexity = 30</h3>
+    <div style="display: max-width:1400px; height:60px;">
+    	
+<table id="">
+    <thead> <th width='10%'>perp</th><th align='center' width='22%'>TSNE-original</th><th align='center' width='22%'>TSNE-original (early-stop)</th><th align='center' width='22%'>TSNE-chain (early-stop)</th><th align='center' width='22%'>TSNE-chain</th> </thead>
+    <tbody>  </tbody>
+</table>
+
+	</div>
+    <div style="display: max-width:1400px; height:760px; overflow:scroll;">
+    	
+<table id="">
+    <thead>  </thead>
+    <tbody> <tr><td width='10%'>2</td><td align='center' width='22%'>
+<img id='img_img_2' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/2_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_2' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/2_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-2' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_2_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-2' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_2_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>3</td><td align='center' width='22%'>
+<img id='img_img_3' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/3_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_3' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/3_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-3' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_3_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-3' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_3_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>4</td><td align='center' width='22%'>
+<img id='img_img_4' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/4_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_4' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/4_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-4' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_4_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-4' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_4_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>5</td><td align='center' width='22%'>
+<img id='img_img_5' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/5_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_5' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/5_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-5' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_5_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-5' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_5_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>6</td><td align='center' width='22%'>
+<img id='img_img_6' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/6_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_6' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/6_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-6' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_6_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-6' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_6_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>7</td><td align='center' width='22%'>
+<img id='img_img_7' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/7_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_7' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/7_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-7' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_7_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-7' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_7_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>8</td><td align='center' width='22%'>
+<img id='img_img_8' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/8_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_8' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/8_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-8' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_8_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-8' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_8_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>9</td><td align='center' width='22%'>
+<img id='img_img_9' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/9_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_9' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/9_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-9' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_9_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-9' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_9_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>10</td><td align='center' width='22%'>
+<img id='img_img_10' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/10_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_10' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/10_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-10' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_10_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-10' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_10_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>11</td><td align='center' width='22%'>
+<img id='img_img_11' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/11_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_11' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/11_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-11' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_11_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-11' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_11_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>12</td><td align='center' width='22%'>
+<img id='img_img_12' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/12_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_12' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/12_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-12' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_12_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-12' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_12_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>13</td><td align='center' width='22%'>
+<img id='img_img_13' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/13_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_13' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/13_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-13' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_13_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-13' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_13_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>14</td><td align='center' width='22%'>
+<img id='img_img_14' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/14_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_14' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/14_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-14' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_14_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-14' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_14_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>15</td><td align='center' width='22%'>
+<img id='img_img_15' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/15_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_15' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/15_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-15' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_15_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-15' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_15_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>16</td><td align='center' width='22%'>
+<img id='img_img_16' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/16_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_16' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/16_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-16' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_16_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-16' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_16_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>17</td><td align='center' width='22%'>
+<img id='img_img_17' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/17_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_17' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/17_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-17' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_17_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-17' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_17_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>18</td><td align='center' width='22%'>
+<img id='img_img_18' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/18_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_18' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/18_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-18' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_18_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-18' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_18_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>19</td><td align='center' width='22%'>
+<img id='img_img_19' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/19_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_19' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/19_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-19' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_19_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-19' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_19_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>20</td><td align='center' width='22%'>
+<img id='img_img_20' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/20_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_20' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/20_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-20' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_20_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-20' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_20_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>21</td><td align='center' width='22%'>
+<img id='img_img_21' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/21_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_21' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/21_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-21' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_21_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-21' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_21_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>22</td><td align='center' width='22%'>
+<img id='img_img_22' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/22_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_22' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/22_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-22' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_22_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-22' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_22_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>23</td><td align='center' width='22%'>
+<img id='img_img_23' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/23_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_23' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/23_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-23' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_23_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-23' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_23_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>24</td><td align='center' width='22%'>
+<img id='img_img_24' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/24_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_24' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/24_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-24' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_24_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-24' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_24_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>25</td><td align='center' width='22%'>
+<img id='img_img_25' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/25_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_25' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/25_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-25' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_25_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-25' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_25_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>26</td><td align='center' width='22%'>
+<img id='img_img_26' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/26_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_26' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/26_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-26' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_26_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-26' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_26_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>27</td><td align='center' width='22%'>
+<img id='img_img_27' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/27_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_27' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/27_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-27' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_27_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-27' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_27_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>28</td><td align='center' width='22%'>
+<img id='img_img_28' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/28_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_28' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/28_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-28' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_28_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-28' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_28_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>29</td><td align='center' width='22%'>
+<img id='img_img_29' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/29_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_29' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/29_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-29' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_29_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-29' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_29_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>30</td><td align='center' width='22%'>
+<img id='img_img_30' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/30_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/30_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-30' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_30_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-30' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_30_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>31</td><td align='center' width='22%'>
+<img id='img_img_31' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/31_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_31' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/31_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-31' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_31_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-31' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_31_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>32</td><td align='center' width='22%'>
+<img id='img_img_32' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/32_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_32' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/32_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-32' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_32_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-32' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_32_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>33</td><td align='center' width='22%'>
+<img id='img_img_33' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/33_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_33' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/33_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-33' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_33_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-33' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_33_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>34</td><td align='center' width='22%'>
+<img id='img_img_34' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/34_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_34' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/34_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-34' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_34_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-34' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_34_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>35</td><td align='center' width='22%'>
+<img id='img_img_35' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/35_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_35' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/35_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-35' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_35_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-35' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_35_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>36</td><td align='center' width='22%'>
+<img id='img_img_36' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/36_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_36' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/36_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-36' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_36_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-36' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_36_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>37</td><td align='center' width='22%'>
+<img id='img_img_37' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/37_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_37' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/37_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-37' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_37_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-37' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_37_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>38</td><td align='center' width='22%'>
+<img id='img_img_38' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/38_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_38' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/38_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-38' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_38_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-38' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_38_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>39</td><td align='center' width='22%'>
+<img id='img_img_39' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/39_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_39' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/39_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-39' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_39_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-39' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_39_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>40</td><td align='center' width='22%'>
+<img id='img_img_40' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/40_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_40' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/40_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-40' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_40_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-40' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_40_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>41</td><td align='center' width='22%'>
+<img id='img_img_41' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/41_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_41' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/41_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-41' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_41_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-41' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_41_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>42</td><td align='center' width='22%'>
+<img id='img_img_42' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/42_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_42' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/42_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-42' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_42_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-42' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_42_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>43</td><td align='center' width='22%'>
+<img id='img_img_43' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/43_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_43' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/43_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-43' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_43_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-43' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_43_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>44</td><td align='center' width='22%'>
+<img id='img_img_44' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/44_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_44' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/44_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-44' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_44_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-44' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_44_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>45</td><td align='center' width='22%'>
+<img id='img_img_45' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/45_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_45' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/45_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-45' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_45_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-45' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_45_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>46</td><td align='center' width='22%'>
+<img id='img_img_46' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/46_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_46' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/46_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-46' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_46_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-46' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_46_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>47</td><td align='center' width='22%'>
+<img id='img_img_47' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/47_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_47' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/47_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-47' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_47_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-47' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_47_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>48</td><td align='center' width='22%'>
+<img id='img_img_48' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/48_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_48' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/48_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-48' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_48_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-48' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_48_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>49</td><td align='center' width='22%'>
+<img id='img_img_49' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/49_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_49' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/49_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-49' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_49_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-49' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_49_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>50</td><td align='center' width='22%'>
+<img id='img_img_50' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/50_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_50' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/50_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-50' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_50_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-50' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_50_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>51</td><td align='center' width='22%'>
+<img id='img_img_51' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/51_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_51' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/51_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-51' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_51_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-51' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_51_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>52</td><td align='center' width='22%'>
+<img id='img_img_52' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/52_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_52' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/52_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-52' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_52_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-52' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_52_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>53</td><td align='center' width='22%'>
+<img id='img_img_53' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/53_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_53' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/53_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-53' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_53_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-53' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_53_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>54</td><td align='center' width='22%'>
+<img id='img_img_54' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/54_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_54' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/54_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-54' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_54_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-54' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_54_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>55</td><td align='center' width='22%'>
+<img id='img_img_55' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/55_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_55' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/55_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-55' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_55_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-55' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_55_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>56</td><td align='center' width='22%'>
+<img id='img_img_56' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/56_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_56' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/56_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-56' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_56_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-56' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_56_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>57</td><td align='center' width='22%'>
+<img id='img_img_57' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/57_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_57' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/57_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-57' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_57_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-57' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_57_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>58</td><td align='center' width='22%'>
+<img id='img_img_58' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/58_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_58' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/58_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-58' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_58_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-58' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_58_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>59</td><td align='center' width='22%'>
+<img id='img_img_59' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/59_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_59' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/59_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-59' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_59_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-59' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_59_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>60</td><td align='center' width='22%'>
+<img id='img_img_60' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/60_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_60' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/60_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-60' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_60_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-60' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_60_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>61</td><td align='center' width='22%'>
+<img id='img_img_61' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/61_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_61' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/61_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-61' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_61_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-61' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_61_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>62</td><td align='center' width='22%'>
+<img id='img_img_62' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/62_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_62' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/62_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-62' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_62_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-62' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_62_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>63</td><td align='center' width='22%'>
+<img id='img_img_63' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/63_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_63' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/63_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-63' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_63_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-63' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_63_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>64</td><td align='center' width='22%'>
+<img id='img_img_64' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/64_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_64' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/64_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-64' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_64_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-64' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_64_all.png'
+/>
+</td></tr>
+<tr><td width='10%'>65</td><td align='center' width='22%'>
+<img id='img_img_65' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/65_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_65' class='img-thumbnail' alt='xxx'
+    src='../normal/FASHION200/65_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-65' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_65_earlystop_all.png'
+/>
+</td><td align='center' width='22%'>
+<img id='img_img_30-65' class='img-thumbnail' alt='xxx'
+    src='../chain/FASHION200/30_to_65_all.png'
+/>
+</td></tr> </tbody>
+</table>
+
+	</div>
+	<div>
+        <div style="display: inline-block; max-width:1200px;">
+            <img src="../plot_chain/FASHION200_base30_running_time.png" style=" width:100%; height:auto;">
+            <img src="../plot_chain/FASHION200_base30_n_iter.png" style=" width:100%; height:auto;">
+            <img src="../plot_chain/FASHION200_base30_kl_Qbase_Q.png" style=" width:100%; height:auto;">
+        </div>
+    </div>
+</center>
+</body>
+</html>
