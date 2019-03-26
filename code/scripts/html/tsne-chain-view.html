@@ -976,7 +976,7 @@ barnes_hut_theta=0.5
 </ul>
 </li>
 </ul>
-<p data-line="21">The value of these parameters are find manually for each dataset to make sure that we can see the “early-stop” phenomenon.</p>
+<p data-line="21">The value of these parameters are selected manually for each dataset to make sure that we can see the “early-stop” phenomenon.</p>
 <p data-line="23">To disable early-stop, these params are set as follows:</p>
 <pre class="code CodeMirror" data-line="24">
         <span class="filename"></span>
@@ -1002,36 +1002,8 @@ min_grad_norm = 1e-09
 <a href="FASHION200_base20_v2.html">FASHION200_base20</a><br />
 <a href="FASHION200_base30_v2.html">FASHION200_base30</a><br />
 <a href="FASHION200_base40_v2.html">FASHION200_base40</a></p>
-<h4 id="COIL20" data-line="47">COIL20</h4>
+<h4 id="COUNTRY2014" data-line="47">COUNTRY2014</h4>
 <pre class="code CodeMirror" data-line="48">
-        <span class="filename"></span>
-        <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
-        <code class="">&quot;early_stop_conditions&quot;: {
-    &quot;n_iter_without_progress&quot;: 200,
-    &quot;min_grad_norm&quot;: 1e-05,
-},
-&quot;base_perps&quot;: [20, 30, 50, 75],
-</code>
-      </pre><p data-line="55"><a href="COIL20_base20_v2.html">COIL20_base20</a><br />
-<a href="COIL20_base30_v2.html">COIL20_base30</a><br />
-<a href="COIL20_base50_v2.html">COIL20_base50</a><br />
-<a href="COIL20_base75_v2.html">COIL20_base75</a></p>
-<h4 id="DIGITS" data-line="60">DIGITS</h4>
-<pre class="code CodeMirror" data-line="61">
-        <span class="filename"></span>
-        <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
-        <code class="">&quot;early_stop_conditions&quot;: {
-    &quot;n_iter_without_progress&quot;: 150,
-    &quot;min_grad_norm&quot;: 1e-04,
-},
-&quot;base_perps&quot;: [20, 30, 50, 75],
-</code>
-      </pre><p data-line="68"><a href="DIGITS_base20_v2.html">DIGITS_base20</a><br />
-<a href="DIGITS_base30_v2.html">DIGITS_base30</a><br />
-<a href="DIGITS_base50_v2.html">DIGITS_base50</a><br />
-<a href="DIGITS_base75_v2.html">DIGITS_base75</a></p>
-<h4 id="COUNTRY2014" data-line="73">COUNTRY2014</h4>
-<pre class="code CodeMirror" data-line="74">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1040,12 +1012,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [5, 10, 20, 30],
 </code>
-      </pre><p data-line="81"><a href="COUNTRY2014_base5_v2.html">COUNTRY2014_base5</a><br />
+      </pre><p data-line="55"><a href="COUNTRY2014_base5_v2.html">COUNTRY2014_base5</a><br />
 <a href="COUNTRY2014_base10_v2.html">COUNTRY2014_base10</a><br />
 <a href="COUNTRY2014_base20_v2.html">COUNTRY2014_base20</a><br />
 <a href="COUNTRY2014_base30_v2.html">COUNTRY2014_base30</a></p>
-<h4 id="BREASTCANCER" data-line="86">BREAST_CANCER</h4>
-<pre class="code CodeMirror" data-line="87">
+<h4 id="BREASTCANCER" data-line="60">BREAST_CANCER</h4>
+<pre class="code CodeMirror" data-line="61">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1054,12 +1026,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 50],
 </code>
-      </pre><p data-line="94"><a href="BREAST_CANCER_base10_v2.html">BREAST_CANCER_base10</a><br />
+      </pre><p data-line="68"><a href="BREAST_CANCER_base10_v2.html">BREAST_CANCER_base10</a><br />
 <a href="BREAST_CANCER_base20_v2.html">BREAST_CANCER_base20</a><br />
 <a href="BREAST_CANCER_base30_v2.html">BREAST_CANCER_base30</a><br />
 <a href="BREAST_CANCER_base50_v2.html">BREAST_CANCER_base50</a></p>
-<h4 id="MPI" data-line="99">MPI</h4>
-<pre class="code CodeMirror" data-line="100">
+<h4 id="MPI" data-line="73">MPI</h4>
+<pre class="code CodeMirror" data-line="74">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1068,12 +1040,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [5, 10, 20, 30],
 </code>
-      </pre><p data-line="107"><a href="MPI_base5_v2.html">MPI_base5</a><br />
+      </pre><p data-line="81"><a href="MPI_base5_v2.html">MPI_base5</a><br />
 <a href="MPI_base10_v2.html">MPI_base10</a><br />
 <a href="MPI_base20_v2.html">MPI_base20</a><br />
 <a href="MPI_base30_v2.html">MPI_base30</a></p>
-<h4 id="DIABETES" data-line="112">DIABETES</h4>
-<pre class="code CodeMirror" data-line="113">
+<h4 id="DIABETES" data-line="86">DIABETES</h4>
+<pre class="code CodeMirror" data-line="87">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1082,22 +1054,52 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 40],
 </code>
-      </pre><p data-line="120"><a href="DIABETES_base10_v2.html">DIABETES_base10</a><br />
+      </pre><p data-line="94"><a href="DIABETES_base10_v2.html">DIABETES_base10</a><br />
 <a href="DIABETES_base20_v2.html">DIABETES_base20</a><br />
 <a href="DIABETES_base30_v2.html">DIABETES_base30</a><br />
 <a href="DIABETES_base40_v2.html">DIABETES_base40</a></p>
-<h3 id="To-Discuss" data-line="125">To Discuss</h3>
-<p data-line="126">How to choose <code>base_perplexity</code>:</p>
+<h4 id="COIL20" data-line="100">COIL20</h4>
+<p data-line="101">(still running)</p>
+<pre class="code CodeMirror" data-line="102">
+        <span class="filename"></span>
+        <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
+        <code class="">&quot;early_stop_conditions&quot;: {
+    &quot;n_iter_without_progress&quot;: 200,
+    &quot;min_grad_norm&quot;: 1e-05,
+},
+&quot;base_perps&quot;: [20, 30, 50, 75],
+</code>
+      </pre><p data-line="109"><a href="COIL20_base20_v2.html">COIL20_base20</a><br />
+<a href="COIL20_base30_v2.html">COIL20_base30</a><br />
+<a href="COIL20_base50_v2.html">COIL20_base50</a><br />
+<a href="COIL20_base75_v2.html">COIL20_base75</a></p>
+<h4 id="DIGITS" data-line="114">DIGITS</h4>
+<p data-line="115">(still running)</p>
+<pre class="code CodeMirror" data-line="116">
+        <span class="filename"></span>
+        <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
+        <code class="">&quot;early_stop_conditions&quot;: {
+    &quot;n_iter_without_progress&quot;: 150,
+    &quot;min_grad_norm&quot;: 1e-04,
+},
+&quot;base_perps&quot;: [20, 30, 50, 75],
+</code>
+      </pre><p data-line="123"><a href="DIGITS_base20_v2.html">DIGITS_base20</a><br />
+<a href="DIGITS_base30_v2.html">DIGITS_base30</a><br />
+<a href="DIGITS_base50_v2.html">DIGITS_base50</a><br />
+<a href="DIGITS_base75_v2.html">DIGITS_base75</a></p>
+<h3 id="To-Discuss" data-line="129">To Discuss</h3>
+<p data-line="130">How to choose <code>base_perplexity</code>:</p>
 <ul>
-<li data-line="128">
-<p data-line="128">Original tSNE for FASHION200, perp=25<br />
+<li data-line="132">
+<p data-line="132">Original tSNE for FASHION200, perp=25<br />
 <img src="attachments/82ad84d2.png" alt="25_earlystop_all.png" width="300" /></p>
 </li>
-<li data-line="131">
-<p data-line="131">tSNE chain, with different base perpelixity:</p>
+<li data-line="135">
+<p data-line="135">tSNE chain, with different base perpelixity:</p>
 </li>
 </ul>
-<table data-line="132">
+<table data-line="136">
 <thead>
 <tr>
 <th>base10</th>
@@ -1116,17 +1118,17 @@ min_grad_norm = 1e-09
 </tbody>
 <tbody></tbody>
 </table>
-<p data-line="137">=============================================================================</p>
-<p data-line="140"><code>20190313</code></p>
-<h3 id="Run-tSNE-in-chain" data-line="141">Run tSNE in chain</h3>
+<p data-line="141">=============================================================================</p>
+<p data-line="144"><code>20190313</code></p>
+<h3 id="Run-tSNE-in-chain" data-line="145">Run tSNE in chain</h3>
 <ul>
-<li data-line="143">Using the notations as shown in this schema:</li>
+<li data-line="147">Using the notations as shown in this schema:</li>
 </ul>
-<p data-line="145"><img src="attachments/0281c5e1.png" alt="tsne chain (1).png" width="1200" /></p>
+<p data-line="149"><img src="attachments/0281c5e1.png" alt="tsne chain (1).png" width="1200" /></p>
 <ul>
-<li data-line="147">Run Multicore tSNE with the following params (like the defaults of sklearn) and no early-stop (no convergence condition):</li>
+<li data-line="151">Run Multicore tSNE with the following params (like the defaults of sklearn) and no early-stop (no convergence condition):</li>
 </ul>
-<pre class="code CodeMirror" data-line="148">
+<pre class="code CodeMirror" data-line="152">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span><span class="CodeMirror-linenumber">6</span><span class="CodeMirror-linenumber">7</span><span class="CodeMirror-linenumber">8</span></span>
         <code class="">method='barnes_hut',
@@ -1138,15 +1140,15 @@ random_state=2019,
 n_cores=3,
 barnes_hut_theta=0.5, (angle param in sklearn)
 </code>
-      </pre><h5 id="" data-line="159"></h5>
+      </pre><h5 id="" data-line="163"></h5>
 <ul>
-<li data-line="160"><strong>FASHION200</strong> (<code>N=200, D=28*28</code>), perplexity <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo fence="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mfrac><mrow><mi>N</mi></mrow><mrow><mn>3</mn></mrow></mfrac><mo fence="false">]</mo></mrow><annotation encoding="application/x-tex">\in \Big[2, 3, \dots, \dfrac{N}{3} \Big]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="delimsizing size2">[</span></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">]</span></span></span></span></span>
+<li data-line="164"><strong>FASHION200</strong> (<code>N=200, D=28*28</code>), perplexity <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo fence="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mfrac><mrow><mi>N</mi></mrow><mrow><mn>3</mn></mrow></mfrac><mo fence="false">]</mo></mrow><annotation encoding="application/x-tex">\in \Big[2, 3, \dots, \dfrac{N}{3} \Big]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="delimsizing size2">[</span></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">]</span></span></span></span></span>
 <ul>
-<li data-line="161">Base perplexity = 10: <a href="FASHION200_base10_autoscale.html">autoscale figure</a>, <a href="FASHION200_base10.html">fixed scale figure</a></li>
-<li data-line="162">Base perplexity = 20: <a href="FASHION200_base20_autoscale.html">autoscale figure</a>, <a href="FASHION200_base20.html">fixed scale figure</a></li>
-<li data-line="163">Base perplexity = 25: <a href="FASHION200_base25_autoscale.html">autoscale figure</a>, <a href="FASHION200_base25.html">fixed scale figure</a></li>
-<li data-line="164">Base perplexity = 30: <a href="FASHION200_base30_autoscale.html">autoscale figure</a>, <a href="FASHION200_base30.html">fixed scale figure</a></li>
-<li data-line="165">Base perplexity = 40: <a href="FASHION200_base40_autoscale.html">autoscale figure</a>, <a href="FASHION200_base40.html">fixed scale figure</a></li>
+<li data-line="165">Base perplexity = 10: <a href="FASHION200_base10_autoscale.html">autoscale figure</a>, <a href="FASHION200_base10.html">fixed scale figure</a></li>
+<li data-line="166">Base perplexity = 20: <a href="FASHION200_base20_autoscale.html">autoscale figure</a>, <a href="FASHION200_base20.html">fixed scale figure</a></li>
+<li data-line="167">Base perplexity = 25: <a href="FASHION200_base25_autoscale.html">autoscale figure</a>, <a href="FASHION200_base25.html">fixed scale figure</a></li>
+<li data-line="168">Base perplexity = 30: <a href="FASHION200_base30_autoscale.html">autoscale figure</a>, <a href="FASHION200_base30.html">fixed scale figure</a></li>
+<li data-line="169">Base perplexity = 40: <a href="FASHION200_base40_autoscale.html">autoscale figure</a>, <a href="FASHION200_base40.html">fixed scale figure</a></li>
 </ul>
 </li>
 </ul>
