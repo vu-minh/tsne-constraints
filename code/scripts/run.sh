@@ -3,7 +3,7 @@
 # and generate html page to show all result
 # See the config of hyper params in icommon.py
 
-DATASET_NAME="MPI"
+DATASET_NAME="DIABETES"
 
 python run_multicore-tsne.py -d $DATASET_NAME
 
