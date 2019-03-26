@@ -8,10 +8,12 @@ table {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
+  max-width: 1600px;
 }
 
 td, th {
   border: 1px solid #ddd;
+  text-align: center;
   /* width: 20%; */
 }
 
@@ -24,8 +26,8 @@ th {
 }
 
 img {
-    width: 100%;
-    height: auto;
+    width: auto;
+    max-height: 50%;
 }
 
 .fullsize_img {
@@ -37,16 +39,21 @@ img {
 
 </head>
 <body>
-    <div style="display: width:100%;">
-        <div style="display: inline-block; width:64%; height:960px; overflow:scroll;">
-            {{ embedding_figures }}
-        </div>
-        <div style="display: inline-block; width:12%;">
-            {{ dataset_name }}
-        </div>
-        <div style="display: inline-block; width:12%;">
-            {{ dataset_name }}
+<center>
+	<h3>{{dataset_name}} Base perplexity = {{base_perp}}</h3>
+    <div style="display: max-width:1400px; height:60px;">
+    	{{ table_header }}
+	</div>
+    <div style="display: max-width:1400px; height:760px; overflow:scroll;">
+    	{{ embedding_figures }}
+	</div>
+	<div>
+        <div style="display: inline-block; max-width:1200px;">
+            <img src="../plot_chain/{{dataset_name}}_base{{base_perp}}_running_time.png" style=" width:100%; height:auto;">
+            <img src="../plot_chain/{{dataset_name}}_base{{base_perp}}_n_iter.png" style=" width:100%; height:auto;">
+            <img src="../plot_chain/{{dataset_name}}_base{{base_perp}}_kl_Qbase_Q.png" style=" width:100%; height:auto;">
         </div>
     </div>
+</center>
 </body>
 </html>

@@ -31,11 +31,12 @@ TABLE = """
 
 FIG_IMG = """
 <img id='img_${idx}' class='img-thumbnail' alt='xxx'
-    src='../${fig_type}/${dataset_name}/${img_name}',
-    height='30%'}
+    src='../${fig_type}/${dataset_name}/${img_name}'
 />
 """
-TD = "<td align='center'>{}</td>"
+
+TH = "<th align='center' width='22%'>{}</th>"
+TD = "<td align='center' width='22%'>{}</td>"
 TDP = "<td><p>{}</p></td>"
 TR = "<tr>{}</tr>"
 TRC = '<tr style="color:{color}">{data}</tr>'
@@ -55,7 +56,7 @@ def get_kl_data():
     kl_data["kl_normal"] = df_normal["kl_Qbase_Q"].to_dict()
 
 
-def html_table(tbl_id, thead, tbody):
+def html_table(tbl_id="", thead="", tbody=""):
     table = Template(TABLE)
     return table.substitute(tbl_id=tbl_id, thead=thead, tbody=tbody)
 
@@ -63,11 +64,11 @@ def html_table(tbl_id, thead, tbody):
 def _gen_thead():
     return "".join(
         [
-            "<th>Perplexity</th>",
-            "<th>TSNE-original</th>",
-            "<th>TSNE-original (early-stop)</th>",
-            "<th>TSNE-chain (early-stop)</th>",
-            "<th>TSNE-chain</th>",
+            "<th width='10%'>perp</th>",
+            TH.format("TSNE-original"),
+            TH.format("TSNE-original (early-stop)"),
+            TH.format("TSNE-chain (early-stop)"),
+            TH.format("TSNE-chain"),
         ]
     )
 
@@ -99,17 +100,13 @@ def _gen_row(perp, base_perp):
             img_name=f"{base_perp}_to_{perp}_all.png",
         ),
     ]
-    return TR.format("".join([TD.format(perp)] + [TD.format(img) for img in imgs]))
+    return TR.format(
+        "".join([f"<td width='10%'>{perp}</td>"] + [TD.format(img) for img in imgs])
+    )
 
 
 def _gen_tbody(run_range, base_perp):
     return "\n".join([_gen_row(perp, base_perp) for perp in run_range])
-
-
-def gen_embedding_figures_table(run_range, base_perp):
-    thead = _gen_thead()
-    tbody = _gen_tbody(run_range, base_perp)
-    return html_table(tbl_id="embedding_figures", thead=thead, tbody=tbody)
 
 
 def gen_page(template_name, out_name, run_range, base_perp):
@@ -119,7 +116,8 @@ def gen_page(template_name, out_name, run_range, base_perp):
             title="tSNE chain",
             base_perp=base_perp,
             dataset_name=dataset_name,
-            embedding_figures=gen_embedding_figures_table(run_range, base_perp),
+            table_header=html_table(thead=_gen_thead()),
+            embedding_figures=html_table(tbody=_gen_tbody(run_range, base_perp)),
         )
 
     with open(out_name, "w") as out_file:
@@ -133,14 +131,7 @@ if __name__ == "__main__":
     _, X, _ = dataset.load_dataset(dataset_name)
     run_range = [29, 30, 31] if DEV else range(2, X.shape[0] // 3)
     template_name = "view_chain2.template"
-    earlystop = "_earlystop"  # or ""
 
-    base_perp = 40
-    out_name = f"./html/{dataset_name}_base{base_perp}{earlystop}.html"
-    gen_page(template_name, out_name, run_range=run_range, base_perp=base_perp)
-
-    # for base_perp in hyper_params[dataset_name]["base_perp"]:
-    #     for fig_scale in ["", "_autoscale"]:
-    #         out_name = f"html/{dataset_name}_base{base_perp}{is_earlystop}.html"
-    #         # get_kl_data()
-    #         gen_page(template_name, out_name)
+    for base_perp in hyper_params[dataset_name]["base_perps"]:
+        out_name = f"html/{dataset_name}_base{base_perp}_v2.html"
+        gen_page(template_name, out_name, run_range=run_range, base_perp=base_perp)

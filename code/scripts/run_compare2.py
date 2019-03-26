@@ -79,21 +79,72 @@ def compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop=""):
     df.to_csv(f"plot_chain/{dataset_name}_{embedding_type}_{base_perp}{earlystop}.csv")
 
 
+embeddings_type = [
+    ("normal", ""),
+    ("normal", "_earlystop"),
+    ("chain", ""),
+    ("chain", "_earlystop"),
+]
+
+
+def _extract_for_one_perp(base_perp, perp, key):
+    def _extract_by_key(embedding_type, earlystop):
+        file_name = _get_filename_template(embedding_type).format(
+            perp=perp, base_perp=base_perp, earlystop=earlystop
+        )
+        return joblib.load(file_name).get(key, None)
+
+    result = {f"{k0}{k1}": _extract_by_key(k0, k1) for k0, k1 in embeddings_type}
+    result["perplexity"] = perp
+    if perp == base_perp:
+        result["chain_earlystop"] = 0.0
+    return result
+
+
+def extract_from_embeddings(base_perp, run_range, keys=["running_time", "n_iter"]):
+    # not efficient since load `normal` for each base_perp, but let it be
+    for key in keys:
+        result = [_extract_for_one_perp(base_perp, perp, key) for perp in run_range]
+        df = pd.DataFrame(result).set_index("perplexity")
+        df.to_csv(f"plot_chain/{dataset_name}_base{base_perp}_{key}.csv")
+
+
+def extract_from_csv(base_perp, run_range, key="kl_Qbase_Q"):
+    def _get_df_by_key(embedding_type, earlystop):
+        file_name = f"plot_chain/{dataset_name}_{embedding_type}_{base_perp}{earlystop}"
+        df = pd.read_csv(f"{file_name}.csv", index_col="perplexity")
+        return df[[key]]
+
+    df = pd.DataFrame(index=run_range)
+    df.index.name = "perplexity"
+    for embedding_type, earlystop in embeddings_type:
+        dfx = _get_df_by_key(embedding_type, earlystop)
+        dfx = dfx.rename(columns={key: f"{embedding_type}{earlystop}"})
+        df = df.join(dfx, how="left")
+    df.to_csv(f"plot_chain/{dataset_name}_base{base_perp}_{key}.csv")
+
+
 if __name__ == "__main__":
     DEV = False
     dataset_name = "FASHION200"
     _, X, _ = dataset.load_dataset(dataset_name)
-    N = X.shape[0]
-    run_range = [29, 30, 31] if DEV else range(1, N // 3)
+    run_range = [29, 30, 31] if DEV else range(1, X.shape[0] // 3)
 
-    for earlystop in ["", "_earlystop"]:
-        for base_perp in hyper_params[dataset_name]["base_perps"]:
+    for base_perp in hyper_params[dataset_name]["base_perps"]:
+        # extract running_time in 4cases: normal,normal_earlystop, chain,chain_earlystop
+        extract_from_embeddings(base_perp, run_range, keys=["running_time", "n_iter"])
+
+        # extract the comparation KL[Qbase||Q] for these 4 cases
+        extract_from_csv(base_perp, run_range, key="kl_Qbase_Q")
+
+        for earlystop in ["", "_earlystop"]:
             target_file = _get_filename_template("chain").format(
                 base_perp=base_perp, perp=base_perp, earlystop=earlystop
             )
             src_file = _get_filename_template("normal").format(
                 perp=base_perp, earlystop=earlystop
             )
+
             for embedding_type in ["normal", "chain"]:
                 if embedding_type == "chain":
                     try:

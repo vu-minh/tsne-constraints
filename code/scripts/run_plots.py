@@ -1,6 +1,7 @@
 import os
 import joblib
 import numpy as np
+import pandas as pd
 
 from sklearn.preprocessing import MinMaxScaler
 from matplotlib import pyplot as plt
@@ -101,17 +102,49 @@ def plot_embeddings(run_range=None, base_perp=None):
                 print("`error_per_point` or `progress_errors` are not available.")
 
 
-def plot_running_time(base_perp):
-    pass
+def plot_extracted_info_by_key(base_perp, key, title=""):
+    if base_perp is None:
+        return
+
+    file_name = f"./plot_chain/{dataset_name}_base{base_perp}_{key}"
+    df = pd.read_csv(f"{file_name}.csv", index_col="perplexity")
+
+    _, ax = plt.subplots(1, 1, figsize=(16, 4))
+    df.plot(ax=ax)
+    plt.title(title)
+    plt.legend(ncol=4)
+    plt.grid(True)
+    plt.savefig(f"{file_name}.png")  # , bbox_inches="tight", pad_inches=0)
 
 
-def plot_compare_kl_to_base(base_perp):
-    pass
+def plot_compare_kl_to_base(base_perp, key="kl_Qbase_Q", title="KL[Qbase || Q]"):
+    if base_perp is None:
+        return
+
+    file_name = f"./plot_chain/{dataset_name}_base{base_perp}_{key}"
+    df = pd.read_csv(f"{file_name}.csv", index_col="perplexity")
+
+    _, ax = plt.subplots(1, 1, figsize=(16, 4))
+    df.plot(ax=ax)
+    plt.yscale("log")
+    plt.title(title)
+    plt.grid(True)
+    plt.savefig(f"{file_name}.png")  # , bbox_inches="tight", pad_inches=0)
 
 
 if __name__ == "__main__":
-    dataset_name = "FASHION200"
     DEV = False
+    dataset_name = "FASHION200"
     run_range = [10] if DEV else None
-    for base_perp in hyper_params[dataset_name]["base_perps"] + [None]:
+
+    for base_perp in [None] + [40] if DEV else hyper_params[dataset_name]["base_perps"]:
         plot_embeddings(run_range=run_range, base_perp=base_perp)
+
+        plot_extracted_info_by_key(
+            base_perp, key="running_time", title="Compare running time"
+        )
+        plot_extracted_info_by_key(
+            base_perp, key="n_iter", title="Compare number of running iterations"
+        )
+
+        plot_compare_kl_to_base(base_perp)
