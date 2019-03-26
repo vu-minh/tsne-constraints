@@ -62,7 +62,7 @@ def _scatter_with_loss(
     plt.close()
 
 
-def plot_embeddings(run_range=None, base_perp=None):
+def plot_embeddings(run_range=None, base_perp=None, force_rewrite=False):
     _, X, y = dataset.load_dataset(dataset_name)
 
     for perp in range(1, X.shape[0] // 3) if run_range is None else run_range:
@@ -73,7 +73,11 @@ def plot_embeddings(run_range=None, base_perp=None):
             else:
                 embedding_dir = f"{dir_path}/chain/{dataset_name}"
                 file_name = f"{embedding_dir}/{base_perp}_to_{perp}{earlystop}"
-            print("Processing: ", file_name)
+
+            if os.path.exists(f"{file_name}_all.png") and not force_rewrite:
+                continue
+
+            print("Plotting ", file_name)
             data = joblib.load(f"{file_name}.z")
 
             try:
@@ -150,7 +154,7 @@ if __name__ == "__main__":
     for base_perp in [None] + (
         [40] if DEV else hyper_params[dataset_name]["base_perps"]
     ):  # base_perp = None to plot the embedding `normal`
-        plot_embeddings(run_range=run_range, base_perp=base_perp)
+        plot_embeddings(run_range=run_range, base_perp=base_perp, force_rewrite=False)
 
         plot_extracted_info_by_key(
             base_perp, key="running_time", title="Compare running time"
