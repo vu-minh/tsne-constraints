@@ -147,7 +147,9 @@ if __name__ == "__main__":
 
     run_range = [test_perp] if DEV else None
 
-    for base_perp in [None] + [40] if DEV else hyper_params[dataset_name]["base_perps"]:
+    for base_perp in [None] + (
+        [40] if DEV else hyper_params[dataset_name]["base_perps"]
+    ):  # base_perp = None to plot the embedding `normal`
         plot_embeddings(run_range=run_range, base_perp=base_perp)
 
         plot_extracted_info_by_key(
