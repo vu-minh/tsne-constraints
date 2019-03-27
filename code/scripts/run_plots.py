@@ -154,7 +154,7 @@ if __name__ == "__main__":
     for base_perp in [None] + (
         [40] if DEV else hyper_params[dataset_name]["base_perps"]
     ):  # base_perp = None to plot the embedding `normal`
-        plot_embeddings(run_range=run_range, base_perp=base_perp, force_rewrite=False)
+        plot_embeddings(run_range=run_range, base_perp=base_perp, force_rewrite=True)
 
         plot_extracted_info_by_key(
             base_perp, key="running_time", title="Compare running time"
