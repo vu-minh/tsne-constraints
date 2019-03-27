@@ -947,49 +947,56 @@ body p {
 </style>
                    <link rel="stylesheet" href="css/elegant.css"><link rel="stylesheet" href="css/katex.min.css"><link rel="stylesheet" href="css/codemirror.css">
                  </head>
-                 <body><p data-line="0"><code>20190326</code></p>
-<h3 id="Update-run-tSNE-in-chain-with-early-stop-criteria" data-line="1">Update run tSNE in chain with early-stop criteria.</h3>
-<p data-line="3"><img src="attachments/5dc47fbb.png" alt="tsne chain with early-stop.png" /></p>
+                 <body><p data-line="0"><code>20190327</code></p>
+<h3 id="Update-chain-tSNE-with-different-perplexities" data-line="1">[Update] chain-tSNE with different perplexities</h3>
 <ul>
-<li data-line="5">
-<p data-line="5">Run modified version (Barnes-Hut tSNE) of van der Maaten’s c++ implementation in <a href="https://github.com/lvdmaaten/bhtsne/">GitHub - lvdmaaten/bhtsne: Barnes-Hut t-SNE</a> with API <a href="https://github.com/DmitryUlyanov/Multicore-TSNE">wrapper</a> in python.</p>
-</li>
-<li data-line="7">
-<p data-line="7">The original parameters:</p>
-</li>
+<li data-line="3">Dataset FASHION200, <code>base_perplexity=20</code>, showing 6 different visualizations with <code>perp</code> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo>{</mo><mn>5</mn><mo separator="true">,</mo><mn>1</mn><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mn>5</mn><mo separator="true">,</mo><mn>3</mn><mn>0</mn><mo separator="true">,</mo><mn>4</mn><mn>0</mn><mo separator="true">,</mo><mn>5</mn><mn>0</mn><mo>}</mo></mrow><annotation encoding="application/x-tex">\in \{ 5, 10, 25, 30, 40, 50 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mclose">}</span></span></span></span></li>
 </ul>
-<pre class="code CodeMirror" data-line="8">
-        <span class="filename"></span>
-        <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span><span class="CodeMirror-linenumber">6</span></span>
-        <code class="">early_exaggeration=12.0,
+<p data-line="5"><img src="attachments/2fe679c2.png" alt="Annote KL tsne chain FASHION200_base20.png" /></p>
+<ul>
+<li data-line="8">Dataset COIL20, <code>base_perplexity=75</code>, showing 6 different visualizations with <code>perp</code> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo>{</mo><mn>5</mn><mo separator="true">,</mo><mn>5</mn><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>0</mn><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>5</mn><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mn>0</mn><mn>0</mn><mo separator="true">,</mo><mn>4</mn><mn>0</mn><mn>0</mn><mo>}</mo></mrow><annotation encoding="application/x-tex">\in \{ 5, 50, 100, 150, 200, 400 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">5</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mord">0</span><span class="mclose">}</span></span></span></span></li>
+</ul>
+<p data-line="10"><img src="attachments/27985b82.png" alt="Annote KL tsne chain COIL20_base75.png" /></p>
+<p data-line="13">============================================================================</p>
+<p data-line="15"><code>20190326</code></p>
+<h3 id="Update-run-tSNE-in-chain-with-early-stop-criteria" data-line="16">[Update] run tSNE in chain with early-stop criteria.</h3>
+<p data-line="18"><img src="attachments/5dc47fbb.png" alt="tsne chain with early-stop.png" /></p>
+<ul>
+<li data-line="20">Run modified version (Barnes-Hut tSNE) of van der Maaten’s c++ implementation in <a href="https://github.com/lvdmaaten/bhtsne/">GitHub - lvdmaaten/bhtsne: Barnes-Hut t-SNE</a> with API <a href="https://github.com/DmitryUlyanov/Multicore-TSNE">wrapper</a> in python.</li>
+</ul>
+<details>
+<summary> The original parameters: </summary>
+<pre>
+early_exaggeration=12.0,
 n_iter_early_exag=250,
 n_iter=1000,
 learning_rate=200.0,
 random_state=2019,
 barnes_hut_theta=0.5
-</code>
-      </pre><ul>
-<li data-line="17">The following early-stop conditions are added:
+</pre>  
+</details>
 <ul>
-<li data-line="18"><code>n_iter_without_progress</code>: number of iterations for which the <code>kl_loss</code> does not change. The <code>kl_loss</code> is calculated each 10 iterations.</li>
-<li data-line="19"><code>min_grad_norm</code>: stop training if the change of gradient is smaller than the <code>min_grad_norm</code>.</li>
+<li data-line="34">The following early-stop conditions are added:
+<ul>
+<li data-line="35"><code>n_iter_without_progress</code>: number of iterations for which the <code>kl_loss</code> does not change. The <code>kl_loss</code> is calculated each 10 iterations.</li>
+<li data-line="36"><code>min_grad_norm</code>: stop training if the change of gradient is smaller than the <code>min_grad_norm</code>.</li>
 </ul>
 </li>
 </ul>
-<p data-line="21">The value of these parameters are selected manually for each dataset to make sure that we can see the “early-stop” phenomenon.</p>
-<p data-line="23">To disable early-stop, these params are set as follows:</p>
-<pre class="code CodeMirror" data-line="24">
+<p data-line="38">The value of these parameters are selected manually for each dataset to make sure that we can see the “early-stop” phenomenon.</p>
+<p data-line="40">To disable early-stop, these params are set as follows:</p>
+<pre class="code CodeMirror" data-line="41">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span></span>
         <code class="">n_iter_without_progress = 1000, # max_iter = 1000
 min_grad_norm = 1e-09
 </code>
       </pre><ul>
-<li data-line="29">The error of each point and the <code>kl_loss</code> of each iteration are also stored.</li>
+<li data-line="46">The error of each point and the <code>kl_loss</code> of each iteration are also stored.</li>
 </ul>
-<p data-line="31"><img src="attachments/73e656ba.png" alt="Annote tsne result.png" /></p>
-<h4 id="FASHION200" data-line="34">FASHION200</h4>
-<pre class="code CodeMirror" data-line="35">
+<p data-line="48"><img src="attachments/73e656ba.png" alt="Annote tsne result.png" /></p>
+<h4 id="FASHION200" data-line="51">FASHION200</h4>
+<pre class="code CodeMirror" data-line="52">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -998,12 +1005,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 40],
 </code>
-      </pre><p data-line="42"><a href="FASHION200_base10_v2.html">FASHION200_base10</a><br />
+      </pre><p data-line="59"><a href="FASHION200_base10_v2.html">FASHION200_base10</a><br />
 <a href="FASHION200_base20_v2.html">FASHION200_base20</a><br />
 <a href="FASHION200_base30_v2.html">FASHION200_base30</a><br />
 <a href="FASHION200_base40_v2.html">FASHION200_base40</a></p>
-<h4 id="COUNTRY2014" data-line="47">COUNTRY2014</h4>
-<pre class="code CodeMirror" data-line="48">
+<h4 id="COUNTRY2014" data-line="64">COUNTRY2014</h4>
+<pre class="code CodeMirror" data-line="65">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1012,12 +1019,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [5, 10, 20, 30],
 </code>
-      </pre><p data-line="55"><a href="COUNTRY2014_base5_v2.html">COUNTRY2014_base5</a><br />
+      </pre><p data-line="72"><a href="COUNTRY2014_base5_v2.html">COUNTRY2014_base5</a><br />
 <a href="COUNTRY2014_base10_v2.html">COUNTRY2014_base10</a><br />
 <a href="COUNTRY2014_base20_v2.html">COUNTRY2014_base20</a><br />
 <a href="COUNTRY2014_base30_v2.html">COUNTRY2014_base30</a></p>
-<h4 id="BREASTCANCER" data-line="60">BREAST_CANCER</h4>
-<pre class="code CodeMirror" data-line="61">
+<h4 id="BREASTCANCER" data-line="77">BREAST_CANCER</h4>
+<pre class="code CodeMirror" data-line="78">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1026,12 +1033,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 50],
 </code>
-      </pre><p data-line="68"><a href="BREAST_CANCER_base10_v2.html">BREAST_CANCER_base10</a><br />
+      </pre><p data-line="85"><a href="BREAST_CANCER_base10_v2.html">BREAST_CANCER_base10</a><br />
 <a href="BREAST_CANCER_base20_v2.html">BREAST_CANCER_base20</a><br />
 <a href="BREAST_CANCER_base30_v2.html">BREAST_CANCER_base30</a><br />
 <a href="BREAST_CANCER_base50_v2.html">BREAST_CANCER_base50</a></p>
-<h4 id="MPI" data-line="73">MPI</h4>
-<pre class="code CodeMirror" data-line="74">
+<h4 id="MPI" data-line="90">MPI</h4>
+<pre class="code CodeMirror" data-line="91">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1040,12 +1047,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [5, 10, 20, 30],
 </code>
-      </pre><p data-line="81"><a href="MPI_base5_v2.html">MPI_base5</a><br />
+      </pre><p data-line="98"><a href="MPI_base5_v2.html">MPI_base5</a><br />
 <a href="MPI_base10_v2.html">MPI_base10</a><br />
 <a href="MPI_base20_v2.html">MPI_base20</a><br />
 <a href="MPI_base30_v2.html">MPI_base30</a></p>
-<h4 id="DIABETES" data-line="86">DIABETES</h4>
-<pre class="code CodeMirror" data-line="87">
+<h4 id="DIABETES" data-line="103">DIABETES</h4>
+<pre class="code CodeMirror" data-line="104">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1054,13 +1061,13 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 40],
 </code>
-      </pre><p data-line="94"><a href="DIABETES_base10_v2.html">DIABETES_base10</a><br />
+      </pre><p data-line="111"><a href="DIABETES_base10_v2.html">DIABETES_base10</a><br />
 <a href="DIABETES_base20_v2.html">DIABETES_base20</a><br />
 <a href="DIABETES_base30_v2.html">DIABETES_base30</a><br />
 <a href="DIABETES_base40_v2.html">DIABETES_base40</a></p>
-<h4 id="COIL20" data-line="100">COIL20</h4>
-<p data-line="101">(still running)</p>
-<pre class="code CodeMirror" data-line="102">
+<h4 id="COIL20" data-line="117">COIL20</h4>
+<p data-line="118">(still running)</p>
+<pre class="code CodeMirror" data-line="119">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1069,13 +1076,13 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [20, 30, 50, 75],
 </code>
-      </pre><p data-line="109"><a href="COIL20_base20_v2.html">COIL20_base20</a><br />
+      </pre><p data-line="126"><a href="COIL20_base20_v2.html">COIL20_base20</a><br />
 <a href="COIL20_base30_v2.html">COIL20_base30</a><br />
 <a href="COIL20_base50_v2.html">COIL20_base50</a><br />
 <a href="COIL20_base75_v2.html">COIL20_base75</a></p>
-<h4 id="DIGITS" data-line="114">DIGITS</h4>
-<p data-line="115">(still running)</p>
-<pre class="code CodeMirror" data-line="116">
+<h4 id="DIGITS" data-line="131">DIGITS</h4>
+<p data-line="132">(still running)</p>
+<pre class="code CodeMirror" data-line="133">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1084,22 +1091,22 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [20, 30, 50, 75],
 </code>
-      </pre><p data-line="123"><a href="DIGITS_base20_v2.html">DIGITS_base20</a><br />
+      </pre><p data-line="140"><a href="DIGITS_base20_v2.html">DIGITS_base20</a><br />
 <a href="DIGITS_base30_v2.html">DIGITS_base30</a><br />
 <a href="DIGITS_base50_v2.html">DIGITS_base50</a><br />
 <a href="DIGITS_base75_v2.html">DIGITS_base75</a></p>
-<h3 id="To-Discuss" data-line="129">To Discuss</h3>
-<p data-line="130">How to choose <code>base_perplexity</code>:</p>
+<h3 id="To-Discuss" data-line="146">To Discuss</h3>
+<p data-line="147">How to choose <code>base_perplexity</code>:</p>
 <ul>
-<li data-line="132">
-<p data-line="132">Original tSNE for FASHION200, perp=25<br />
+<li data-line="149">
+<p data-line="149">Original tSNE for FASHION200, perp=25<br />
 <img src="attachments/82ad84d2.png" alt="25_earlystop_all.png" width="300" /></p>
 </li>
-<li data-line="135">
-<p data-line="135">tSNE chain, with different base perpelixity:</p>
+<li data-line="152">
+<p data-line="152">tSNE chain, with different base perpelixity:</p>
 </li>
 </ul>
-<table data-line="136">
+<table data-line="153">
 <thead>
 <tr>
 <th>base10</th>
@@ -1118,17 +1125,17 @@ min_grad_norm = 1e-09
 </tbody>
 <tbody></tbody>
 </table>
-<p data-line="141">=============================================================================</p>
-<p data-line="144"><code>20190313</code></p>
-<h3 id="Run-tSNE-in-chain" data-line="145">Run tSNE in chain</h3>
+<p data-line="158">=============================================================================</p>
+<p data-line="161"><code>20190313</code></p>
+<h3 id="Run-tSNE-in-chain" data-line="162">Run tSNE in chain</h3>
 <ul>
-<li data-line="147">Using the notations as shown in this schema:</li>
+<li data-line="164">Using the notations as shown in this schema:</li>
 </ul>
-<p data-line="149"><img src="attachments/0281c5e1.png" alt="tsne chain (1).png" width="1200" /></p>
+<p data-line="166"><img src="attachments/0281c5e1.png" alt="tsne chain (1).png" width="1200" /></p>
 <ul>
-<li data-line="151">Run Multicore tSNE with the following params (like the defaults of sklearn) and no early-stop (no convergence condition):</li>
+<li data-line="168">Run Multicore tSNE with the following params (like the defaults of sklearn) and no early-stop (no convergence condition):</li>
 </ul>
-<pre class="code CodeMirror" data-line="152">
+<pre class="code CodeMirror" data-line="169">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span><span class="CodeMirror-linenumber">6</span><span class="CodeMirror-linenumber">7</span><span class="CodeMirror-linenumber">8</span></span>
         <code class="">method='barnes_hut',
@@ -1140,15 +1147,15 @@ random_state=2019,
 n_cores=3,
 barnes_hut_theta=0.5, (angle param in sklearn)
 </code>
-      </pre><h5 id="" data-line="163"></h5>
+      </pre><h5 id="" data-line="180"></h5>
 <ul>
-<li data-line="164"><strong>FASHION200</strong> (<code>N=200, D=28*28</code>), perplexity <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo fence="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mfrac><mrow><mi>N</mi></mrow><mrow><mn>3</mn></mrow></mfrac><mo fence="false">]</mo></mrow><annotation encoding="application/x-tex">\in \Big[2, 3, \dots, \dfrac{N}{3} \Big]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="delimsizing size2">[</span></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">]</span></span></span></span></span>
+<li data-line="181"><strong>FASHION200</strong> (<code>N=200, D=28*28</code>), perplexity <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo fence="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mfrac><mrow><mi>N</mi></mrow><mrow><mn>3</mn></mrow></mfrac><mo fence="false">]</mo></mrow><annotation encoding="application/x-tex">\in \Big[2, 3, \dots, \dfrac{N}{3} \Big]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="delimsizing size2">[</span></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">]</span></span></span></span></span>
 <ul>
-<li data-line="165">Base perplexity = 10: <a href="FASHION200_base10_autoscale.html">autoscale figure</a>, <a href="FASHION200_base10.html">fixed scale figure</a></li>
-<li data-line="166">Base perplexity = 20: <a href="FASHION200_base20_autoscale.html">autoscale figure</a>, <a href="FASHION200_base20.html">fixed scale figure</a></li>
-<li data-line="167">Base perplexity = 25: <a href="FASHION200_base25_autoscale.html">autoscale figure</a>, <a href="FASHION200_base25.html">fixed scale figure</a></li>
-<li data-line="168">Base perplexity = 30: <a href="FASHION200_base30_autoscale.html">autoscale figure</a>, <a href="FASHION200_base30.html">fixed scale figure</a></li>
-<li data-line="169">Base perplexity = 40: <a href="FASHION200_base40_autoscale.html">autoscale figure</a>, <a href="FASHION200_base40.html">fixed scale figure</a></li>
+<li data-line="182">Base perplexity = 10: <a href="FASHION200_base10_autoscale.html">autoscale figure</a>, <a href="FASHION200_base10.html">fixed scale figure</a></li>
+<li data-line="183">Base perplexity = 20: <a href="FASHION200_base20_autoscale.html">autoscale figure</a>, <a href="FASHION200_base20.html">fixed scale figure</a></li>
+<li data-line="184">Base perplexity = 25: <a href="FASHION200_base25_autoscale.html">autoscale figure</a>, <a href="FASHION200_base25.html">fixed scale figure</a></li>
+<li data-line="185">Base perplexity = 30: <a href="FASHION200_base30_autoscale.html">autoscale figure</a>, <a href="FASHION200_base30.html">fixed scale figure</a></li>
+<li data-line="186">Base perplexity = 40: <a href="FASHION200_base40_autoscale.html">autoscale figure</a>, <a href="FASHION200_base40.html">fixed scale figure</a></li>
 </ul>
 </li>
 </ul>
