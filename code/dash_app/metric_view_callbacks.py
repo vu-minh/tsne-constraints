@@ -1,12 +1,13 @@
 from dash.dependencies import Input, Output, State
 from server import app
-from data_filter import get_embedding, get_metrics_df, get_constraint_scores_df
+from data_filter import get_metrics_df, get_constraint_scores_df
 from dash.exceptions import PreventUpdate
 
-import plotly.plotly as py
 import cufflinks as cf
-import pandas as pd
-import numpy as np
+
+# import plotly.plotly as py
+# import pandas as pd
+# import numpy as np
 
 
 cf.go_offline()
