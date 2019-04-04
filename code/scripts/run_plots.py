@@ -171,7 +171,8 @@ def plot_metamap(run_range, base_perp=None, earlystop=""):
     plt.figure(figsize=(6, 6))
     plt.scatter(meta_Z[:, 0], meta_Z[:, 1], c=all_perps)
     plt.title(out_name)
-    plt.colorbar()
+    cbar = plt.colorbar()
+    cbar.ax.set_title("Perplexity")
     plt.tight_layout()
     plt.savefig(f"./plot_chain/metamap/{out_name}.png")
 
