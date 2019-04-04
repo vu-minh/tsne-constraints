@@ -71,7 +71,7 @@ def _create_link_item(link, dataset_name, cmap_type):
     )
     line = html.Hr(
         style={
-            "border": "2px solid " + colorize_link(link_type),
+            "border": "1.5px solid " + colorize_link(link_type),
             "display": "inline-block",
             "width": "50%",
         }
