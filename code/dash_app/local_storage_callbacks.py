@@ -17,7 +17,7 @@ def store_links(elems):
         (e["data"]["source"], e["data"]["target"], e["classes"])
         for e in (elems or [])
         if e["group"] == "edges"
-    ][::-1]
+    ]  # [::-1] # will reverse list when showing it
 
 
 @app.callback(
@@ -39,18 +39,18 @@ def on_links_data(links_timestamp, links, dataset_name, cmap_type):
     list_links_view = [
         dbc.ListGroupItem(
             id=str(link),
-            children=_create_link_item(link, dataset_name, cmap_type),
+            children=_create_link_item(idx, link, dataset_name, cmap_type),
             n_clicks_timestamp=0,
             action=True,
         )
-        for link in links
+        for idx, link in reversed(list(enumerate(links)))
     ]
 
     txt_debug = json.dumps(links or [], indent=2)
     return txt_debug, list_links_view
 
 
-def _create_link_item(link, dataset_name, cmap_type):
+def _create_link_item(idx, link, dataset_name, cmap_type):
     """Create item in ListGroupItem, which has 3 elements:
         + a 1st image for link[0] (id of first datapoint)
         + a line connect two images with color determined by link[2] ('sim' or 'dissim')
@@ -76,5 +76,8 @@ def _create_link_item(link, dataset_name, cmap_type):
             "width": "50%",
         }
     )
-    item = html.Div([img1, line, img2])
+    id_text = html.Div(
+        idx + 1, style={"display": "inline-block", "text-align": "center"}
+    )
+    item = html.Div([id_text, img1, line, img2])
     return item
