@@ -26,7 +26,7 @@ def run_dataset(
     base_perp=30,
     run_range=range(31, 101),
     n_iter_without_progress=1000,
-    min_grad_norm=1e-9,
+    min_grad_norm=1e-32,
     early_stop=False,
 ):
     _, X, y = dataset.load_dataset(dataset_name)
