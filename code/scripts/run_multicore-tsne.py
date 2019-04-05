@@ -13,17 +13,8 @@ from common.dataset import dataset
 from icommon import hyper_params
 
 
-USE_MULTICORE = True
-fixed_seed = 2019
-n_cpu_using = int(0.75 * multiprocessing.cpu_count())
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-data_dir = f"{dir_path}/data"
-dataset.set_data_home(data_dir)
-
-
 def run_dataset(
-    dataset_name, n_iter_without_progress=1000, min_grad_norm=1e-9, early_stop=False
+    dataset_name, n_iter_without_progress=1000, min_grad_norm=1e-32, early_stop=""
 ):
     _, X, y = dataset.load_dataset(dataset_name)
     embedding_dir = f"{dir_path}/embeddings/{dataset_name}"
@@ -40,6 +31,8 @@ def run_dataset(
                 n_iter_without_progress=n_iter_without_progress,
                 min_grad_norm=min_grad_norm,
                 n_jobs=n_cpu_using,
+                eval_interval=50,
+                n_iter=1000,
             )
         else:
             tsne = TSNE(random_state=fixed_seed, perplexity=perp)
@@ -55,7 +48,6 @@ def run_dataset(
         except AttributeError:
             print("`error_per_point_` or `progress_errors_` are not available.")
 
-        out_name = f"{embedding_dir}/{perp}{'_earlystop' if early_stop else ''}"
         result = dict(
             perplexity=perp,
             running_time=running_time,
@@ -68,16 +60,29 @@ def run_dataset(
             progress_errors=progress_errors,
             error_per_point=error_per_point,
         )
+
+        out_name = f"{dir_path}/tmp/{dataset_name}/" if DEV else embedding_dir
+        out_name += f"{perp}{early_stop}"
         joblib.dump(value=result, filename=f"{out_name}.z")
 
 
-def test_load_data(dataset_name, perp=30):
+def test_load_data(dataset_name, perp=30, early_stop=""):
+    import numpy as np
+    from run_plots import _simple_scatter, _simple_loss
+
     _, _, y = dataset.load_dataset(dataset_name)
-    embedding_dir = f"{dir_path}/embeddings/{dataset_name}"
-    out_name = f"{embedding_dir}/{perp}_earlystop.z"
+    embedding_dir = f"{dir_path}/tmp/{dataset_name}"
+    out_name = f"{embedding_dir}/{perp}{early_stop}"
     print("\nTest loading saved data from ", out_name)
 
-    loaded = joblib.load(filename=out_name)
+    loaded = joblib.load(filename=f"{out_name}.z")
+    _simple_scatter(Z=loaded["embedding"], out_name=f"{out_name}_scatter.png", labels=y)
+
+    losses = loaded["progress_errors"]
+    if losses is not None:
+        losses = losses[np.where(losses > 0.0)]
+        _simple_loss(loss=losses, out_name=f"{out_name}_loss.png", figsize=(6, 3))
+
     print(loaded.keys())
     for k, v in loaded.items():
         if k not in ["embedding", "error_per_point", "progress_errors"]:
@@ -88,25 +93,38 @@ if __name__ == "__main__":
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-d", "--dataset_name", default="")
     ap.add_argument("-x", "--dev", action="store_true")
-    ap.add_argument("-p", "--test_perp")
-    args = vars(ap.parse_args())
+    ap.add_argument("-nm", "--non_multicore", action="store_true")
+    ap.add_argument("-e", "--earlystop", action="store_true")
+    ap.add_argument("-p", "--test_perp", default=30.0, type=float)
+    args = ap.parse_args()
 
-    dataset_name = args.get("dataset_name", "FASHION200")
-    test_perp = args.get("test_perp", 30)
-    DEV = args.get("dev", False)
+    dataset_name, USE_MULTICORE = args.dataset_name, not args.non_multicore
+    test_perp, DEV = args.test_perp, args.dev
+
+    fixed_seed = 2019
+    n_cpu_using = int(0.75 * multiprocessing.cpu_count())
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    data_dir = f"{dir_path}/data"
+    dataset.set_data_home(data_dir)
 
     if USE_MULTICORE:
-        print("Runing MulticoreTSNE ", MulticoreTSNE.__version__)
+        print("Runing MulticoreTSNE ")  # , MulticoreTSNE.__version__)
+    else:
+        print("Running sklearn TSNE")
 
-    run_dataset(dataset_name, early_stop=False)
-
-    run_dataset(
-        dataset_name,
-        early_stop=True,
-        **hyper_params[dataset_name]["early_stop_conditions"],
-    )
+    if not args.earlystop:
+        # run all (default 1000) iterations
+        run_dataset(dataset_name, early_stop="")
+    else:
+        # run with early-stop condition in the config file (tcommon)
+        run_dataset(
+            dataset_name,
+            early_stop="_earlystop",
+            **hyper_params[dataset_name]["early_stop_conditions"],
+        )
 
     if DEV:
-        test_load_data(dataset_name, perp=test_perp)
+        test_load_data(dataset_name, perp=test_perp, early_stop="")
