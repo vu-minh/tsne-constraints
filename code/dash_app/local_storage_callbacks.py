@@ -4,7 +4,7 @@ from dash.exceptions import PreventUpdate
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from server import app
-from tcommon import colorize_link
+from tcommon import colorize_link, get_image_elem
 
 
 @app.callback(Output("links-memory", "data"), [Input("cytoplot", "elements")])
@@ -63,12 +63,8 @@ def _create_link_item(idx, link, dataset_name, cmap_type):
     :returns: a Div of 3 items
     """
     item1, item2, link_type = link
-    img1 = html.Img(
-        src=f"/static/svg/{dataset_name}_{cmap_type}.svg#{item1}", width="22%"
-    )
-    img2 = html.Img(
-        src=f"/static/svg/{dataset_name}_{cmap_type}.svg#{item2}", width="22%"
-    )
+    img1 = get_image_elem(dataset_name, item1, cmap_type, width="22%")
+    img2 = get_image_elem(dataset_name, item2, cmap_type, width="22%")
     line = html.Hr(
         style={
             "border": "1.5px solid " + colorize_link(link_type),

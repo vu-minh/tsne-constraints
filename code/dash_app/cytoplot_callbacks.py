@@ -2,6 +2,7 @@ from itertools import combinations
 from dash.dependencies import Input, Output, State
 from server import app
 from data_filter import get_embedding
+from tcommon import get_image_url
 
 
 def _add_or_edit_style_for_tap_node(tap_id, styles):
@@ -54,7 +55,7 @@ def _build_cyto_nodes(dataset_name, perp, cmap_type):
             data=dict(
                 id=str(idx),
                 label=f"node_{idx}",
-                url=f"/static/svg/{dataset_name}_{cmap_type}.svg#{idx}",
+                url=get_image_url(dataset_name, idx, cmap_type),
             ),
             position=dict(x=x, y=y),
         )
