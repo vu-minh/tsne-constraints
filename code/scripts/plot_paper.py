@@ -139,6 +139,24 @@ def plot_compare_kl_to_base(base_perp, key="kl_Qbase_Q", title="KL[Qbase || Q]")
     plt.savefig(f"{file_name}.png")  # , bbox_inches="tight", pad_inches=0)
 
 
+def scatter_with_box(ax, all_pos, marker="s", color="blue"):
+    ax.scatter(
+        all_pos[:, 0],
+        all_pos[:, 1],
+        marker=marker,
+        s=256,
+        facecolor="none",
+        edgecolor=color,
+        linewidth=2.0,
+    )
+
+
+def annotate_text(ax, text, pos, text_color="blue", offset=(9, 9)):
+    ax.annotate(
+        s=str(text), xy=pos, xytext=offset, textcoords="offset points", color=text_color
+    )
+
+
 def plot_metamap(
     ax, all_perps=[], base_perp=None, highlight_selected_perps=[], title=""
 ):
@@ -174,25 +192,24 @@ def plot_metamap(
     sct = ax.scatter(meta_Z[:, 0], meta_Z[:, 1], c=all_perps, cmap="inferno")
     ax.set_title(f"{dataset_name}{out_name_sufix}")
 
+    # highlight selected perplexities
     if len(highlight_idx) > 0:
         highlight_pos = meta_Z[list(highlight_idx.keys())]
-        ax.scatter(
-            highlight_pos[:, 0],
-            highlight_pos[:, 1],
-            marker="s",
-            s=256,
-            facecolor="none",
-            edgecolor="blue",
-            linewidth=2.0,
-        )
-        for idx, selected_perp in enumerate(highlight_idx.values()):
-            ax.annotate(
-                str(selected_perp),
-                (highlight_pos[idx, 0], highlight_pos[idx, 1]),
-                (8, 8),
-                textcoords="offset points",
-            )
+        scatter_with_box(ax, all_pos=highlight_pos)
 
+        for idx, selected_perp in enumerate(highlight_idx.values()):
+            annotate_text(ax, text=selected_perp, pos=highlight_pos[idx])
+
+    # highlight base perplexity
+    base_perp_idx = all_perps.index(base_perp)
+    scatter_with_box(
+        ax, all_pos=np.array([meta_Z[base_perp_idx, :]]), marker="h", color="red"
+    )
+    annotate_text(
+        ax, text=base_perp, pos=meta_Z[base_perp_idx], offset=(-16, 8), text_color="red"
+    )
+
+    # show colorbar beside the metaplot
     cbar = plt.colorbar(sct, aspect=40, pad=0.04)
     cbar.ax.set_title("Perplexity")
     plt.tight_layout()
