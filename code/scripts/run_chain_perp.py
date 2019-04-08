@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     for base_perp in list_perps:
 
-        run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
+        # run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
 
         run_dataset(
             dataset_name,

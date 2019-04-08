@@ -61,8 +61,8 @@ def run_dataset(
             error_per_point=error_per_point,
         )
 
-        out_name = f"{dir_path}/tmp/{dataset_name}/" if DEV else embedding_dir
-        out_name += f"{perp}{early_stop}"
+        out_name = f"{dir_path}/tmp/{dataset_name}" if DEV else embedding_dir
+        out_name += f"/{perp}{early_stop}"
         joblib.dump(value=result, filename=f"{out_name}.z")
 
 

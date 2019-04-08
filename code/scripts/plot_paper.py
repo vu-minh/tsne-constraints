@@ -151,7 +151,7 @@ def scatter_with_box(ax, all_pos, marker="s", color="blue"):
     )
 
 
-def annotate_text(ax, text, pos, text_color="blue", offset=(9, 9)):
+def annotate_text(ax, text, pos, text_color="blue", offset=(-10, 10)):
     ax.annotate(
         s=str(text), xy=pos, xytext=offset, textcoords="offset points", color=text_color
     )
@@ -206,7 +206,11 @@ def plot_metamap(
         ax, all_pos=np.array([meta_Z[base_perp_idx, :]]), marker="h", color="red"
     )
     annotate_text(
-        ax, text=base_perp, pos=meta_Z[base_perp_idx], offset=(-16, 8), text_color="red"
+        ax,
+        text=base_perp,
+        pos=meta_Z[base_perp_idx],
+        offset=(-18, -24),
+        text_color="red",
     )
 
     # show colorbar beside the metaplot
@@ -263,6 +267,11 @@ def plot_metamap_with_some_perps(
 
 
 if __name__ == "__main__":
+    """
+    Plot metaplot with some example embeddings:
+    $ python plot_paper.py -d COIL20 -bp 10 -e
+    List of selected_perps is found in icommon.py > hyper_params
+    """
     import argparse
 
     ap = argparse.ArgumentParser()
@@ -279,9 +288,11 @@ if __name__ == "__main__":
     DEV = args.dev
     earlystop = "_earlystop" if args.earlystop else ""
 
-    out_name = f"../../figures/chain_tsne_examples_metaplot"
+    out_name = f"../../figures/metaplot_{dataset_name}_base{base_perp}"
     plot_metamap_with_some_perps(
-        selected_perps=[5, 10, 25, 35, 50, 65],
+        selected_perps=hyper_params[dataset_name]
+        .get("selected_perps", {})
+        .get(base_perp, []),
         base_perp=base_perp,
         with_metamap=True,
         out_name=out_name,

@@ -80,9 +80,9 @@ def compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop=""):
 
 
 embeddings_type = [
-    ("normal", ""),
+    # ("normal", ""),
     ("normal", "_earlystop"),
-    ("chain", ""),
+    # ("chain", ""),
     ("chain", "_earlystop"),
 ]
 
@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
     # compare KL, make sure to copy the needed files
     for base_perp in hyper_params[dataset_name]["base_perps"]:
-        for earlystop in ["", "_earlystop"]:
+        for earlystop in ["_earlystop"]:
             target_file = _get_filename_template("chain").format(
                 base_perp=base_perp, perp=base_perp, earlystop=earlystop
             )
