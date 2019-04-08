@@ -2,7 +2,7 @@ hyper_params = {
     "COIL20": {
         "early_stop_conditions": {
             "n_iter_without_progress": 200,
-            "min_grad_norm": 1e-05,
+            "min_grad_norm": 1e-10,  # perp=200: 5e-5, perp=300: 1e-10
         },
         "base_perps": [20, 30, 50, 75],
     },
