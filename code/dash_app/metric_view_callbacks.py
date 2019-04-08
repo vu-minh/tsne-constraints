@@ -20,13 +20,14 @@ def _create_figure_from_df(df, perp, subplot_height=115, xscale="linear"):
         kind="scatter",
         asFigure=True,
         theme="white",
-        vline=[perp],
+        # vline=[perp],
+        vspan={"x0": perp, "x1": perp, "color": "rgba(30,30,30,0.3)", "dash": "dash"},
         subplots=True,
         shape=(n_metrics, 1),
         shared_xaxes=True,
         subplot_titles=True,
         legend=False,
-        fill=False,  # True, # fill the area under the line
+        fill=False,  # True to fill the area under the line
         vertical_spacing=0.1,
     )
     limit_yaxes = {
