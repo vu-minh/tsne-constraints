@@ -127,4 +127,4 @@ if __name__ == "__main__":
         )
 
     if DEV:
-        test_load_data(dataset_name, perp=test_perp, early_stop="")
+        test_load_data(dataset_name, perp=test_perp, early_stop="_earlystop")
