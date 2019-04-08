@@ -1,142 +1,16 @@
 import os
 import joblib
 import numpy as np
-import pandas as pd
+import argparse
 
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.manifold import TSNE
 from matplotlib import pyplot as plt
 from common.dataset import dataset
 from icommon import hyper_params
+from matplotlib.ticker import FuncFormatter
 
-
-plt.rcParams.update({"font.size": 22})
-OUTPUT_EXT = "png"  # "pdf" for paper
-dir_path = os.path.dirname(os.path.realpath(__file__))
-data_dir = f"{dir_path}/data"
-dataset.set_data_home(data_dir)
-
-
-def _simple_scatter(Z, out_name, figsize=(6, 6), point_sizes=None, labels=None):
-    plt.figure(figsize=figsize)
-    plt.scatter(Z[:, 0], Z[:, 1], c=labels, s=point_sizes, alpha=0.25, cmap="jet")
-    plt.tight_layout()
-    plt.savefig(out_name, bbox_inches="tight", pad_inches=0)
-    plt.close()
-
-
-def _simple_loss(loss, out_name, figsize=(6, 1)):
-    plt.figure(figsize=figsize)
-    plt.plot(loss)
-    plt.tight_layout()
-    plt.savefig(out_name, bbox_inches="tight", pad_inches=0)
-    plt.close()
-
-
-def _scatter_with_loss(
-    Z,
-    loss,
-    out_name,
-    figsize=(6, 8),
-    point_sizes=None,
-    labels=None,
-    scatter_title="",
-    loss_title="",
-):
-    fig = plt.figure(figsize=figsize)
-    grid = plt.GridSpec(4, 3, hspace=0.3)
-    ax0 = fig.add_subplot(grid[:3, :])
-    ax0.scatter(Z[:, 0], Z[:, 1], c=labels, s=point_sizes, alpha=0.25, cmap="jet")
-    ax0.set_title(scatter_title)
-    ax0.xaxis.tick_top()
-
-    ax1 = fig.add_subplot(grid[3:, :])
-    color1 = "tab:red"
-    ax1.plot(loss[:25], color=color1)
-    ax1.tick_params(axis="y", labelcolor=color1)
-    ax1.set_title(loss_title)
-
-    ax2 = ax1.twinx()
-    color2 = "tab:blue"
-    ax2.plot(loss[25:], color=color2)
-    ax2.tick_params(axis="y", labelcolor=color2)
-
-    plt.savefig(out_name, bbox_inches="tight", pad_inches=0)
-    plt.close()
-
-
-def plot_embeddings(run_range=None, base_perp=None, force_rewrite=False):
-    _, X, y = dataset.load_dataset(dataset_name)
-
-    for perp in range(1, X.shape[0] // 3) if run_range is None else run_range:
-        for earlystop in ["", "_earlystop"]:
-            if base_perp is None:
-                embedding_dir = f"{dir_path}/normal/{dataset_name}"
-                file_name = f"{embedding_dir}/{perp}{earlystop}"
-            else:
-                embedding_dir = f"{dir_path}/chain/{dataset_name}"
-                file_name = f"{embedding_dir}/{base_perp}_to_{perp}{earlystop}"
-
-            if os.path.exists(f"{file_name}_all.png") and not force_rewrite:
-                continue
-
-            print("Plotting ", file_name)
-            data = joblib.load(f"{file_name}.z")
-
-            try:
-                error_per_point = data["error_per_point"]
-                error_as_point_size = (
-                    MinMaxScaler(feature_range=(25, 150))
-                    .fit_transform(error_per_point.reshape(-1, 1))
-                    .reshape(1, -1)
-                )
-
-                progress_errors = data["progress_errors"]
-                progress_errors = progress_errors[np.where(progress_errors > 0)]
-
-                _scatter_with_loss(
-                    Z=data["embedding"],
-                    loss=progress_errors,
-                    out_name=f"{file_name}_all.png",
-                    point_sizes=error_as_point_size,
-                    labels=y,
-                    loss_title=(
-                        f"final_loss={data['kl_divergence']:.3f},"
-                        + f"  n_iter={data['n_iter']+1}"
-                    ),
-                )
-            except KeyError:  # Exception:
-                print("`error_per_point` or `progress_errors` are not available.")
-
-
-def plot_extracted_info_by_key(base_perp, key, title=""):
-    if base_perp is None:
-        return
-
-    file_name = f"./plot_chain/{dataset_name}_base{base_perp}_{key}"
-    df = pd.read_csv(f"{file_name}.csv", index_col="perplexity")
-
-    _, ax = plt.subplots(1, 1, figsize=(16, 4))
-    df.plot(ax=ax)
-    plt.title(title)
-    plt.legend(ncol=4)
-    plt.grid(True)
-    plt.savefig(f"{file_name}.png")  # , bbox_inches="tight", pad_inches=0)
-
-
-def plot_compare_kl_to_base(base_perp, key="kl_Qbase_Q", title="KL[Qbase || Q]"):
-    if base_perp is None:
-        return
-
-    file_name = f"./plot_chain/{dataset_name}_base{base_perp}_{key}"
-    df = pd.read_csv(f"{file_name}.csv", index_col="perplexity")
-
-    _, ax = plt.subplots(1, 1, figsize=(16, 4))
-    df.plot(ax=ax)
-    plt.yscale("log")
-    plt.title(title)
-    plt.grid(True)
-    plt.savefig(f"{file_name}.png")  # , bbox_inches="tight", pad_inches=0)
+# import pandas as pd
+# from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def scatter_with_box(ax, all_pos, marker="s", color="blue"):
@@ -171,23 +45,23 @@ def plot_metamap(
         in_name_prefix = f"{base_perp}_to_"
         out_name_sufix = f"_base{base_perp}"
 
-    # prepare all pre-calculated embeddings
-    all_Z = []
-    all_losses = []
-    highlight_idx = {}
-    for idx, perp in enumerate(all_perps):
-        in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
-        data = joblib.load(in_name)
-        all_Z.append(data["embedding"].ravel())
-        all_losses.append(data["kl_divergence"])
-        if perp in highlight_selected_perps:
-            highlight_idx[idx] = perp
+        # prepare all pre-calculated embeddings
+        all_Z = []
+        all_losses = []
+        highlight_idx = {}
+        for idx, perp in enumerate(all_perps):
+            in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
+            data = joblib.load(in_name)
+            all_Z.append(data["embedding"].ravel())
+            all_losses.append(data["kl_divergence"])
+            if perp in highlight_selected_perps:
+                highlight_idx[idx] = perp
 
     if len(all_Z) < 1:
         raise ValueError("Not enough embeddings to make metaplot")
 
-    # all_Z = StandardScaler().fit_transform(all_Z)
-    meta_Z = TSNE(perplexity=10, random_state=2019).fit_transform(all_Z)
+        # all_Z = StandardScaler().fit_transform(all_Z)
+        meta_Z = TSNE(perplexity=10, random_state=2019).fit_transform(all_Z)
 
     sct = ax.scatter(meta_Z[:, 0], meta_Z[:, 1], c=all_perps, cmap="inferno")
     ax.set_title(f"{dataset_name}{out_name_sufix}")
@@ -200,23 +74,26 @@ def plot_metamap(
         for idx, selected_perp in enumerate(highlight_idx.values()):
             annotate_text(ax, text=selected_perp, pos=highlight_pos[idx])
 
-    # highlight base perplexity
-    base_perp_idx = all_perps.index(base_perp)
-    scatter_with_box(
-        ax, all_pos=np.array([meta_Z[base_perp_idx, :]]), marker="h", color="red"
-    )
-    annotate_text(
-        ax,
-        text=base_perp,
-        pos=meta_Z[base_perp_idx],
-        offset=(-18, -24),
-        text_color="red",
-    )
+            # highlight base perplexity
+            base_perp_idx = all_perps.index(base_perp)
+            scatter_with_box(
+                ax,
+                all_pos=np.array([meta_Z[base_perp_idx, :]]),
+                marker="h",
+                color="red",
+            )
+            annotate_text(
+                ax,
+                text=base_perp,
+                pos=meta_Z[base_perp_idx],
+                offset=(-18, -24),
+                text_color="red",
+            )
 
-    # show colorbar beside the metaplot
-    cbar = plt.colorbar(sct, aspect=40, pad=0.04)
-    cbar.ax.set_title("Perplexity")
-    plt.tight_layout()
+            # show colorbar beside the metaplot
+            cbar = plt.colorbar(sct, aspect=40, pad=0.04)
+            cbar.ax.set_title("Perplexity")
+            plt.tight_layout()
 
 
 def plot_an_embedding(ax, perp, base_perp=None, labels=None):
@@ -226,19 +103,19 @@ def plot_an_embedding(ax, perp, base_perp=None, labels=None):
     else:
         embedding_dir = f"{dir_path}/chain/{dataset_name}"
         in_name_prefix = f"{base_perp}_to_"
-    in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
-    data = joblib.load(in_name)
-    Z = data["embedding"]
-    ax.scatter(Z[:, 0], Z[:, 1], c=labels, alpha=0.5, cmap="jet")
-    ax.set_title(f"perplexity = {perp}")
+        in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
+        data = joblib.load(in_name)
+        Z = data["embedding"]
+        ax.scatter(Z[:, 0], Z[:, 1], c=labels, alpha=0.5, cmap="jet")
+        ax.set_title(f"perplexity = {perp}")
 
 
 def plot_metamap_with_some_perps(
     selected_perps=[], base_perp=30, with_metamap=True, out_name="metaplot", labels=None
 ):
     """Plot examples of chain-tsne with perp in `perps`.
-    If `with_metamap` is set, the metamap of all chain-tsne will be shown.
-    """
+	If `with_metamap` is set, the metamap of all chain-tsne will be shown.
+	"""
     (n_rows, n_cols) = (2, 5 if with_metamap else 3)
     plt.figure(figsize=(4 * n_cols, 5 * n_rows))
 
@@ -255,24 +132,92 @@ def plot_metamap_with_some_perps(
             base_perp=base_perp,
             highlight_selected_perps=selected_perps,
         )
-    for i, perp in enumerate(selected_perps):
-        row_i, col_i = i // 3, i % 3
-        ax_i = plt.subplot2grid((n_rows, n_cols), (row_i, col_i))
-        ax_i.set_xticklabels([])
-        ax_i.set_yticklabels([])
-        plot_an_embedding(ax=ax_i, perp=perp, base_perp=base_perp, labels=labels)
+        for i, perp in enumerate(selected_perps):
+            row_i, col_i = i // 3, i % 3
+            ax_i = plt.subplot2grid((n_rows, n_cols), (row_i, col_i))
+            ax_i.set_xticklabels([])
+            ax_i.set_yticklabels([])
+            plot_an_embedding(ax=ax_i, perp=perp, base_perp=base_perp, labels=labels)
 
     plt.tight_layout()
     plt.savefig(f"{out_name}.{OUTPUT_EXT}")
 
 
+def log_e_format(x, pos):
+    """The two args are the value and tick position.
+	Label ticks with the product of the exponentiation
+	"""
+    return int(x)
+
+
+def plot_running_time(
+    ax, dataset_name, base_perp, show_legend=False, perp_in_log_scale=False
+):
+    _, X, _y = dataset.load_dataset(dataset_name)
+    all_perps = range(1, X.shape[0] // 3)
+    running_time_normals = []
+    running_time_chains = []
+    n_iter_normals = []
+    n_iter_chains = []
+
+    embedding_dir_normal = f"{dir_path}/normal/{dataset_name}"
+    embedding_dir_chain = f"{dir_path}/chain/{dataset_name}"
+
+    for perp in all_perps:
+        in_name_normal = f"{embedding_dir_normal}/{perp}{earlystop}.z"
+        data_normal = joblib.load(in_name_normal)
+        running_time_normals.append(data_normal["running_time"])
+        n_iter_normals.append(data_normal["n_iter"])
+
+        in_name_chain = f"{embedding_dir_chain}/{base_perp}_to_{perp}{earlystop}.z"
+        data_chain = joblib.load(in_name_chain)
+        running_time_chain = data_chain["running_time"] if perp != base_perp else np.nan
+        running_time_chains.append(running_time_chain)
+        n_iter_chains.append(data_chain["n_iter"])
+
+    if perp_in_log_scale:
+        ax.semilogx(
+            all_perps, running_time_normals, lw=2.0, label="tSNE normal", basex=np.e
+        )
+        ax.semilogx(
+            all_perps, running_time_chains, lw=2.0, label="chain-tSNE", basex=np.e
+        )
+        ax.set_xscale("log", basex=np.e)
+        ax.xaxis.set_major_formatter(FuncFormatter(log_e_format))
+        ax.set_xtitle("perplexity in log-scale")
+    else:
+        ax.plot(all_perps, running_time_normals, lw=2.0, label="tSNE normal")
+        ax.plot(all_perps, running_time_chains, lw=2.0, label="chain-tSNE")
+        ax.set_xlabel("perplexity")
+
+    ax.set_title(dataset_name)
+    if show_legend:
+        ax.set_ylabel("Running time (second)")
+        plt.legend()
+
+
+def plot_running_time_all_datasets(dataset_names, base_perp, out_name):
+    (n_rows, n_cols) = (1, len(dataset_names))
+    plt.figure(figsize=(9 * n_cols, 6 * n_rows))
+
+    for i, dataset_name in enumerate(dataset_names):
+        ax_i = plt.subplot2grid((n_rows, n_cols), (0, i))
+        plot_running_time(ax_i, dataset_name, base_perp, show_legend=(i == 0))
+
+    plt.tight_layout()
+    plt.savefig(f"{out_name}.{OUTPUT_EXT}")
+
+
+def plot_example(dataset_name, selected_perp, base_perp=30, out_name=""):
+    pass
+
+
 if __name__ == "__main__":
-    """
-    Plot metaplot with some example embeddings:
-    $ python plot_paper.py -d COIL20 -bp 10 -e
-    List of selected_perps is found in icommon.py > hyper_params
-    """
-    import argparse
+    plt.rcParams.update({"font.size": 22})
+    OUTPUT_EXT = "png"  # "pdf" for paper
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    data_dir = f"{dir_path}/data"
+    dataset.set_data_home(data_dir)
 
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--dataset_name", default="FASHION200")
@@ -288,12 +233,22 @@ if __name__ == "__main__":
     DEV = args.dev
     earlystop = "_earlystop" if args.earlystop else ""
 
-    out_name = f"../../figures/metaplot_{dataset_name}_base{base_perp}"
-    plot_metamap_with_some_perps(
-        selected_perps=hyper_params[dataset_name]
-        .get("selected_perps", {})
-        .get(base_perp, []),
-        base_perp=base_perp,
-        with_metamap=True,
-        out_name=out_name,
-    )
+    def _plot_metamap():
+        out_name = f"../../figures/metaplot_{dataset_name}_base{base_perp}"
+        plot_metamap_with_some_perps(
+            selected_perps=hyper_params[dataset_name]
+            .get("selected_perps", {})
+            .get(base_perp, []),
+            base_perp=base_perp,
+            with_metamap=True,
+            out_name=out_name,
+        )
+
+    def _plot_running_time():
+        out_name = f"../../figures/runningtime_base{base_perp}"
+        dataset_names = ["BREAST_CANCER", "COIL20", "FASHION200", "COUNTRY2014"]
+        plot_running_time_all_datasets(dataset_names, base_perp, out_name=out_name)
+
+        # _plot_metamap()
+
+    _plot_running_time()
