@@ -10,6 +10,7 @@ from common.dataset import dataset
 from icommon import hyper_params
 
 
+plt.rcParams.update({"font.size": 22})
 OUTPUT_EXT = "png"  # "pdf" for paper
 dir_path = os.path.dirname(os.path.realpath(__file__))
 data_dir = f"{dir_path}/data"
@@ -138,7 +139,9 @@ def plot_compare_kl_to_base(base_perp, key="kl_Qbase_Q", title="KL[Qbase || Q]")
     plt.savefig(f"{file_name}.png")  # , bbox_inches="tight", pad_inches=0)
 
 
-def plot_metamap(ax, all_perps=[], base_perp=None, earlystop=""):
+def plot_metamap(
+    ax, all_perps=[], base_perp=None, highlight_selected_perps=[], title=""
+):
     print(f"Generate meta-plot for {dataset_name} with params: ", locals())
 
     if base_perp is None:
@@ -152,50 +155,91 @@ def plot_metamap(ax, all_perps=[], base_perp=None, earlystop=""):
 
     # prepare all pre-calculated embeddings
     all_Z = []
-    all_perps = []
     all_losses = []
-    for perp in all_perps:
+    highlight_idx = {}
+    for idx, perp in enumerate(all_perps):
         in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
         data = joblib.load(in_name)
-        all_perps.append(perp)
         all_Z.append(data["embedding"].ravel())
         all_losses.append(data["kl_divergence"])
+        if perp in highlight_selected_perps:
+            highlight_idx[idx] = perp
 
-    # using all_Z as features for meta-tSNE
+    if len(all_Z) < 1:
+        raise ValueError("Not enough embeddings to make metaplot")
+
     # all_Z = StandardScaler().fit_transform(all_Z)
-    meta_Z = TSNE(perplexity=10).fit_transform(all_Z)
+    meta_Z = TSNE(perplexity=10, random_state=2019).fit_transform(all_Z)
 
-    out_name = f"{dataset_name}{out_name_sufix}{earlystop}"
-    # plt.figure(figsize=(6, 6))
-    ax.scatter(meta_Z[:, 0], meta_Z[:, 1], c=all_perps)
-    ax.set_title(out_name)
-    cbar = plt.colorbar()
+    sct = ax.scatter(meta_Z[:, 0], meta_Z[:, 1], c=all_perps, cmap="inferno")
+    ax.set_title(f"{dataset_name}{out_name_sufix}")
+
+    if len(highlight_idx) > 0:
+        highlight_pos = meta_Z[list(highlight_idx.keys())]
+        ax.scatter(
+            highlight_pos[:, 0],
+            highlight_pos[:, 1],
+            marker="s",
+            s=256,
+            facecolor="none",
+            edgecolor="blue",
+            linewidth=2.0,
+        )
+        for idx, selected_perp in enumerate(highlight_idx.values()):
+            ax.annotate(
+                str(selected_perp),
+                (highlight_pos[idx, 0], highlight_pos[idx, 1]),
+                (8, 8),
+                textcoords="offset points",
+            )
+
+    cbar = plt.colorbar(sct, aspect=40, pad=0.04)
     cbar.ax.set_title("Perplexity")
-    # plt.tight_layout()
-    # plt.savefig(f"./plot_chain/metamap/{out_name}.png")
+    plt.tight_layout()
 
 
-def plot_an_embedding(ax, perp, base_perp=None, name=""):
-    pass
+def plot_an_embedding(ax, perp, base_perp=None, labels=None):
+    if base_perp is None:
+        embedding_dir = f"{dir_path}/normal/{dataset_name}"
+        in_name_prefix = ""
+    else:
+        embedding_dir = f"{dir_path}/chain/{dataset_name}"
+        in_name_prefix = f"{base_perp}_to_"
+    in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
+    data = joblib.load(in_name)
+    Z = data["embedding"]
+    ax.scatter(Z[:, 0], Z[:, 1], c=labels, alpha=0.5, cmap="jet")
+    ax.set_title(f"perplexity = {perp}")
 
 
 def plot_metamap_with_some_perps(
-    perps=[], base_perp=30, with_metamap=True, out_name="metaplot"
+    selected_perps=[], base_perp=30, with_metamap=True, out_name="metaplot", labels=None
 ):
     """Plot examples of chain-tsne with perp in `perps`.
     If `with_metamap` is set, the metamap of all chain-tsne will be shown.
     """
     (n_rows, n_cols) = (2, 5 if with_metamap else 3)
     plt.figure(figsize=(4 * n_cols, 5 * n_rows))
+
+    _, X, labels = dataset.load_dataset(dataset_name)
+    all_perps = range(3, X.shape[0] // 3)
+
     if with_metamap:
         ax0 = plt.subplot2grid((n_rows, n_cols), (0, 3), rowspan=2, colspan=2)
         ax0.set_xticklabels([])
         ax0.set_yticklabels([])
-    for i in range(6):
+        plot_metamap(
+            ax=ax0,
+            all_perps=all_perps,
+            base_perp=base_perp,
+            highlight_selected_perps=selected_perps,
+        )
+    for i, perp in enumerate(selected_perps):
         row_i, col_i = i // 3, i % 3
-        ax1 = plt.subplot2grid((n_rows, n_cols), (row_i, col_i))
-        ax1.set_xticklabels([])
-        ax1.set_yticklabels([])
+        ax_i = plt.subplot2grid((n_rows, n_cols), (row_i, col_i))
+        ax_i.set_xticklabels([])
+        ax_i.set_yticklabels([])
+        plot_an_embedding(ax=ax_i, perp=perp, base_perp=base_perp, labels=labels)
 
     plt.tight_layout()
     plt.savefig(f"{out_name}.{OUTPUT_EXT}")
@@ -220,7 +264,7 @@ if __name__ == "__main__":
 
     out_name = f"../../figures/chain_tsne_examples_metaplot"
     plot_metamap_with_some_perps(
-        perps=[5, 10, 30, 50, 100, 200],
+        selected_perps=[5, 10, 25, 35, 50, 65],
         base_perp=base_perp,
         with_metamap=True,
         out_name=out_name,
