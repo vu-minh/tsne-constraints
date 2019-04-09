@@ -56,7 +56,10 @@ def update_metric_view(dataset_name, perp):
     if None in [dataset_name, perp]:
         raise PreventUpdate
 
-    df = get_metrics_df(dataset_name)
+    try:
+        df = get_metrics_df(dataset_name)
+    except Exception:
+        raise PreventUpdate
     return _create_figure_from_df(df, perp, subplot_height=115)
 
 
