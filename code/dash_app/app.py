@@ -70,7 +70,7 @@ control_app_layout = html.Div(
     [
         dcc.Dropdown(
             id="select-dataset",
-            value="FASHION200",
+            value="",
             options=[{"label": name, "value": name} for name in list_datasets],
         ),
         dcc.Dropdown(
