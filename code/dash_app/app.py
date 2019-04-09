@@ -10,14 +10,9 @@ import local_storage_callbacks
 import metric_view_callbacks
 
 
-list_datasets = [
-    #  'DIGITS',
-    "FASHION200",
-    "COIL20",
-    #  'FASHION100', 'FASHION500',
-    #  'QUICKDRAW100', 'QUICKDRAW200',
-    #  'COIL20_100', 'COIL20_200'
-]
+list_datasets = ["FASHION200", "COIL20", "DIGITS", "COUNTRY2014"]
+
+list_base_perps = [10, 30]
 
 ###############################################################################
 # cytoscape stylesheet
@@ -68,15 +63,37 @@ additional_cyto_css = []
 
 control_app_layout = html.Div(
     [
-        dcc.Dropdown(
-            id="select-dataset",
-            value=None,
-            options=[{"label": name, "value": name} for name in list_datasets],
+        html.Div(
+            [
+                html.H5("Dataset:"),
+                dcc.Dropdown(
+                    id="select-dataset",
+                    value=None,
+                    options=[{"label": name, "value": name} for name in list_datasets],
+                ),
+            ]
         ),
-        dcc.Dropdown(
-            id="select-perp-val",
-            value=30,
-            options=[{"label": perp, "value": perp} for perp in range(1, 500)],
+        html.Div(
+            [
+                html.H5("Base Perplexity: "),
+                dcc.Dropdown(
+                    id="select-base-perp-val",
+                    value=30,
+                    options=[
+                        {"label": perp, "value": perp} for perp in list_base_perps
+                    ],
+                ),
+            ]
+        ),
+        html.Div(
+            [
+                html.H5("Perplexity: "),
+                dcc.Dropdown(
+                    id="select-perp-val",
+                    value=30,
+                    options=[{"label": perp, "value": perp} for perp in range(1, 500)],
+                ),
+            ]
         ),
     ]
 )
@@ -185,6 +202,14 @@ debug_layout = html.Pre(
     style={"display": "inline", "overflow": "scroll", "border": "1px solid #ccc"},
 )
 
+
+option_view_perp_scale = dcc.RadioItems(
+    id="select-perp-scale",
+    value="log",
+    options=[{"label": "linear", "value": "linear"}, {"label": "log", "value": "log"}],
+    labelStyle={"display": "inline-block"},
+)
+
 metric_view_layout = dcc.Graph(id="metric-view-chain")
 constraint_score_view_layout = dcc.Graph(id="constraint-score-view-chain")
 
@@ -261,7 +286,14 @@ app.layout = dbc.Container(
             [
                 dbc.Col([left_layout], md=2),
                 dbc.Col([center_layout], md=6),
-                dbc.Col([right_layout_for_chain, right_layout_for_normal], md=4),
+                dbc.Col(
+                    [
+                        right_layout_for_chain,
+                        right_layout_for_normal,
+                        option_view_perp_scale,
+                    ],
+                    md=4,
+                ),
             ]
         ),
         # dbc.Row([dbc.Col([bottom_layout])]),

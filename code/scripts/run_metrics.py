@@ -8,74 +8,62 @@ from common.dataset import dataset
 from common.metric.dr_metrics import DRMetric
 
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-data_dir = f"{dir_path}/data"
-embedding_dir = f"{dir_path}/embeddings"
-metric_dir = f"{dir_path}/metrics"
-
-dataset.set_data_home(data_dir)
-if not os.path.exists(metric_dir):
-    os.mkdir(metric_dir)
-
-
-def get_list_embeddings(dataset_name):
-    target_dir = os.path.join(embedding_dir, dataset_name)
-    return [
-        os.path.join(embedding_dir, dataset_name, f)
-        for f in os.listdir(target_dir)
-        if f.endswith(".z")
-    ]
-
-
-def calculate_metrics(dataset_name, metric_names):
+def calculate_metrics(
+    dataset_name, metric_names, base_perp=None, earlystop="_earlystop"
+):
     _, X, _ = dataset.load_dataset(dataset_name)
     N = X.shape[0]
+    all_perps = range(1, N // 3)
 
-    results = []
-    for in_file_name in get_list_embeddings(dataset_name):
-        perp = int(in_file_name.split("/")[-1][:-2])
-        data = joblib.load(in_file_name)
+    if base_perp is None:
+        embedding_dir = f"{dir_path}/normal/{dataset_name}"
+        in_name_prefix = ""
+        out_name_sufix = ""
+    else:
+        embedding_dir = f"{dir_path}/chain/{dataset_name}"
+        in_name_prefix = f"{base_perp}_to_"
+        out_name_sufix = f"_base{base_perp}"
 
-        # Recall: data = dict(
-        #     running_time=running_time,
-        #     embedding=tsne.embedding_,
-        #     kl_divergence=tsne.kl_divergence_,
-        #     n_jobs=tsne.n_jobs if USE_MULTICORE else 1,
-        #     n_iter=tsne.n_iter_,
-        #     learning_rate=tsne.learning_rate,
-        #     random_state=tsne.random_state,
-        # )
+    result = []
+    for perp in all_perps:
+        in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
+        data = joblib.load(in_name)
 
-        data["perplexity"] = perp
-        data["bic"] = 2 * data["kl_divergence"] + np.log(N) * perp / N
+        record = {
+            "perplexity": perp,
+            "kl_divergence": data["kl_divergence"],
+            "bic": 2 * data["kl_divergence"] + np.log(N) * perp / N,
+        }
 
         drMetric = DRMetric(X, data["embedding"])
         for metric_name in metric_names:
             metric_method = getattr(drMetric, metric_name)
-            data[metric_name] = metric_method()
-        # do not need the embedding field
-        del data["embedding"]
-        results.append(data)
+            record[metric_name] = metric_method()
 
-    write_metric_results(dataset_name, results)
+        result.append(record)
 
-
-def write_metric_results(dataset_name, results):
-    header = ",".join(results[0].keys())
-    body = [",".join(map(str, row.values())) for row in results]
-    with open(f"{metric_dir}/{dataset_name}.csv", "w") as csv_file:
-        csv_file.write(header)
-        csv_file.write("\n")
-        csv_file.write("\n".join(body))
-
-
-def test_metric_results(dataset_name):
-    df = pd.read_csv(f"{metric_dir}/{dataset_name}.csv", index_col="perplexity")
-    print(df)
+    df = pd.DataFrame(result).set_index("perplexity")
+    df.to_csv(f"metrics/{dataset_name}{out_name_sufix}{earlystop}.csv")
 
 
 if __name__ == "__main__":
-    dataset_name = "COIL20"
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-d", "--dataset_name", default="")
+    ap.add_argument("-bp", "--base_perp", default=None, type=int)
+    ap.add_argument("-e", "--earlystop", action="store_true")
+    args = ap.parse_args()
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    data_dir = f"{dir_path}/data"
+    dataset.set_data_home(data_dir)
+
+    dataset_name, base_perp = args.dataset_name, args.base_perp
+    earlystop = "_earlystop" if args.earlystop else ""
     metric_names = ["auc_rnx", "pearsonr", "mds_isotonic", "cca_stress", "sammon_nlm"]
-    calculate_metrics(dataset_name, metric_names)
-    test_metric_results(dataset_name)
+
+    calculate_metrics(dataset_name, metric_names, base_perp=None, earlystop=earlystop)
+    calculate_metrics(
+        dataset_name, metric_names, base_perp=base_perp, earlystop=earlystop
+    )
