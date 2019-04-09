@@ -70,7 +70,7 @@ control_app_layout = html.Div(
     [
         dcc.Dropdown(
             id="select-dataset",
-            value="",
+            value=None,
             options=[{"label": name, "value": name} for name in list_datasets],
         ),
         dcc.Dropdown(
@@ -185,8 +185,12 @@ debug_layout = html.Pre(
     style={"display": "inline", "overflow": "scroll", "border": "1px solid #ccc"},
 )
 
-metric_view_layout = dcc.Graph(id="metric-view")
-constraint_score_view_layout = dcc.Graph(id="constraint-score-view")
+metric_view_layout = dcc.Graph(id="metric-view-chain")
+constraint_score_view_layout = dcc.Graph(id="constraint-score-view-chain")
+
+metric_view_layout2 = dcc.Graph(id="metric-view-normal")
+constraint_score_view_layout2 = dcc.Graph(id="constraint-score-view-normal")
+
 
 ###############################################################################
 # local storage for storing links
@@ -204,15 +208,37 @@ left_layout = html.Div(
         links_view_layout,
         # debug_layout
     ],
-    style=dict(height="90vh"),
+    style=dict(height="95vh"),
 )
 
-right1_layout = html.Div([constraint_score_view_layout], style=dict(height="90vh"))
+right_layout_for_chain = html.Div(
+    [
+        html.H3("chain-tSNE"),
+        dbc.Row(
+            [
+                dbc.Col([constraint_score_view_layout], md=6),
+                dbc.Col([metric_view_layout], md=6),
+            ]
+        ),
+    ],
+    style=dict(height="45vh", paddingBottom="5vh"),
+)
 
-right2_layout = html.Div([metric_view_layout], style=dict(height="90vh"))
+right_layout_for_normal = html.Div(
+    [
+        html.H3("tSNE normal"),
+        dbc.Row(
+            [
+                dbc.Col([constraint_score_view_layout2], md=6),
+                dbc.Col([metric_view_layout2], md=6),
+            ]
+        ),
+    ],
+    style=dict(height="45vh", paddingTop="5vh"),
+)
 
 center_layout = html.Div(
-    [cytoplot_option_layout, cytoplot_layout], style=dict(height="90vh")
+    [cytoplot_option_layout, cytoplot_layout], style=dict(height="95vh")
 )
 
 bottom_layout = html.Div(
@@ -235,11 +261,10 @@ app.layout = dbc.Container(
             [
                 dbc.Col([left_layout], md=2),
                 dbc.Col([center_layout], md=6),
-                dbc.Col([right1_layout], md=2),
-                dbc.Col([right2_layout], md=2),
+                dbc.Col([right_layout_for_chain, right_layout_for_normal], md=4),
             ]
         ),
-        dbc.Row([dbc.Col([bottom_layout])]),
+        # dbc.Row([dbc.Col([bottom_layout])]),
     ],
     fluid=True,
 )

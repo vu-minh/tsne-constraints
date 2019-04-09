@@ -10,9 +10,7 @@ from scipy.spatial.distance import pdist, squareform
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-embedding_type = ["normal", "chain"][1]
 earlystop = ["", "_earlystop"][1]
-embedding_dir = f"{dir_path}/{embedding_type}"
 metric_dir = f"{dir_path}/metrics"
 MACHINE_EPSILON = np.finfo(np.double).eps
 DEV = False
@@ -33,14 +31,21 @@ def compute_Q(X2d):
     return squareform(Q)
 
 
-def get_list_embeddings(dataset_name, base_perp=30):
+def get_list_embeddings(dataset_name, base_perp=None):
     # in_name_prefix = f"{base_perp}_to_" if embedding_type == "chain" else ""
     # in_name = f"{embedding_dir}/{dataset_name}/{in_name_prefix}{perp}.z"
+    embedding_type = "normal" if base_perp is None else "chain"
+    embedding_dir = f"{dir_path}/{embedding_type}"
     target_dir = os.path.join(embedding_dir, dataset_name)
     return [
         os.path.join(embedding_dir, dataset_name, f)
         for f in os.listdir(target_dir)
-        if f.endswith(f"{earlystop}.z") and f.startswith(f"{base_perp}_to_")
+        if f.endswith(f"{earlystop}.z")
+        and (
+            f.startswith(f"{base_perp}_to_")
+            if base_perp is not None
+            else not f.startswith(f"{base_perp}_to_")
+        )
     ]
 
 
@@ -54,9 +59,9 @@ def constraint_score(Q, sim, dis):
     return s_sim, s_dis
 
 
-def calculate_constraint_scores(dataset_name, sim_links, dis_links):
+def calculate_constraint_scores(dataset_name, sim_links, dis_links, base_perp=None):
     scores = []
-    for in_name in get_list_embeddings(dataset_name):
+    for in_name in get_list_embeddings(dataset_name, base_perp):
         data = joblib.load(in_name)
         Q = data.get("Q", compute_Q(data["embedding"]))
         s_sim, s_dis = constraint_score(Q, sim_links, dis_links)
@@ -71,36 +76,41 @@ def calculate_constraint_scores(dataset_name, sim_links, dis_links):
     return scores
 
 
-def get_constraint_scores_df(dataset_name, constraints):
+def get_constraint_scores_df(dataset_name, constraints, base_perp=None):
     sim_links = np.array(
         [[int(link[0]), int(link[1])] for link in constraints if link[2] == "sim-link"]
     )
     dis_links = np.array(
         [[int(link[0]), int(link[1])] for link in constraints if link[2] == "dis-link"]
     )
-    scores = calculate_constraint_scores(dataset_name, sim_links, dis_links)
+    scores = calculate_constraint_scores(dataset_name, sim_links, dis_links, base_perp)
     df = pd.DataFrame(scores).set_index("perplexity")
     return df.sort_index()
 
 
-def get_embedding(dataset_name, perp, base_perp=30):
-    in_name_prefix = f"{base_perp}_to_" if embedding_type == "chain" else ""
+def get_embedding(dataset_name, perp, base_perp=None):
+    if base_perp is None:
+        embedding_dir = f"{dir_path}/normal"
+        in_name_prefix = ""
+    else:
+        embedding_dir = f"{dir_path}/chain"
+        in_name_prefix = f"{base_perp}_to_"
     in_name = f"{embedding_dir}/{dataset_name}/{in_name_prefix}{perp}{earlystop}.z"
     data = joblib.load(in_name)
-    # TODO fix latter: not use DIGITS or rebuild embeddings for DIGITS
-    Z = data if dataset_name == "DIGITS" else data["embedding"]
-    return Z[:200] if DEV else Z
+    return data["embedding"]
 
 
-def get_metrics_df(dataset_name):
+def get_metrics_df(dataset_name, embedding_type="chain"):
     # TODO cache this request
-    df = pd.read_csv(f"{metric_dir}/{dataset_name}.csv", index_col="perplexity")
+    df = pd.read_csv(
+        f"{metric_dir}/{dataset_name}_{embedding_type}.csv", index_col="perplexity"
+    )
     metric_names = [
         "kl_divergence",
         "auc_rnx",
-        "pearsonr",
-        "mds_isotonic",
-        "cca_stress",
+        # "pearsonr",
+        # "mds_isotonic",
+        # "cca_stress",
         # 'sammon_nlm',
         "bic",
     ]

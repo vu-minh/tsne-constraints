@@ -49,7 +49,7 @@ def _create_figure_from_df(df, perp, subplot_height=115, xscale="linear"):
 
 
 @app.callback(
-    Output("metric-view", "figure"),
+    [Output("metric-view-chain", "figure"), Output("metric-view-normal", "figure")],
     [Input("select-dataset", "value"), Input("select-perp-val", "value")],
 )
 def update_metric_view(dataset_name, perp):
@@ -57,14 +57,23 @@ def update_metric_view(dataset_name, perp):
         raise PreventUpdate
 
     try:
-        df = get_metrics_df(dataset_name)
+        df_chain = get_metrics_df(dataset_name, embedding_type="chain")
+        df_normal = get_metrics_df(dataset_name, embedding_type="normal")
     except Exception:
         raise PreventUpdate
-    return _create_figure_from_df(df, perp, subplot_height=115)
+
+    return (
+        _create_figure_from_df(df_chain, perp, subplot_height=135),
+        _create_figure_from_df(df_normal, perp, subplot_height=135),
+    )
 
 
 @app.callback(
-    [Output("select-perp-val", "value"), Output("constraint-score-view", "figure")],
+    [
+        Output("select-perp-val", "value"),
+        Output("constraint-score-view-chain", "figure"),
+        Output("constraint-score-view-normal", "figure"),
+    ],
     [Input("btn-submit", "n_clicks")],
     [State("select-dataset", "value"), State("links-memory", "data")],
 )
@@ -72,7 +81,11 @@ def update_constraint_score_view(btn_submit, dataset_name, user_links):
     if None in [btn_submit, dataset_name, user_links]:
         raise PreventUpdate
 
-    df = get_constraint_scores_df(dataset_name, user_links)
-    best_perp = df["score_all_links"].idxmax()
-    fig_scores = _create_figure_from_df(df, best_perp, subplot_height=125)
-    return best_perp, fig_scores
+    def _gen_fig_score(base_perp=None):
+        df = get_constraint_scores_df(dataset_name, user_links, base_perp)
+        best_perp = df["score_all_links"].idxmax()
+        return best_perp, _create_figure_from_df(df, best_perp, subplot_height=135)
+
+    best_perp_chain, fig_scores_chain = _gen_fig_score(base_perp=30)
+    best_perp_normal, fig_scores_normal = _gen_fig_score(base_perp=None)
+    return best_perp_chain, fig_scores_chain, fig_scores_normal
