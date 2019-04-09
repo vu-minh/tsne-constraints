@@ -228,7 +228,7 @@ if __name__ == "__main__":
 
     def _plot_running_time():
         out_name = f"{FIG_DIR}/runningtime_base{base_perp}"
-        dataset_names = ["BREAST_CANCER", "COIL20", "FASHION200", "COUNTRY2014"]
+        dataset_names = ["DIGITS", "COIL20", "FASHION200", "COUNTRY2014"]
         plot_running_time_all_datasets(dataset_names, base_perp, out_name=out_name)
 
     def _plot_examples():
