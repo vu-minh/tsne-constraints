@@ -2,7 +2,8 @@ hyper_params = {
     "COIL20": {
         "early_stop_conditions": {
             "n_iter_without_progress": 200,
-            "min_grad_norm": 1e-10,  # perp=200: 5e-5, perp=300: 1e-10
+            "min_grad_norm": 1e-5,  # perp=200: 5e-5, perp=300: 1e-10
+            # set min_grad_norm 1e-05 to test adaptive grad_norm
         },
         "base_perps": [10, 30],  # [20, 50, 75],
         "selected_perps": {

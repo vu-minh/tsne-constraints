@@ -131,15 +131,18 @@ def plot_metamap_with_some_perps(
     plt.savefig(f"{out_name}.{OUTPUT_EXT}")
 
 
-def plot_running_time(
-    ax, dataset_name, base_perp, show_legend=False, perp_in_log_scale=False
+def plot_running_time_one_dataset(
+    ax,
+    dataset_name,
+    base_perp,
+    key_name="running_time",
+    show_legend=False,
+    perp_in_log_scale=False,
 ):
     _, X, _y = dataset.load_dataset(dataset_name)
     all_perps = range(1, X.shape[0] // 3)
     running_time_normals = []
     running_time_chains = []
-    n_iter_normals = []
-    n_iter_chains = []
 
     embedding_dir_normal = f"{dir_path}/normal/{dataset_name}"
     embedding_dir_chain = f"{dir_path}/chain/{dataset_name}"
@@ -148,14 +151,12 @@ def plot_running_time(
     for perp in all_perps:
         in_name_normal = f"{embedding_dir_normal}/{perp}{earlystop}.z"
         data_normal = joblib.load(in_name_normal)
-        running_time_normals.append(data_normal["running_time"])
-        n_iter_normals.append(data_normal["n_iter"])
+        running_time_normals.append(data_normal[key_name])
 
         in_name_chain = f"{embedding_dir_chain}/{base_perp}_to_{perp}{earlystop}.z"
         data_chain = joblib.load(in_name_chain)
-        running_time_chain = data_chain["running_time"] if perp != base_perp else np.nan
+        running_time_chain = data_chain[key_name] if perp != base_perp else np.nan
         running_time_chains.append(running_time_chain)
-        n_iter_chains.append(data_chain["n_iter"])
 
     # plot running time for one dataset
     if perp_in_log_scale:
@@ -175,17 +176,24 @@ def plot_running_time(
 
     ax.set_title(dataset_name)
     if show_legend:
-        ax.set_ylabel("Running time (second)")
+        y_label = (
+            "Running time (second)"
+            if key_name == "running_time"
+            else "Number of iterations"
+        )
+        ax.set_ylabel(y_label)
         plt.legend()
 
 
-def plot_running_time_all_datasets(dataset_names, base_perp, out_name):
+def plot_running_time_all(dataset_names, base_perp, out_name, key_name="running_time"):
     (n_rows, n_cols) = (1, len(dataset_names))
     plt.figure(figsize=(8 * n_cols, 6 * n_rows))
 
     for i, dataset_name in enumerate(dataset_names):
         ax_i = plt.subplot2grid((n_rows, n_cols), (0, i))
-        plot_running_time(ax_i, dataset_name, base_perp, show_legend=(i == 0))
+        plot_running_time_one_dataset(
+            ax_i, dataset_name, base_perp, key_name, show_legend=(i == 0)
+        )
 
     plt.tight_layout()
     plt.savefig(f"{out_name}.{OUTPUT_EXT}")
@@ -227,9 +235,13 @@ if __name__ == "__main__":
         )
 
     def _plot_running_time():
-        out_name = f"{FIG_DIR}/runningtime_base{base_perp}"
         dataset_names = ["DIGITS", "COIL20", "FASHION200", "COUNTRY2014"]
-        plot_running_time_all_datasets(dataset_names, base_perp, out_name=out_name)
+
+        out_name = f"{FIG_DIR}/runningtime_base{base_perp}"
+        plot_running_time_all(dataset_names, base_perp, out_name, "running_time")
+
+        out_name = f"{FIG_DIR}/numiter_base{base_perp}"
+        plot_running_time_all(dataset_names, base_perp, out_name, "n_iter")
 
     def _plot_examples():
         from itertools import product
@@ -247,6 +259,6 @@ if __name__ == "__main__":
             plt.tight_layout()
             plt.savefig(f"{out_name}.{OUTPUT_EXT}")
 
-    _plot_metamap()
+    # _plot_metamap()
     _plot_running_time()
-    _plot_examples()
+    # _plot_examples()
