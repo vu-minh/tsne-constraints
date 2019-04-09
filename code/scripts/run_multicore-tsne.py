@@ -21,7 +21,17 @@ def run_dataset(
     if not os.path.exists(embedding_dir):
         os.mkdir(embedding_dir)
 
+    base_min_grad_norm = min_grad_norm
+
     for perp in [test_perp] if DEV else range(1, X.shape[0] // 3):
+        if early_stop != "":  # using early_stop
+            adaptive_min_grad_norm = base_min_grad_norm * (10 ** (-(perp // 30)))
+            print(
+                f"perp={perp} ({perp//30}) adaptive_min_grad_norm={adaptive_min_grad_norm}"
+            )
+        else:
+            adaptive_min_grad_norm = min_grad_norm
+
         start_time = time()
         if USE_MULTICORE:
             tsne = MulticoreTSNE(
@@ -29,7 +39,7 @@ def run_dataset(
                 random_state=fixed_seed,
                 perplexity=perp,
                 n_iter_without_progress=n_iter_without_progress,
-                min_grad_norm=min_grad_norm,
+                min_grad_norm=adaptive_min_grad_norm,
                 n_jobs=n_cpu_using,
                 eval_interval=50,
                 n_iter=1000,
