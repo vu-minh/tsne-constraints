@@ -32,4 +32,6 @@ def get_image_url(dataset_name, img_id, cmap_type="gray"):
 def get_image_elem(dataset_name, img_id, cmap_type="gray", width="100px"):
     """Generate dash html image element"""
 
-    return html.Img(src=get_image_url(dataset_name, img_id, cmap_type), width="{width}")
+    return html.Img(
+        src=get_image_url(dataset_name, img_id, cmap_type), width=f"{width}"
+    )

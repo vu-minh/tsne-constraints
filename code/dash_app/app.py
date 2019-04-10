@@ -137,6 +137,7 @@ constraint_score_view_layout2 = dcc.Graph(
 ###############################################################################
 # local storage for storing links
 links_storage_memory = dcc.Store(id="links-memory", storage_type="memory")
+links_storage_memory_debug = dcc.Store(id="links-memory-debug", storage_type="memory")
 # best_perp_storage_memory = dcc.Store(id='best-perp-memory',
 #                                      storage_type='memory')
 
@@ -255,7 +256,7 @@ slider_select_scatter_zoom_factor = dbc.FormGroup(
             min=0.0,
             max=3.0,
             step=0.2,
-            value=0.7,
+            value=0.5,
             included=False,
             marks={
                 i * 0.1: f"{i*0.1:.1f}"
@@ -293,6 +294,7 @@ app.layout = dbc.Container(
             [
                 navbar,
                 links_storage_memory,
+                links_storage_memory_debug,
                 # best_perp_storage_memory
             ]
         ),

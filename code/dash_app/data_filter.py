@@ -13,6 +13,20 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 MACHINE_EPSILON = np.finfo(np.double).eps
 
 
+def get_embedding(
+    dataset_name, perp, base_perp=None, earlystop="_earlystop", return_all=False
+):
+    if base_perp is None:
+        embedding_dir = f"{dir_path}/normal"
+        in_name_prefix = ""
+    else:
+        embedding_dir = f"{dir_path}/chain"
+        in_name_prefix = f"{base_perp}_to_"
+    in_name = f"{embedding_dir}/{dataset_name}/{in_name_prefix}{perp}{earlystop}.z"
+    data = joblib.load(in_name)
+    return data if return_all else data["embedding"]
+
+
 def compute_Q(X2d):
     # TODO cache this function
     """ Matrix Q in t-sne, used to calculate the prob. that a point `j`
@@ -46,14 +60,35 @@ def get_list_embeddings(dataset_name, base_perp=None, earlystop="_earlystop"):
     ]
 
 
-def constraint_score(Q, sim, dis):
+def constraint_score(Q, sim, dis, debug=False):
+    # print(f"[DEBUG]Q_min={np.min(Q[np.nonzero(Q)])}, Q_max={Q.max()}")
     if len(Q.shape) < 2:
         Q = squareform(Q)
 
-    s_sim = 0 if len(sim) == 0 else np.sum(np.log(Q[sim[:, 0], sim[:, 1]])) / len(sim)
-    s_dis = 0 if len(dis) == 0 else -np.sum(np.log(Q[dis[:, 0], dis[:, 1]])) / len(dis)
-    del Q
-    return s_sim, s_dis
+    def score(links):
+        return 0 if len(links) == 0 else np.mean(np.log(Q[links[:, 0], links[:, 1]]))
+
+    def score_debug(links, link_type=""):
+        score_link = 0.0
+        debug_info = []
+        for link in links:
+            p0, p1 = link
+            q = Q[p0, p1]
+            s = np.log(q)
+            debug_info.append([str(p0), str(p1), link_type, f"{q:1.1E}", f"{s:2.2f}"])
+            score_link += s
+        if len(links) > 0:
+            score_link /= len(links)
+        print(link_type, debug_info, score_link)
+        return score_link, debug_info
+
+    if not debug:
+        return score(sim), -score(dis)
+    else:
+        print(score(sim), -score(dis))
+        s_sim, debug_sim = score_debug(sim, "sim-link")
+        s_dis, debug_dis = score_debug(dis, "dis-link")
+        return s_sim, -s_dis, debug_sim + debug_dis
 
 
 def calculate_constraint_scores(
@@ -75,7 +110,9 @@ def calculate_constraint_scores(
     return scores
 
 
-def get_constraint_scores_df(dataset_name, constraints, base_perp=None):
+def get_constraint_scores_df(
+    dataset_name, constraints, base_perp=None, earlystop="_earlystop", debug=False
+):
     sim_links = np.array(
         [[int(link[0]), int(link[1])] for link in constraints if link[2] == "sim-link"]
     )
@@ -84,19 +121,14 @@ def get_constraint_scores_df(dataset_name, constraints, base_perp=None):
     )
     scores = calculate_constraint_scores(dataset_name, sim_links, dis_links, base_perp)
     df = pd.DataFrame(scores).set_index("perplexity")
-    return df.sort_index()
 
-
-def get_embedding(dataset_name, perp, base_perp=None, earlystop="_earlystop"):
-    if base_perp is None:
-        embedding_dir = f"{dir_path}/normal"
-        in_name_prefix = ""
-    else:
-        embedding_dir = f"{dir_path}/chain"
-        in_name_prefix = f"{base_perp}_to_"
-    in_name = f"{embedding_dir}/{dataset_name}/{in_name_prefix}{perp}{earlystop}.z"
-    data = joblib.load(in_name)
-    return data["embedding"]
+    debug_links = None
+    if debug:
+        best_perp = df["score_all_links"].idxmax()
+        data = get_embedding(dataset_name, best_perp, base_perp, return_all=True)
+        Q = compute_Q(data["embedding"])
+        _, _, debug_links = constraint_score(Q, sim_links, dis_links, debug=True)
+    return df.sort_index(), debug_links
 
 
 def get_metrics_df(dataset_name, base_perp=None, earlystop="_earlystop"):

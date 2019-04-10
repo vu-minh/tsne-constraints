@@ -20,7 +20,6 @@ def _create_figure_from_df(df, perp, view_perp_scale="log", subplot_height=115):
         kind="scatter",
         asFigure=True,
         theme="white",
-        # vline=[perp],
         vspan={"x0": perp, "x1": perp, "color": "rgba(30,30,30,0.3)", "dash": "dash"},
         subplots=True,
         shape=(n_metrics, 1),
@@ -71,6 +70,7 @@ def update_metric_view(dataset_name, perp, base_perp, view_perp_scale="log"):
         Output("select-perp-val", "value"),
         Output("constraint-score-view-chain", "figure"),
         Output("constraint-score-view-normal", "figure"),
+        Output("links-memory-debug", "data"),
     ],
     [Input("btn-submit", "n_clicks")],
     [
@@ -86,14 +86,19 @@ def update_constraint_score_view(
     if None in [btn_submit, dataset_name, user_links]:
         raise PreventUpdate
 
-    def _gen_fig_score(base_perp=None):
-        df = get_constraint_scores_df(dataset_name, user_links, base_perp)
+    def _gen_fig_score(base_perp=None, detail=False):
+        df, detail_links = get_constraint_scores_df(
+            dataset_name, user_links, base_perp, debug=detail
+        )
         best_perp = df["score_all_links"].idxmax()
         return (
             best_perp,
+            detail_links,
             _create_figure_from_df(df, best_perp, view_perp_scale, subplot_height=135),
         )
 
-    best_perp_chain, fig_scores_chain = _gen_fig_score(base_perp=base_perp)
-    best_perp_normal, fig_scores_normal = _gen_fig_score(base_perp=None)
-    return best_perp_chain, fig_scores_chain, fig_scores_normal
+    best_perp_chain, detail_links_chain, fig_scores_chain = _gen_fig_score(
+        base_perp=base_perp, detail=True
+    )
+    best_perp_normal, _, fig_scores_normal = _gen_fig_score(base_perp=None)
+    return best_perp_chain, fig_scores_chain, fig_scores_normal, detail_links_chain
