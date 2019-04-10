@@ -61,116 +61,35 @@ additional_cyto_css = []
 ###############################################################################
 # layout components
 
-control_app_layout = html.Div(
-    [
-        html.Div(
-            [
-                html.H5("Dataset:"),
-                dcc.Dropdown(
-                    id="select-dataset",
-                    value=None,
-                    options=[{"label": name, "value": name} for name in list_datasets],
-                ),
-            ]
-        ),
-        html.Div(
-            [
-                html.H5("Base Perplexity: "),
-                dcc.Dropdown(
-                    id="select-base-perp-val",
-                    value=30,
-                    options=[
-                        {"label": perp, "value": perp} for perp in list_base_perps
-                    ],
-                ),
-            ]
-        ),
-        html.Div(
-            [
-                html.H5("Perplexity: "),
-                dcc.Dropdown(
-                    id="select-perp-val",
-                    value=30,
-                    options=[{"label": perp, "value": perp} for perp in range(1, 500)],
-                ),
-            ]
-        ),
-    ]
-)
+INLINE = {"display": "inline-block"}
 
-control_cyto_layout = html.Div(
-    [
-        dbc.Button(
-            id="btn-sim",
-            children="Similar",
-            n_clicks_timestamp=0,
-            outline=True,
-            color="success",
-            className="mr-2",
-        ),
-        dbc.Button(
-            id="btn-dis",
-            children="Dissimilar",
-            n_clicks_timestamp=0,
-            outline=True,
-            color="danger",
-            className="mr-2",
-        ),
-        dbc.Button(
-            id="btn-del-link",
-            children="Delete link",
-            n_clicks_timestamp=0,
-            outline=True,
-            color="primary",
-            className="mr-2",
-        ),
-        dbc.Button(
-            id="btn-submit", children="Find best viz", outline=True, className="mr-2"
-        ),
-        dbc.Button(
-            id="btn-auto-constraint",
-            children="Generate Constraints",
-            outline=True,
-            className="mr-2",
-        ),
-    ]
-)
+buttons_layout = {
+    "btn-sim": ("Similar", "success"),
+    "btn-dis": ("Dissimilar", "danger"),
+    "btn-submit": ("Find best viz", "secondary"),
+    "btn-del-link": ("Delete link", "primary"),
+    "btn-auto": ("Generate constraints", "secondary"),
+}
 
-cytoplot_option_layout = html.Div(
+control_buttons = html.Div(
     [
-        dcc.RadioItems(
-            id="select-cmap",
-            value="gray_r",
-            options=[
-                {"label": label, "value": value}
-                for label, value in [
-                    ("Gray", "gray"),
-                    ("Gray invert", "gray_r"),
-                    ("Color", "color"),
-                ]
-            ],
-            labelStyle={"display": "inline-block"},
-        ),
-        dcc.Slider(
-            id="slider-img-size",
-            min=0.0,
-            max=3.0,
-            step=0.2,
-            value=0.7,
-            included=False,
-            marks={
-                i * 0.1: "{:.1f}".format(i * 0.1)
-                for i in list(range(1, 12)) + list(range(12, 32, 2))
-            },
-        ),
+        dbc.Button(
+            id=btn_id,
+            children=label,
+            n_clicks_timestamp=0,
+            outline=True,
+            color=color,
+            style={"padding": "4px", "margin": "4px"},
+        )
+        for btn_id, (label, color) in buttons_layout.items()
     ],
-    style={"display": "inline"},
+    className="mr-3",
 )
 
 cytoplot_layout = cyto.Cytoscape(
     id="cytoplot",
     layout={"name": "preset", "animate": True, "fit": True},
-    style={"width": "100%", "height": "95vh"},
+    style={"width": "100%", "height": "90vh"},
     stylesheet=[
         default_cyto_node_style,
         default_cyto_edge_style,
@@ -192,7 +111,7 @@ links_view_layout = dbc.ListGroup(
         "display": "inline-block",
         "overflow-y": "scroll",
         "width": "100%",
-        "height": "70%",
+        "height": "80%",
     },
 )
 
@@ -202,19 +121,17 @@ debug_layout = html.Pre(
     style={"display": "inline", "overflow": "scroll", "border": "1px solid #ccc"},
 )
 
+non_floatting_bar = {"displayModeBar": False}
 
-option_view_perp_scale = dcc.RadioItems(
-    id="select-perp-scale",
-    value="log",
-    options=[{"label": "linear", "value": "linear"}, {"label": "log", "value": "log"}],
-    labelStyle={"display": "inline-block"},
+metric_view_layout = dcc.Graph(id="metric-view-chain", config=non_floatting_bar)
+constraint_score_view_layout = dcc.Graph(
+    id="constraint-score-view-chain", config=non_floatting_bar
 )
 
-metric_view_layout = dcc.Graph(id="metric-view-chain")
-constraint_score_view_layout = dcc.Graph(id="constraint-score-view-chain")
-
-metric_view_layout2 = dcc.Graph(id="metric-view-normal")
-constraint_score_view_layout2 = dcc.Graph(id="constraint-score-view-normal")
+metric_view_layout2 = dcc.Graph(id="metric-view-normal", config=non_floatting_bar)
+constraint_score_view_layout2 = dcc.Graph(
+    id="constraint-score-view-normal", config=non_floatting_bar
+)
 
 
 ###############################################################################
@@ -224,21 +141,11 @@ links_storage_memory = dcc.Store(id="links-memory", storage_type="memory")
 #                                      storage_type='memory')
 
 ###############################################################################
-# app layout
-
-left_layout = html.Div(
-    [
-        control_app_layout,
-        control_cyto_layout,
-        links_view_layout,
-        # debug_layout
-    ],
-    style=dict(height="95vh"),
-)
+# metric anc score view on the right
 
 right_layout_for_chain = html.Div(
     [
-        html.H3("chain-tSNE"),
+        html.H5("chain-tSNE"),
         dbc.Row(
             [
                 dbc.Col([constraint_score_view_layout], md=6),
@@ -246,12 +153,12 @@ right_layout_for_chain = html.Div(
             ]
         ),
     ],
-    style=dict(height="45vh", paddingBottom="5vh"),
+    style=dict(height="40vh", paddingBottom="10vh"),
 )
 
 right_layout_for_normal = html.Div(
     [
-        html.H3("tSNE normal"),
+        html.H5("tSNE normal"),
         dbc.Row(
             [
                 dbc.Col([constraint_score_view_layout2], md=6),
@@ -259,41 +166,141 @@ right_layout_for_normal = html.Div(
             ]
         ),
     ],
-    style=dict(height="45vh", paddingTop="5vh"),
+    style=dict(height="40vh", paddingTop="5vh"),
 )
 
-center_layout = html.Div(
-    [cytoplot_option_layout, cytoplot_layout], style=dict(height="95vh")
-)
+##############################################################################
+# control components in the navbar
 
-bottom_layout = html.Div(
+select_dataset_name = dbc.FormGroup(
     [
-        debug_layout
-        # metric_view_layout
+        dbc.Label("Dataset name", html_for="select-dataset", className="mr-2"),
+        dcc.Dropdown(
+            id="select-dataset",
+            value=None,
+            options=[{"label": name, "value": name} for name in list_datasets],
+            style={"width": "160px"},
+        ),
     ],
-    style=dict(height="10vh"),
+    className="mr-3",
 )
 
+select_perplexity = dbc.FormGroup(
+    [
+        dbc.Label("Perplexity", html_for="select-perp-val", className="mr-2"),
+        dcc.Dropdown(
+            id="select-perp-val",
+            value=30,
+            options=[{"label": perp, "value": perp} for perp in range(1, 500)],
+            style={"width": "80px"},
+        ),
+    ],
+    className="mr-3",
+)
+
+select_base_perplexity = dbc.FormGroup(
+    [
+        dbc.Label("Base perlexity", html_for="select-base-perp-val", className="mr-2"),
+        dcc.Dropdown(
+            id="select-base-perp-val",
+            value=30,
+            options=[{"label": perp, "value": perp} for perp in list_base_perps],
+            style={"width": "80px"},
+        ),
+    ],
+    className="mr-3",
+)
+
+
+option_view_perp_scale = dbc.FormGroup(
+    [
+        dbc.Label("View perp", className="mr-2"),
+        dcc.Dropdown(
+            id="select-perp-scale",
+            value="log",
+            options=[
+                {"label": "linear", "value": "linear"},
+                {"label": "log", "value": "log"},
+            ],
+            style={"width": "120px"},
+        ),
+    ],
+    className="mr-3",
+)
+
+option_select_scatter_color = dbc.FormGroup(
+    [
+        dbc.Label("Color item", className="mr-2"),
+        dcc.Dropdown(
+            id="select-cmap",
+            value="gray_r",
+            options=[
+                {"label": label, "value": value}
+                for label, value in [
+                    ("Gray", "gray"),
+                    ("Gray invert", "gray_r"),
+                    ("Color", "color"),
+                ]
+            ],
+            style={"width": "120px"},
+        ),
+    ],
+    className="mr-3",
+)
+
+slider_select_scatter_zoom_factor = dbc.FormGroup(
+    [
+        dcc.Slider(
+            id="slider-img-size",
+            min=0.0,
+            max=3.0,
+            step=0.2,
+            value=0.7,
+            included=False,
+            marks={
+                i * 0.1: f"{i*0.1:.1f}"
+                for i in list(range(1, 11, 2)) + list(range(12, 32, 2))
+            },
+        )
+    ],
+    className="mr-3",
+)
+
+data_control_form = dbc.Form(
+    [select_dataset_name, select_base_perplexity], inline=True, style={"width": "30%"}
+)
+
+zoom_control_form = dbc.Form(
+    [slider_select_scatter_zoom_factor], style={"width": "30%"}
+)
+
+display_control_form = dbc.Form(
+    [select_perplexity, option_select_scatter_color, option_view_perp_scale],
+    inline=True,
+    style={"width": "40%"},
+)
+
+navbar = dbc.Navbar(
+    [data_control_form, zoom_control_form, display_control_form],
+    style={"width": "100%"},
+)
+
+##############################################################################
+# main app layout
 app.layout = dbc.Container(
     [
         dbc.Row(
             [
+                navbar,
                 links_storage_memory,
                 # best_perp_storage_memory
             ]
         ),
         dbc.Row(
             [
-                dbc.Col([left_layout], md=2),
-                dbc.Col([center_layout], md=6),
-                dbc.Col(
-                    [
-                        right_layout_for_chain,
-                        right_layout_for_normal,
-                        option_view_perp_scale,
-                    ],
-                    md=4,
-                ),
+                dbc.Col([control_buttons, links_view_layout], md=2),
+                dbc.Col([cytoplot_layout], md=6),
+                dbc.Col([right_layout_for_chain, right_layout_for_normal], md=4),
             ]
         ),
         # dbc.Row([dbc.Col([bottom_layout])]),
