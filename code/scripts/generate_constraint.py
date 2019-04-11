@@ -50,8 +50,8 @@ def gen_dissimilar_links(labels, n_links):
         (idx1,) = np.where(labels == c1)
         (idx2,) = np.where(labels == c2)
 
-        p1 = random.choices(idx1.tolist())
-        p2 = random.choices(idx2.tolist())
+        p1 = random.choices(idx1.tolist())[0]
+        p2 = random.choices(idx2.tolist())[0]
 
         # store the generated link with `link_type`=-1
         links.append([p1, p2, DIS_LINK_TYPE])

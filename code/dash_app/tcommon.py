@@ -3,10 +3,11 @@ Note that, if having to use global var, wrap it in `dict`,
 or better (???), write a function to return the need values.
 """
 
-
+import joblib
 import dash_html_components as html
 
-STATIC_IMAGE_DIR = "/static/svg"
+STATIC_IMAGE_DIR = "./static/svg"
+LINK_DIR = "./links"
 
 
 def colorize_link(link_type):
@@ -35,3 +36,10 @@ def get_image_elem(dataset_name, img_id, cmap_type="gray", width="100px"):
     return html.Img(
         src=get_image_url(dataset_name, img_id, cmap_type), width=f"{width}"
     )
+
+
+def get_auto_generated_constraints(dataset_name, n_sim=50, n_dis=50):
+    in_name = f"{LINK_DIR}/auto_{dataset_name}_{n_sim}sim_{n_dis}dis.pkl"
+    links = joblib.load(in_name)
+    assert len(links) == n_sim + n_dis
+    return links

@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 
 from server import app
 from data_filter import get_embedding
-from tcommon import get_image_url
+from tcommon import get_image_url, get_auto_generated_constraints
 
 
 def _add_or_edit_style_for_tap_node(tap_id, styles):
@@ -107,12 +107,26 @@ def _delete_edges(old_edges, edges_to_del):
     return new_edges
 
 
+def _load_auto_generated_constraints(dataset_name, n_sim=50, n_dis=50):
+    links = get_auto_generated_constraints(dataset_name, n_sim, n_dis)
+    print(links)
+    return [
+        {
+            "classes": "sim-link" if t == 1 else "dis-link",
+            "group": "edges",
+            "data": {"source": str(p1), "target": str(p2)},
+        }
+        for p1, p2, t in links
+    ]
+
+
 @app.callback(
     Output("cytoplot", "elements"),
     [
         Input("btn-sim", "n_clicks_timestamp"),
         Input("btn-dis", "n_clicks_timestamp"),
         Input("btn-del-link", "n_clicks_timestamp"),
+        Input("btn-auto", "n_clicks_timestamp"),
         Input("select-dataset", "value"),
         Input("select-perp-val", "value"),
         Input("select-base-perp-val", "value"),
@@ -129,6 +143,7 @@ def update_cytoplot(
     btn_sim,
     btn_dis,
     btn_del,
+    btn_auto,
     dataset_name,
     perp,
     base_perp,
@@ -166,6 +181,7 @@ def update_cytoplot(
             _create_or_edit_edges, old_edges, selected_nodes, "dis-link"
         ),
         "btn-del-link": partial(_delete_edges, old_edges, selected_edges),
+        "btn-auto": partial(_load_auto_generated_constraints, dataset_name),
     }
 
     if last_btn in actions_on_edges:
