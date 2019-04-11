@@ -8,6 +8,8 @@ scripts/common
 dash_app/embeddings
 dash_app/__pycache__/
 dash_app/bk/
+dash_app/static/svg
+
 
 .ropeproject/
 .history/
