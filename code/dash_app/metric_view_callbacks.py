@@ -54,25 +54,25 @@ def _create_figure_from_df(df, perp, view_perp_scale="log", subplot_height=115):
 
 @app.callback(
     [Output("metric-view-chain", "figure"), Output("metric-view-normal", "figure")],
-    [Input("select-dataset", "value"), Input("select-perp-val", "value")],
     [
-        State("select-base-perp-val", "value"),
-        State("select-perp-scale", "value"),
-        State("select-earlystop-val", "value"),
+        Input("select-dataset", "value"),
+        Input("select-perp-val", "value"),
+        Input("select-base-perp-val", "value"),
+        Input("select-perp-scale", "value"),
+        Input("select-earlystop-val", "value"),
     ],
+    [],
 )
-def update_metric_view(
-    dataset_name, perp, base_perp, view_perp_scale="log", earlystop="_earlystop"
-):
+def update_metric_view(dataset_name, perp, base_perp, view_perp_scale, earlystop):
     """Render the metric scores line charts corresponding to the dataset and the given
     params. The current perplexity is indicated in the line chart, so the charts will be
     updated whenever the perplexity is changed.
     """
-    if None in [dataset_name, perp]:
+    if None in [dataset_name, perp, view_perp_scale, earlystop]:
         raise PreventUpdate
 
-    df_chain = get_metrics_df(dataset_name, base_perp=base_perp, earlystop=earlystop)
-    df_normal = get_metrics_df(dataset_name, base_perp=None, earlystop=earlystop)
+    df_chain = get_metrics_df(dataset_name, earlystop, base_perp=base_perp)
+    df_normal = get_metrics_df(dataset_name, earlystop, base_perp=None)
 
     return (
         _create_figure_from_df(df_chain, perp, view_perp_scale, subplot_height=135),
@@ -87,17 +87,16 @@ def update_metric_view(
         Output("constraint-score-view-normal", "figure"),
         Output("links-memory-debug", "data"),
     ],
-    [Input("btn-submit", "n_clicks")],
     [
-        State("select-dataset", "value"),
-        State("links-memory", "data"),
-        State("select-base-perp-val", "value"),
-        State("select-perp-scale", "value"),
-        State("select-earlystop-val", "value"),
+        Input("btn-submit", "n_clicks"),
+        Input("select-base-perp-val", "value"),
+        Input("select-perp-scale", "value"),
+        Input("select-earlystop-val", "value"),
     ],
+    [State("select-dataset", "value"), State("links-memory", "data")],
 )
 def update_constraint_score_view(
-    btn_submit, dataset_name, user_links, base_perp, view_perp_scale="log", earlystop=""
+    btn_submit, base_perp, view_perp_scale, earlystop, dataset_name, user_links
 ):
     """Render the constraint score line chart after finding the best perplexity
     according to the user constraints stored in `links-memory`
@@ -107,7 +106,7 @@ def update_constraint_score_view(
 
     def _gen_fig_score(base_perp=None, detail=False):
         df, detail_links = get_constraint_scores_df(
-            dataset_name, user_links, base_perp, earlystop=earlystop, debug=detail
+            dataset_name, user_links, earlystop, base_perp=base_perp, debug=detail
         )
         best_perp = df["score_all_links"].idxmax()
         return (

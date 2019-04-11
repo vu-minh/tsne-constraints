@@ -12,7 +12,7 @@ import metric_view_callbacks
 
 list_datasets = ["FASHION200", "COIL20", "DIGITS", "COUNTRY2014"]
 
-list_base_perps = [10, 30]
+list_base_perps = [10, 30, None]
 
 ###############################################################################
 # cytoscape stylesheet
@@ -205,8 +205,10 @@ select_base_perplexity = dbc.FormGroup(
         dcc.Dropdown(
             id="select-base-perp-val",
             value=30,
-            options=[{"label": perp, "value": perp} for perp in list_base_perps],
-            style={"width": "80px"},
+            options=[
+                {"label": perp or "No chain", "value": perp} for perp in list_base_perps
+            ],
+            style={"width": "90px"},
         ),
     ],
     className="mr-3",
@@ -223,7 +225,7 @@ select_earlystop = dbc.FormGroup(
                 {"label": "Yes", "value": "_earlystop"},
             ],
             style={"width": "80px"},
-            disabled=True,
+            disabled=False,
         ),
     ],
     className="mr-3",

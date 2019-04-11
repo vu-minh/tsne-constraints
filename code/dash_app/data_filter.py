@@ -13,9 +13,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 MACHINE_EPSILON = np.finfo(np.double).eps
 
 
-def get_embedding(
-    dataset_name, perp, base_perp=None, earlystop="_earlystop", return_all=False
-):
+def get_embedding(dataset_name, perp, earlystop, base_perp=None, return_all=False):
     """Util function to get individual embedding file (.z) for the corresponding dataset
 
     :params: base_perp: base perplexity in case of chain-tSNE
@@ -34,7 +32,7 @@ def get_embedding(
     return data if return_all else data["embedding"]
 
 
-def compute_Q(X2d):
+def _compute_Q(X2d):
     # TODO cache this function
     """ Matrix Q in t-sne, used to calculate the prob. that a point `j`
     being neighbor of a point `i` (the value of Q[i,j])
@@ -49,7 +47,7 @@ def compute_Q(X2d):
     return squareform(Q)
 
 
-def _get_list_embeddings(dataset_name, base_perp=None, earlystop="_earlystop"):
+def _get_list_embeddings(dataset_name, earlystop, base_perp=None):
     """Loop over the directory for the precalculated embeddings
     and return the full path to the .z file.
 
@@ -117,7 +115,7 @@ def constraint_score(Q, sim, dis, debug=False):
 
 
 def calculate_constraint_scores(
-    dataset_name, sim_links, dis_links, base_perp=None, earlystop="_earlystop"
+    dataset_name, sim_links, dis_links, earlystop, base_perp=None
 ):
     """Calculate constraint scores for all perplexities of a given dataset.
 
@@ -125,9 +123,9 @@ def calculate_constraint_scores(
     which can be wrapped into a DataFrame and stored in csv file.
     """
     scores = []
-    for in_name in _get_list_embeddings(dataset_name, base_perp, earlystop):
+    for in_name in _get_list_embeddings(dataset_name, earlystop, base_perp):
         data = joblib.load(in_name)
-        Q = data.get("Q", compute_Q(data["embedding"]))
+        Q = data.get("Q", _compute_Q(data["embedding"]))
         s_sim, s_dis = constraint_score(Q, sim_links, dis_links)
         scores.append(
             {
@@ -141,7 +139,7 @@ def calculate_constraint_scores(
 
 
 def get_constraint_scores_df(
-    dataset_name, constraints, base_perp=None, earlystop="_earlystop", debug=False
+    dataset_name, constraints, earlystop, base_perp=None, debug=False
 ):
     """Calculate constraint score for the input `constraints`
 
@@ -157,19 +155,21 @@ def get_constraint_scores_df(
     dis_links = np.array(
         [[int(link[0]), int(link[1])] for link in constraints if link[2] == "dis-link"]
     )
-    scores = calculate_constraint_scores(dataset_name, sim_links, dis_links, base_perp)
+    scores = calculate_constraint_scores(
+        dataset_name, sim_links, dis_links, earlystop, base_perp
+    )
     df = pd.DataFrame(scores).set_index("perplexity")
 
     debug_links = None
     if debug:
         best_perp = df["score_all_links"].idxmax()
-        data = get_embedding(dataset_name, best_perp, base_perp, return_all=True)
-        Q = compute_Q(data["embedding"])
+        embedding = get_embedding(dataset_name, best_perp, earlystop, base_perp)
+        Q = _compute_Q(embedding)
         _, _, debug_links = constraint_score(Q, sim_links, dis_links, debug=True)
     return df.sort_index(), debug_links
 
 
-def get_metrics_df(dataset_name, base_perp=None, earlystop="_earlystop"):
+def get_metrics_df(dataset_name, earlystop, base_perp=None):
     """Read the precalculated metrics in the csv corresponding csv file.
 
     :returns: DataFrame with indexed column `perplexity` and the metric columns as below

@@ -46,8 +46,8 @@ def change_cyto_style(img_size, current_styles):
     return style_list
 
 
-def _build_cyto_nodes(dataset_name, perp, cmap_type):
-    Z = get_embedding(dataset_name, perp)
+def _build_cyto_nodes(dataset_name, perp, earlystop, base_perp, cmap_type):
+    Z = get_embedding(dataset_name, perp, earlystop, base_perp)
     return [
         dict(
             group="nodes",
@@ -108,7 +108,9 @@ def _delete_edges(old_edges, edges_to_del):
         Input("btn-del-link", "n_clicks_timestamp"),
         Input("select-dataset", "value"),
         Input("select-perp-val", "value"),
+        Input("select-base-perp-val", "value"),
         Input("select-cmap", "value"),
+        Input("select-earlystop-val", "value"),
     ],
     [
         State("cytoplot", "selectedNodeData"),
@@ -122,16 +124,18 @@ def update_cytoplot(
     btn_del,
     dataset_name,
     perp,
+    base_perp,
     cmap_type,
+    earlystop,
     selected_nodes,
     selected_edges,
     current_elems,
 ):
-    if None in [perp, dataset_name, cmap_type]:
+    if None in [perp, dataset_name, cmap_type, earlystop]:
         return []
 
     # always update new nodes (to update img_size, update position or cmap)
-    nodes = _build_cyto_nodes(dataset_name, perp, cmap_type)
+    nodes = _build_cyto_nodes(dataset_name, perp, earlystop, base_perp, cmap_type)
     # filter the current edges
     old_edges = [e for e in current_elems if e["group"] == "edges"]
 
