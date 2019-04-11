@@ -12,7 +12,7 @@ python run_chain_perp.py -d $DATASET_NAME
 # run compare only for copying file
 python run_compare2.py -d $DATASET_NAME
 
-python run_metric.py -d $DATASET_NAME
+python run_metrics.py -d $DATASET_NAME
 
 # python run_plots.py -d $DATASET_NAME
 
