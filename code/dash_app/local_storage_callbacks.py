@@ -109,7 +109,7 @@ def _create_link_item(idx, link, dataset_name, cmap_type):
             if q_ij is not None
             else html.Hr(style={"border": "1.5px solid " + colorize_link(link_type)})
         ),
-        style={"display": "inline-block", "width": "50%"},
+        style={"display": "inline-block", "width": "42%"},
     )
 
     id_text = html.Div(
