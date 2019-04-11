@@ -29,6 +29,7 @@ def calculate_metrics(
     for perp in all_perps:
         in_name = f"{embedding_dir}/{in_name_prefix}{perp}{earlystop}.z"
         data = joblib.load(in_name)
+        print("Runing metric for ", in_name)
 
         record = {
             "perplexity": perp,
@@ -38,9 +39,11 @@ def calculate_metrics(
 
         drMetric = DRMetric(X, data["embedding"])
         for metric_name in metric_names:
+            print(metric_name, end="   ")
             metric_method = getattr(drMetric, metric_name)
             record[metric_name] = metric_method()
 
+        print("Done for perp ", perp)
         result.append(record)
 
     df = pd.DataFrame(result).set_index("perplexity")
