@@ -85,14 +85,14 @@ if __name__ == "__main__":
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--dataset_name")
+    ap.add_argument("-d", "--dataset_name", default="")
     ap.add_argument("-x", "--dev", action="store_true")
-    ap.add_argument("-p", "--test_perp")
-    args = vars(ap.parse_args())
+    ap.add_argument("-e", "--earlystop", action="store_true")
+    ap.add_argument("-p", "--test_perp", default=30, type=int)
+    args = ap.parse_args()
 
-    dataset_name = args.get("dataset_name", "FASHION200")
-    test_perp = args.get("test_perp", 30)
-    DEV = args.get("dev", False)
+    dataset_name = args.dataset_name
+    test_perp, DEV = args.test_perp, args.dev
 
     _, X, y = dataset.load_dataset(dataset_name)
     N = X.shape[0]
@@ -105,13 +105,13 @@ if __name__ == "__main__":
     )
 
     for base_perp in list_perps:
-
-        # run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
-
-        run_dataset(
-            dataset_name,
-            base_perp,
-            run_range=run_range,
-            early_stop=True,
-            **(hyper_params[dataset_name]["early_stop_conditions"]),
-        )
+        if not args.earlystop:
+            run_dataset(dataset_name, base_perp, run_range=run_range, early_stop=False)
+        else:
+            run_dataset(
+                dataset_name,
+                base_perp,
+                run_range=run_range,
+                early_stop=True,
+                **(hyper_params[dataset_name]["early_stop_conditions"]),
+            )

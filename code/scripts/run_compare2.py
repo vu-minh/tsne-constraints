@@ -80,10 +80,10 @@ def compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop=""):
 
 
 embeddings_type = [
-    # ("normal", ""),
-    ("normal", "_earlystop"),
-    # ("chain", ""),
-    ("chain", "_earlystop"),
+    ("normal", ""),
+    # ("normal", "_earlystop"),
+    ("chain", ""),
+    # ("chain", "_earlystop"),
 ]
 
 
@@ -97,7 +97,8 @@ def _extract_for_one_perp(base_perp, perp, key):
     result = {f"{k0}{k1}": _extract_by_key(k0, k1) for k0, k1 in embeddings_type}
     result["perplexity"] = perp
     if perp == base_perp:
-        result["chain_earlystop"] = 0.0
+        result["chain"] = np.nan
+        result["chain_earlystop"] = np.nan
     return result
 
 
@@ -144,7 +145,7 @@ if __name__ == "__main__":
 
     # compare KL, make sure to copy the needed files
     for base_perp in hyper_params[dataset_name]["base_perps"]:
-        for earlystop in ["_earlystop"]:
+        for earlystop in [""]:  # ["_earlystop"]:
             target_file = _get_filename_template("chain").format(
                 base_perp=base_perp, perp=base_perp, earlystop=earlystop
             )
@@ -159,12 +160,13 @@ if __name__ == "__main__":
                     except Exception:
                         print(f"Error copying file: {src_file} -> {target_file}")
 
-                compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop)
+                # DISABLE all compare, just do file copy
+                # compare_kl_with_a_base(base_perp, run_range, embedding_type, earlystop)
 
-    # create chart to compare running_time, n_iter, KL
-    for base_perp in hyper_params[dataset_name]["base_perps"]:
-        # extract running_time in 4cases: normal,normal_earlystop, chain,chain_earlystop
-        extract_from_embeddings(base_perp, run_range, keys=["running_time", "n_iter"])
+    # # create chart to compare running_time, n_iter, KL
+    # for base_perp in hyper_params[dataset_name]["base_perps"]:
+    #     # extract running_time in 4cases: normal,normal_earlystop, chain,chain_earlystop
+    #     extract_from_embeddings(base_perp, run_range, keys=["running_time", "n_iter"])
 
-        # extract the comparation KL[Qbase||Q] for these 4 cases
-        extract_from_csv(base_perp, run_range, key="kl_Qbase_Q")
+    #     # extract the comparation KL[Qbase||Q] for these 4 cases
+    #     extract_from_csv(base_perp, run_range, key="kl_Qbase_Q")
