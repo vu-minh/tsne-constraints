@@ -1,5 +1,11 @@
+import json
+from functools import partial
 from itertools import combinations
+
+import dash
+from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
+
 from server import app
 from data_filter import get_embedding
 from tcommon import get_image_url
@@ -47,6 +53,7 @@ def change_cyto_style(img_size, current_styles):
 
 
 def _build_cyto_nodes(dataset_name, perp, earlystop, base_perp, cmap_type):
+    # TODO cache
     Z = get_embedding(dataset_name, perp, earlystop, base_perp)
     return [
         dict(
@@ -131,6 +138,11 @@ def update_cytoplot(
     selected_edges,
     current_elems,
 ):
+    # update new function of dash 0.38: callback_context
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        raise PreventUpdate
+
     if None in [perp, dataset_name, cmap_type, earlystop]:
         return []
 
@@ -139,13 +151,25 @@ def update_cytoplot(
     # filter the current edges
     old_edges = [e for e in current_elems if e["group"] == "edges"]
 
-    # determine which button is click
-    if int(btn_sim) > int(btn_dis) and int(btn_sim) > int(btn_del):
-        edges = _create_or_edit_edges(old_edges, selected_nodes, "sim-link")
-    elif int(btn_dis) > int(btn_sim) and int(btn_dis) > int(btn_del):
-        edges = _create_or_edit_edges(old_edges, selected_nodes, "dis-link")
-    elif int(btn_del) > int(btn_sim) and int(btn_del) > int(btn_dis):
-        edges = _delete_edges(old_edges, selected_edges)
+    # get lastest triggered event (note, in the doc, it takes the first elem)
+    # https://dash.plot.ly/faqs
+    # we can also access to `ctx.stages` and `ctx.inputs`
+    last_event = ctx.triggered[-1]
+    last_btn = last_event["prop_id"].split(".")[0]
+    print("Last button: ", last_btn)
+
+    actions_on_edges = {
+        "btn-sim": partial(
+            _create_or_edit_edges, old_edges, selected_nodes, "sim-link"
+        ),
+        "btn-dis": partial(
+            _create_or_edit_edges, old_edges, selected_nodes, "dis-link"
+        ),
+        "btn-del-link": partial(_delete_edges, old_edges, selected_edges),
+    }
+
+    if last_btn in actions_on_edges:
+        edges = actions_on_edges[last_btn]()
     else:  # no button clicked
         edges = old_edges
 
