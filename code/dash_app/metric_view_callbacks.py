@@ -14,6 +14,11 @@ cf.go_offline()
 
 
 def _create_figure_from_df(df, perp, view_perp_scale="log", subplot_height=115):
+    """From user param, obtain `df`, a DataFrame of constraint scores or metric scores.
+    Then using `cufflinks` to generate line charts according to the column names in `df`
+    The xaxis is perplexity values in `view_perp_scale` in ['log', 'linear'] scale.
+    An additional vertical line is to indicate the position of the current `perp`.
+    """
     n_metrics = len(df.columns)
     # Available cufflinks thems: ['pearl', 'white', 'ggplot', 'solar', 'space']
     figure = df.iplot(
@@ -50,14 +55,24 @@ def _create_figure_from_df(df, perp, view_perp_scale="log", subplot_height=115):
 @app.callback(
     [Output("metric-view-chain", "figure"), Output("metric-view-normal", "figure")],
     [Input("select-dataset", "value"), Input("select-perp-val", "value")],
-    [State("select-base-perp-val", "value"), State("select-perp-scale", "value")],
+    [
+        State("select-base-perp-val", "value"),
+        State("select-perp-scale", "value"),
+        State("select-earlystop-val", "value"),
+    ],
 )
-def update_metric_view(dataset_name, perp, base_perp, view_perp_scale="log"):
+def update_metric_view(
+    dataset_name, perp, base_perp, view_perp_scale="log", earlystop="_earlystop"
+):
+    """Render the metric scores line charts corresponding to the dataset and the given
+    params. The current perplexity is indicated in the line chart, so the charts will be
+    updated whenever the perplexity is changed.
+    """
     if None in [dataset_name, perp]:
         raise PreventUpdate
 
-    df_chain = get_metrics_df(dataset_name, base_perp=base_perp)
-    df_normal = get_metrics_df(dataset_name, base_perp=None)
+    df_chain = get_metrics_df(dataset_name, base_perp=base_perp, earlystop=earlystop)
+    df_normal = get_metrics_df(dataset_name, base_perp=None, earlystop=earlystop)
 
     return (
         _create_figure_from_df(df_chain, perp, view_perp_scale, subplot_height=135),
@@ -78,17 +93,21 @@ def update_metric_view(dataset_name, perp, base_perp, view_perp_scale="log"):
         State("links-memory", "data"),
         State("select-base-perp-val", "value"),
         State("select-perp-scale", "value"),
+        State("select-earlystop-val", "value"),
     ],
 )
 def update_constraint_score_view(
-    btn_submit, dataset_name, user_links, base_perp, view_perp_scale="log"
+    btn_submit, dataset_name, user_links, base_perp, view_perp_scale="log", earlystop=""
 ):
+    """Render the constraint score line chart after finding the best perplexity
+    according to the user constraints stored in `links-memory`
+    """
     if None in [btn_submit, dataset_name, user_links]:
         raise PreventUpdate
 
     def _gen_fig_score(base_perp=None, detail=False):
         df, detail_links = get_constraint_scores_df(
-            dataset_name, user_links, base_perp, debug=detail
+            dataset_name, user_links, base_perp, earlystop=earlystop, debug=detail
         )
         best_perp = df["score_all_links"].idxmax()
         return (

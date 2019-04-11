@@ -16,6 +16,13 @@ MACHINE_EPSILON = np.finfo(np.double).eps
 def get_embedding(
     dataset_name, perp, base_perp=None, earlystop="_earlystop", return_all=False
 ):
+    """Util function to get individual embedding file (.z) for the corresponding dataset
+
+    :params: base_perp: base perplexity in case of chain-tSNE
+
+    :returns: a dictionary of precalculated info if `return_all` is True,
+              otherwise, only the 2D embedding in data["embedding"] is returned
+    """
     if base_perp is None:
         embedding_dir = f"{dir_path}/normal"
         in_name_prefix = ""
@@ -42,7 +49,15 @@ def compute_Q(X2d):
     return squareform(Q)
 
 
-def get_list_embeddings(dataset_name, base_perp=None, earlystop="_earlystop"):
+def _get_list_embeddings(dataset_name, base_perp=None, earlystop="_earlystop"):
+    """Loop over the directory for the precalculated embeddings
+    and return the full path to the .z file.
+
+    :params: base_perp: base perplexity in case of chain-tSNE in `chain` dir,
+             otherwise, use normal embeddings in `normal` dir
+
+    :returns: List[str] of full path to the embeddings, then being fed to joblib.load()
+    """
     # in_name_prefix = f"{base_perp}_to_" if embedding_type == "chain" else ""
     # in_name = f"{embedding_dir}/{dataset_name}/{in_name_prefix}{perp}.z"
     embedding_type = "normal" if base_perp is None else "chain"
@@ -61,6 +76,16 @@ def get_list_embeddings(dataset_name, base_perp=None, earlystop="_earlystop"):
 
 
 def constraint_score(Q, sim, dis, debug=False):
+    """Core function to calculate constraint scores.
+
+    :params: Q np.array(float) matrix Q = [q_ij] of size [N, N], N: number of datapoints
+    :params: sim List[int, int] list of similar links
+    :params: dis List[int, int] list of dissimilar links
+    :params: debug defaults to False, flag to return detailed scores for each link
+
+    :returns: score for each type of link,
+              with or without detailed score for each individual
+    """
     # print(f"[DEBUG]Q_min={np.min(Q[np.nonzero(Q)])}, Q_max={Q.max()}")
     if len(Q.shape) < 2:
         Q = squareform(Q)
@@ -94,8 +119,13 @@ def constraint_score(Q, sim, dis, debug=False):
 def calculate_constraint_scores(
     dataset_name, sim_links, dis_links, base_perp=None, earlystop="_earlystop"
 ):
+    """Calculate constraint scores for all perplexities of a given dataset.
+
+    :returns: list of dictionary, with fields being different types of constraint scores
+    which can be wrapped into a DataFrame and stored in csv file.
+    """
     scores = []
-    for in_name in get_list_embeddings(dataset_name, base_perp, earlystop):
+    for in_name in _get_list_embeddings(dataset_name, base_perp, earlystop):
         data = joblib.load(in_name)
         Q = data.get("Q", compute_Q(data["embedding"]))
         s_sim, s_dis = constraint_score(Q, sim_links, dis_links)
@@ -113,6 +143,14 @@ def calculate_constraint_scores(
 def get_constraint_scores_df(
     dataset_name, constraints, base_perp=None, earlystop="_earlystop", debug=False
 ):
+    """Calculate constraint score for the input `constraints`
+
+    :returns: DataFrame with 4 columns, sorted by index
+        + perplexity (index)
+        + score_similar_links
+        + score_dissimilar_links
+        + score_all_links
+    """
     sim_links = np.array(
         [[int(link[0]), int(link[1])] for link in constraints if link[2] == "sim-link"]
     )
@@ -132,6 +170,10 @@ def get_constraint_scores_df(
 
 
 def get_metrics_df(dataset_name, base_perp=None, earlystop="_earlystop"):
+    """Read the precalculated metrics in the csv corresponding csv file.
+
+    :returns: DataFrame with indexed column `perplexity` and the metric columns as below
+    """
     # TODO cache this request
     in_name_prefix = "" if base_perp is None else f"_base{base_perp}"
     in_name = f"{dir_path}/metrics/{dataset_name}{in_name_prefix}{earlystop}.csv"
