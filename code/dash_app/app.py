@@ -212,6 +212,22 @@ select_base_perplexity = dbc.FormGroup(
     className="mr-3",
 )
 
+select_earlystop = dbc.FormGroup(
+    [
+        dbc.Label("Early-stop", html_for="select-earlystop-val", className="mr-2"),
+        dcc.Dropdown(
+            id="select-earlystop-val",
+            value="",
+            options=[
+                {"label": "No", "value": ""},
+                {"label": "Yes", "value": "_earlystop"},
+            ],
+            style={"width": "80px"},
+            disabled=True,
+        ),
+    ],
+    className="mr-3",
+)
 
 option_view_perp_scale = dbc.FormGroup(
     [
@@ -268,7 +284,7 @@ slider_select_scatter_zoom_factor = dbc.FormGroup(
 )
 
 data_control_form = dbc.Form(
-    [select_dataset_name, select_base_perplexity], inline=True, style={"width": "30%"}
+    [select_dataset_name, select_base_perplexity], inline=True, style={"width": "28%"}
 )
 
 zoom_control_form = dbc.Form(
@@ -276,9 +292,14 @@ zoom_control_form = dbc.Form(
 )
 
 display_control_form = dbc.Form(
-    [select_perplexity, option_select_scatter_color, option_view_perp_scale],
+    [
+        select_perplexity,
+        option_select_scatter_color,
+        option_view_perp_scale,
+        select_earlystop,
+    ],
     inline=True,
-    style={"width": "40%"},
+    style={"width": "42%"},
 )
 
 navbar = dbc.Navbar(
