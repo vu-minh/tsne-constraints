@@ -61,17 +61,17 @@ if __name__ == "__main__":
     dataset.set_data_home(data_dir)
 
     dataset_name, base_perp = args.dataset_name, args.base_perp
+    earlystop = "" if not args.earlystop else "_earlystop"
     metric_names = ["auc_rnx", "pearsonr", "mds_isotonic", "cca_stress", "sammon_nlm"]
 
+    # calculate metrics for normal tSNE
+    calculate_metrics(dataset_name, metric_names, base_perp=None, earlystop="")
+
+    # calculate metrics for chain tSNE
     base_perps = (
         [base_perp]
         if base_perp is not None
         else hyper_params[dataset_name]["base_perps"]
     )
     for base_perp in base_perps:
-        if not args.earlystop:
-            calculate_metrics(dataset_name, metric_names, base_perp=None, earlystop="")
-        else:
-            calculate_metrics(
-                dataset_name, metric_names, base_perp=base_perp, earlystop="_earlystop"
-            )
+        calculate_metrics(dataset_name, metric_names, base_perp, earlystop)
