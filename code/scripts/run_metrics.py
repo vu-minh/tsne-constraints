@@ -60,18 +60,23 @@ if __name__ == "__main__":
     data_dir = f"{dir_path}/data"
     dataset.set_data_home(data_dir)
 
-    dataset_name, base_perp = args.dataset_name, args.base_perp
+    dataset_name, param_base_perp = args.dataset_name, args.base_perp
     earlystop = "" if not args.earlystop else "_earlystop"
     metric_names = ["auc_rnx", "pearsonr", "mds_isotonic", "cca_stress", "sammon_nlm"]
 
-    # calculate metrics for normal tSNE
-    calculate_metrics(dataset_name, metric_names, base_perp=None, earlystop="")
+    if param_base_perp is None:
+        # calculate metrics for normal tSNE
+        calculate_metrics(
+            dataset_name, metric_names, base_perp=None, earlystop=earlystop
+        )
+    else:
+        if param_base_perp == 0:
+            # get list base_perps from config `icommon.hyper_params`
+            base_perps = hyper_params[dataset_name]["base_perps"]
+        else:
+            # list base_perps contains the user-specified base_perp
+            base_perps = [param_base_perp]
 
-    # calculate metrics for chain tSNE
-    base_perps = (
-        [base_perp]
-        if base_perp is not None
-        else hyper_params[dataset_name]["base_perps"]
-    )
-    for base_perp in base_perps:
-        calculate_metrics(dataset_name, metric_names, base_perp, earlystop)
+        # calculate metrics for chain tSNE
+        for base_perp in base_perps:
+            calculate_metrics(dataset_name, metric_names, base_perp, earlystop)
