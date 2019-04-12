@@ -10,7 +10,7 @@ import local_storage_callbacks
 import metric_view_callbacks
 
 
-list_datasets = ["FASHION200", "COIL20", "DIGITS", "COUNTRY2014"]
+list_datasets = ["FASHION200", "COIL20", "DIGITS", "QUICKDRAW500", "COUNTRY2014"]
 
 list_base_perps = [10, 30, None]
 

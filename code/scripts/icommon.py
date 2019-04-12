@@ -31,6 +31,18 @@ hyper_params = {
             30: [5, 10, 25, 35, 50, 65],
         },
     },
+    "QUICKDRAW500": {
+        # "early_stop_conditions": {
+        #     "n_iter_without_progress": 120,
+        #     "min_grad_norm": 5e-04,
+        # },
+        "base_perps": [10, 30],  # [20,40],
+        "selected_perps": {  # for plotting example embeddings
+            10: [5, 15, 25, 35, 50, 65],
+            20: [5, 15, 25, 35, 50, 65],
+            30: [5, 10, 25, 35, 50, 65],
+        },
+    },
     "BREAST_CANCER": {
         "early_stop_conditions": {
             "n_iter_without_progress": 120,
