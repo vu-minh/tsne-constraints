@@ -947,61 +947,185 @@ body p {
 </style>
                    <link rel="stylesheet" href="css/elegant.css"><link rel="stylesheet" href="css/katex.min.css"><link rel="stylesheet" href="css/codemirror.css">
                  </head>
-                 <body><p data-line="0"><code>20190409</code></p>
-<h4 id="Some-issues-with-user-constraints" data-line="2">Some issues with user-constraints:</h4>
+                 <body><p data-line="0"><code>20190412</code></p>
+<h4 id="Update-constraint-scores-for-the-auto-generated-links" data-line="1">Update constraint scores for the auto-generated links.</h4>
 <ul>
-<li data-line="3">Our method prefers the small perplexity to satisfy the user-constraints.</li>
+<li data-line="3">Using chain-tSNE <strong>without</strong> early-stop</li>
+<li data-line="4">Using base perplexity of 30</li>
+<li data-line="5">Show all constraint and metrics scores in log-scale</li>
+<li data-line="6">Compare the scores of chaint-tSNE with original tSNE</li>
+<li data-line="7">Using 100 auto-generated constraints (50 similar links, 50 dissimilar links)</li>
 </ul>
-<p data-line="5"><img src="attachments/3c912da1.png" alt="Selection_124.png" /></p>
-<p data-line="7"><img src="attachments/fea32a72.png" alt="Selection_125.png" /></p>
+<h4 id="Some-results" data-line="10">Some results</h4>
+<table data-line="11">
+<thead>
+<tr>
+<th>DIGITS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="attachments/74fb3cee.png" alt="Dash - Google Chrome_140.png" /></td>
+</tr>
+<tr>
+<td>COIL20</td>
+</tr>
+<tr>
+<td><img src="attachments/0886f126.png" alt="COIL20_base30_100constraint.png" /></td>
+</tr>
+<tr>
+<td>FASHION200</td>
+</tr>
+<tr>
+<td><img src="attachments/471168d8.png" alt="471168d8.png" /></td>
+</tr>
+<tr>
+<td>COUNTRY2014</td>
+</tr>
+<tr>
+<td><img src="attachments/2eadd3ba.png" alt="2eadd3ba.png" /></td>
+</tr>
+<tr>
+<td>QUICKDRAW500</td>
+</tr>
+<tr>
+<td><img src="attachments/1144a036.png" alt="1144a036.png" /></td>
+</tr>
+</tbody>
+<tbody></tbody>
+</table>
+<h4 id="To-discuss1" data-line="24">To discuss1</h4>
 <ul>
-<li data-line="9">Hard to find early-stop condition for large dataset, since it depends on the value of perplexity.</li>
+<li data-line="25">
+<p data-line="25">Auto-generated constraints seem not to be reasonable:</p>
+<ul>
+<li data-line="26">similar links between the points already in the same group</li>
+<li data-line="27">dissimilar links between the points in different groups</li>
 </ul>
-<p data-line="11">============================================================================</p>
-<p data-line="13"><code>20190327</code></p>
-<h3 id="Update-chain-tSNE-with-different-perplexities" data-line="14">[Update] chain-tSNE with different perplexities</h3>
-<h4 id="Dataset-FASHION200" data-line="16">Dataset FASHION200</h4>
+</li>
+<li data-line="29">
+<p data-line="29">The user-specified links are used to specify the constraints (to correct the error of the algorithm):</p>
 <ul>
-<li data-line="17"><code>base_perplexity=20</code>, showing 6 different visualizations with <code>perp</code> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo>{</mo><mn>5</mn><mo separator="true">,</mo><mn>1</mn><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mn>5</mn><mo separator="true">,</mo><mn>3</mn><mn>0</mn><mo separator="true">,</mo><mn>4</mn><mn>0</mn><mo separator="true">,</mo><mn>5</mn><mn>0</mn><mo>}</mo></mrow><annotation encoding="application/x-tex">\in \{ 5, 10, 25, 30, 40, 50 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mclose">}</span></span></span></span></li>
+<li data-line="30">similar links between the similar points which are placed far apart in the viz. (they want these points to be closer)</li>
+<li data-line="31">dissimilar links between the dissimilar points which are close in the viz. (they want these points to be far away)</li>
 </ul>
-<p data-line="19"><img src="attachments/2fe679c2.png" alt="Annote KL tsne chain FASHION200_base20.png" /></p>
-<h4 id="Dataset-COIL20" data-line="22">Dataset COIL20</h4>
-<ul>
-<li data-line="23"><code>base_perplexity=75</code>, showing 6 different visualizations with <code>perp</code> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo>{</mo><mn>5</mn><mo separator="true">,</mo><mn>5</mn><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>0</mn><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>5</mn><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mn>0</mn><mn>0</mn><mo separator="true">,</mo><mn>4</mn><mn>0</mn><mn>0</mn><mo>}</mo></mrow><annotation encoding="application/x-tex">\in \{ 5, 50, 100, 150, 200, 400 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">5</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mord">0</span><span class="mclose">}</span></span></span></span></li>
+</li>
 </ul>
-<p data-line="25"><img src="attachments/27985b82.png" alt="Annote KL tsne chain COIL20_base75.png" /></p>
-<h4 id="An-alternative-intergrate-constraints-into-tSNE-loss-function" data-line="28">An alternative: intergrate constraints into tSNE loss function.</h4>
+
+<h4 id="To-discuss2" data-line="39">To discuss2</h4>
+<p data-line="40">I take 6 main points discussed in the article <a href="https://distill.pub/2016/misread-tsne/">How to Use t-SNE Effectively</a></p>
+<ol>
+<li data-line="41">
+<p data-line="41">The hyperparameters really matter<br />
+<sup>To analyze the impact of perplexity, they run tSNE with 5000 iterations without early-stop do eliminate the affect of other params (e.g. learning-rate) and to make sure tSNE converges.</sup></p>
+</li>
+<li data-line="44">
+<p data-line="44">Cluster sizes in a t-SNE plot mean nothing<br />
+<sup> “… it naturally expands dense clusters, and contracts sparse ones, evening out cluster sizes”.</sup></p>
+</li>
+<li data-line="47">
+<p data-line="47">Distances between clusters might not mean anything<br />
+<sup>The basic message is that distances between well-separated clusters in a t-SNE plot may mean nothing.</sup></p>
+</li>
+<li data-line="50">
+<p data-line="50">Random noise doesn’t always look random</p>
+</li>
+<li data-line="51">
+<p data-line="51">You can see some shapes, sometimes</p>
+</li>
+<li data-line="53">
+<p data-line="53">For topology, you may need more than one plot<br />
+<sup>The power of tSNE lies on its flexibility, which is shown by multiple views at multiple perplexities.</sup></p>
+</li>
+</ol>
+<h5 id="DIGITS" data-line="57">DIGITS</h5>
+<table data-line="58">
+<thead>
+<tr>
+<th>Base30, perp=30</th>
+<th>Base30, perp=55</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="attachments/94cdb55c.png" alt="DIGITS_base30_100constraints_before.png" /></td>
+<td><img src="attachments/74fb3cee.png" alt="Dash - Google Chrome_140.png" /></td>
+</tr>
+</tbody>
+<tbody></tbody>
+</table>
+<h5 id="COIL20" data-line="62">COIL20</h5>
+<table data-line="64">
+<thead>
+<tr>
+<th>Base30, perp=30</th>
+<th>Base30, perp=66</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="attachments/256aa156.png" alt="COIL20_base30_100constraint_before.png" /></td>
+<td><img src="attachments/0886f126.png" alt="COIL20_base30_100constraint.png" /></td>
+</tr>
+</tbody>
+<tbody></tbody>
+</table>
+<p data-line="69">============================================================================</p>
+<p data-line="71"><code>20190409</code></p>
+<h4 id="Some-issues-with-user-constraints" data-line="73">Some issues with user-constraints:</h4>
 <ul>
-<li data-line="30">
-<p data-line="30">Using “sematic similarity” (as in Contrastive Unsupervised Representation Learning <a href="https://arxiv.org/pdf/1902.09229.pdf">Arora2019</a> that generalizes the idea of unsupervised embedding learning of word2vec, sentence2vec, paragraph2vec, etc)<br />
+<li data-line="74">Our method prefers the small perplexity to satisfy the user-constraints.</li>
+</ul>
+<p data-line="76"><img src="attachments/3c912da1.png" alt="Selection_124.png" /></p>
+<p data-line="78"><img src="attachments/fea32a72.png" alt="Selection_125.png" /></p>
+<ul>
+<li data-line="80">Hard to find early-stop condition for large dataset, since it depends on the value of perplexity.</li>
+</ul>
+<p data-line="82">============================================================================</p>
+<p data-line="84"><code>20190327</code></p>
+<h3 id="Update-chain-tSNE-with-different-perplexities" data-line="85">[Update] chain-tSNE with different perplexities</h3>
+<h4 id="Dataset-FASHION200" data-line="87">Dataset FASHION200</h4>
+<ul>
+<li data-line="88"><code>base_perplexity=20</code>, showing 6 different visualizations with <code>perp</code> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo>{</mo><mn>5</mn><mo separator="true">,</mo><mn>1</mn><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mn>5</mn><mo separator="true">,</mo><mn>3</mn><mn>0</mn><mo separator="true">,</mo><mn>4</mn><mn>0</mn><mo separator="true">,</mo><mn>5</mn><mn>0</mn><mo>}</mo></mrow><annotation encoding="application/x-tex">\in \{ 5, 10, 25, 30, 40, 50 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mclose">}</span></span></span></span></li>
+</ul>
+<p data-line="90"><img src="attachments/2fe679c2.png" alt="Annote KL tsne chain FASHION200_base20.png" /></p>
+<h4 id="Dataset-COIL20" data-line="93">Dataset COIL20</h4>
+<ul>
+<li data-line="94"><code>base_perplexity=75</code>, showing 6 different visualizations with <code>perp</code> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo>{</mo><mn>5</mn><mo separator="true">,</mo><mn>5</mn><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>0</mn><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>5</mn><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mn>0</mn><mn>0</mn><mo separator="true">,</mo><mn>4</mn><mn>0</mn><mn>0</mn><mo>}</mo></mrow><annotation encoding="application/x-tex">\in \{ 5, 50, 100, 150, 200, 400 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">5</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">4</span><span class="mord">0</span><span class="mord">0</span><span class="mclose">}</span></span></span></span></li>
+</ul>
+<p data-line="96"><img src="attachments/27985b82.png" alt="Annote KL tsne chain COIL20_base75.png" /></p>
+<h4 id="An-alternative-intergrate-constraints-into-tSNE-loss-function" data-line="99">An alternative: intergrate constraints into tSNE loss function.</h4>
+<ul>
+<li data-line="101">
+<p data-line="101">Using “sematic similarity” (as in Contrastive Unsupervised Representation Learning <a href="https://arxiv.org/pdf/1902.09229.pdf">Arora2019</a> that generalizes the idea of unsupervised embedding learning of word2vec, sentence2vec, paragraph2vec, etc)<br />
 <img src="attachments/4d02ac62.png" alt="4d02ac62.png" width="600" /></p>
 </li>
-<li data-line="33">
-<p data-line="33">Triplet loss: (FaceNet: A Unified Embedding for Face Recognition and Clustering <a href="https://arxiv.org/pdf/1503.03832.pdf">Schroff2015</a>)<br />
+<li data-line="104">
+<p data-line="104">Triplet loss: (FaceNet: A Unified Embedding for Face Recognition and Clustering <a href="https://arxiv.org/pdf/1503.03832.pdf">Schroff2015</a>)<br />
 <img src="attachments/c13825be.png" alt="c13825be.png" width="600" /><br />
 <img src="attachments/4682e206.png" alt="4682e206.png" width="600" /></p>
 </li>
-<li data-line="37">
-<p data-line="37">Modify directly <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">P_{ij}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span> and/or <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Q_{ij}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span> for the pairs of selected points.</p>
+<li data-line="108">
+<p data-line="108">Modify directly <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">P_{ij}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span> and/or <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Q_{ij}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit">Q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span> for the pairs of selected points.</p>
 </li>
-<li data-line="39">
-<p data-line="39">Mutual information as penalty?</p>
+<li data-line="110">
+<p data-line="110">Mutual information as penalty?</p>
 </li>
-<li data-line="41">
-<p data-line="41">Add penalty term between each of <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">m</span></span></span></span> moved points and its <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> neighbors (we’ve tried last year <a href="attachments/68a49a1e.pdf">change in objective function tsne.pdf</a>)</p>
+<li data-line="112">
+<p data-line="112">Add penalty term between each of <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">m</span></span></span></span> moved points and its <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> neighbors (we’ve tried last year <a href="attachments/68a49a1e.pdf">change in objective function tsne.pdf</a>)</p>
 <ul>
-<li data-line="42">using Student t-distribution around the fixed points:<span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi><mo>=</mo><mi>K</mi><mi>L</mi><mo>(</mo><mi>P</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msup><mi>Q</mi><mo mathvariant="normal">′</mo></msup><mo>)</mo><mo>+</mo><munderover><mo>∑</mo><mi>i</mi><mi>m</mi></munderover><munderover><mo>∑</mo><mi>j</mi><mi>k</mi></munderover><mi>log</mi><mo>⁡</mo><mrow><mo fence="true">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mrow><msub><mi>y</mi><mi>j</mi></msub></mrow><mo>−</mo><mrow><msubsup><mi>y</mi><mi>i</mi><mo mathvariant="normal">′</mo></msubsup></mrow><mi mathvariant="normal">∣</mi><msup><mi mathvariant="normal">∣</mi><mn>2</mn></msup></mrow><mrow><msup><mi>σ</mi><mn>2</mn></msup></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">C = KL(P || Q^{\prime}) + \sum_{i}^{m} \sum_{j}^{k} \log \left(
+<li data-line="113">using Student t-distribution around the fixed points:<span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi><mo>=</mo><mi>K</mi><mi>L</mi><mo>(</mo><mi>P</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msup><mi>Q</mi><mo mathvariant="normal">′</mo></msup><mo>)</mo><mo>+</mo><munderover><mo>∑</mo><mi>i</mi><mi>m</mi></munderover><munderover><mo>∑</mo><mi>j</mi><mi>k</mi></munderover><mi>log</mi><mo>⁡</mo><mrow><mo fence="true">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mrow><msub><mi>y</mi><mi>j</mi></msub></mrow><mo>−</mo><mrow><msubsup><mi>y</mi><mi>i</mi><mo mathvariant="normal">′</mo></msubsup></mrow><mi mathvariant="normal">∣</mi><msup><mi mathvariant="normal">∣</mi><mn>2</mn></msup></mrow><mrow><msup><mi>σ</mi><mn>2</mn></msup></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">C = KL(P || Q^{\prime}) + \sum_{i}^{m} \sum_{j}^{k} \log \left(
         1 + \frac{|| {y_j} - {y_i^{\prime}}||^2}
             {\sigma^2}
     \right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.8361130000000006em;"></span><span class="strut bottom" style="height:3.2498900000000006em;vertical-align:-1.4137769999999998em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07153em;">C</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.07153em;">K</span><span class="mord mathit">L</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mord">∣</span><span class="mord">∣</span><span class="mord"><span class="mord mathit">Q</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">i</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"></span></span></span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8361130000000006em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.4137769999999998em;"></span></span></span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">(</span></span><span class="mord">1</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911079999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord">∣</span><span class="mord"><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-2.441336em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">i</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.258664em;"></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord">∣</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">)</span></span></span></span></span></span></span>
 </li>
-<li data-line="48">using L2 regularization term (which is equivalent to using Gaussian distribution around the fixed points):<span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi><mo>=</mo><mi>K</mi><mi>L</mi><mo>(</mo><mi>P</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msup><mi>Q</mi><mo mathvariant="normal">′</mo></msup><mo>)</mo><mo>+</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn><msup><mi>λ</mi><mn>2</mn></msup></mrow></mfrac><munderover><mo>∑</mo><mi>i</mi><mi>m</mi></munderover><munderover><mo>∑</mo><mi>j</mi><mi>k</mi></munderover><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mrow><msub><mi>y</mi><mi>j</mi></msub></mrow><mo>−</mo><mrow><msubsup><mi>y</mi><mi>i</mi><mo mathvariant="normal">′</mo></msubsup></mrow><mi mathvariant="normal">∣</mi><msup><mi mathvariant="normal">∣</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">C = KL(P || Q^{\prime}) + \frac{1}{2 \lambda^2} \sum_{i}^{m} \sum_{j}^{k}
+<li data-line="119">using L2 regularization term (which is equivalent to using Gaussian distribution around the fixed points):<span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi><mo>=</mo><mi>K</mi><mi>L</mi><mo>(</mo><mi>P</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msup><mi>Q</mi><mo mathvariant="normal">′</mo></msup><mo>)</mo><mo>+</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn><msup><mi>λ</mi><mn>2</mn></msup></mrow></mfrac><munderover><mo>∑</mo><mi>i</mi><mi>m</mi></munderover><munderover><mo>∑</mo><mi>j</mi><mi>k</mi></munderover><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mrow><msub><mi>y</mi><mi>j</mi></msub></mrow><mo>−</mo><mrow><msubsup><mi>y</mi><mi>i</mi><mo mathvariant="normal">′</mo></msubsup></mrow><mi mathvariant="normal">∣</mi><msup><mi mathvariant="normal">∣</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">C = KL(P || Q^{\prime}) + \frac{1}{2 \lambda^2} \sum_{i}^{m} \sum_{j}^{k}
     || {y_j} - {y_i^{\prime}}||^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.8361130000000006em;"></span><span class="strut bottom" style="height:3.2498900000000006em;vertical-align:-1.4137769999999998em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07153em;">C</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.07153em;">K</span><span class="mord mathit">L</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mord">∣</span><span class="mord">∣</span><span class="mord"><span class="mord mathit">Q</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord"><span class="mord mathit">λ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">i</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"></span></span></span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8361130000000006em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.4137769999999998em;"></span></span></span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">∣</span><span class="mord">∣</span><span class="mord"><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8018919999999999em;"><span style="top:-2.4530000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">i</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord">∣</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>
 </li>
 </ul>
 </li>
 </ul>
-<table data-line="53">
+<table data-line="124">
 <thead>
 <tr>
 <th>before</th>
@@ -1029,19 +1153,19 @@ body p {
 + Are we stuck in one of the local minima of the model-space? The reason is that, we start from a &quot;solution&quot;, which is indeed a local minimum in the model-space, and we've just moved around it but can not escape from this.
 </pre>
 </details>
-<p data-line="69">============================================================================</p>
-<p data-line="71"><code>20190326</code></p>
-<h3 id="Update-run-tSNE-in-chain-with-early-stop-criteria" data-line="72">[Update] run tSNE in chain with early-stop criteria.</h3>
-<p data-line="74"><img src="attachments/5dc47fbb.png" alt="tsne chain with early-stop.png" /></p>
+<p data-line="140">============================================================================</p>
+<p data-line="142"><code>20190326</code></p>
+<h3 id="Update-run-tSNE-in-chain-with-early-stop-criteria" data-line="143">[Update] run tSNE in chain with early-stop criteria.</h3>
+<p data-line="145"><img src="attachments/5dc47fbb.png" alt="tsne chain with early-stop.png" /></p>
 <ul>
-<li data-line="76">
-<p data-line="76">Run modified version (Barnes-Hut tSNE) of van der Maaten’s c++ implementation in <a href="https://github.com/lvdmaaten/bhtsne/">GitHub - lvdmaaten/bhtsne: Barnes-Hut t-SNE</a> with API <a href="https://github.com/DmitryUlyanov/Multicore-TSNE">wrapper</a> in python.</p>
+<li data-line="147">
+<p data-line="147">Run modified version (Barnes-Hut tSNE) of van der Maaten’s c++ implementation in <a href="https://github.com/lvdmaaten/bhtsne/">GitHub - lvdmaaten/bhtsne: Barnes-Hut t-SNE</a> with API <a href="https://github.com/DmitryUlyanov/Multicore-TSNE">wrapper</a> in python.</p>
 </li>
-<li data-line="78">
-<p data-line="78">The original parameters:</p>
+<li data-line="149">
+<p data-line="149">The original parameters:</p>
 </li>
 </ul>
-<pre class="code CodeMirror" data-line="79">
+<pre class="code CodeMirror" data-line="150">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span><span class="CodeMirror-linenumber">6</span></span>
         <code class="">early_exaggeration=12.0,
@@ -1052,27 +1176,27 @@ random_state=2019,
 barnes_hut_theta=0.5
 </code>
       </pre><ul>
-<li data-line="88">The following early-stop conditions are added:
+<li data-line="159">The following early-stop conditions are added:
 <ul>
-<li data-line="89"><code>n_iter_without_progress</code>: number of iterations for which the <code>kl_loss</code> does not change. The <code>kl_loss</code> is calculated each 10 iterations.</li>
-<li data-line="90"><code>min_grad_norm</code>: stop training if the change of gradient is smaller than the <code>min_grad_norm</code>.</li>
+<li data-line="160"><code>n_iter_without_progress</code>: number of iterations for which the <code>kl_loss</code> does not change. The <code>kl_loss</code> is calculated each 10 iterations.</li>
+<li data-line="161"><code>min_grad_norm</code>: stop training if the change of gradient is smaller than the <code>min_grad_norm</code>.</li>
 </ul>
 </li>
 </ul>
-<p data-line="92">The value of these parameters are selected manually for each dataset to make sure that we can see the “early-stop” phenomenon.</p>
-<p data-line="94">To disable early-stop, these params are set as follows:</p>
-<pre class="code CodeMirror" data-line="95">
+<p data-line="163">The value of these parameters are selected manually for each dataset to make sure that we can see the “early-stop” phenomenon.</p>
+<p data-line="165">To disable early-stop, these params are set as follows:</p>
+<pre class="code CodeMirror" data-line="166">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span></span>
         <code class="">n_iter_without_progress = 1000, # max_iter = 1000
 min_grad_norm = 1e-09
 </code>
       </pre><ul>
-<li data-line="100">The error of each point and the <code>kl_loss</code> of each iteration are also stored.</li>
+<li data-line="171">The error of each point and the <code>kl_loss</code> of each iteration are also stored.</li>
 </ul>
-<p data-line="102"><img src="attachments/73e656ba.png" alt="Annote tsne result.png" /></p>
-<h4 id="FASHION200" data-line="105">FASHION200</h4>
-<pre class="code CodeMirror" data-line="106">
+<p data-line="173"><img src="attachments/73e656ba.png" alt="Annote tsne result.png" /></p>
+<h4 id="FASHION200" data-line="176">FASHION200</h4>
+<pre class="code CodeMirror" data-line="177">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1081,12 +1205,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 40],
 </code>
-      </pre><p data-line="113"><a href="FASHION200_base10_v2.html">FASHION200_base10</a><br />
+      </pre><p data-line="184"><a href="FASHION200_base10_v2.html">FASHION200_base10</a><br />
 <a href="FASHION200_base20_v2.html">FASHION200_base20</a><br />
 <a href="FASHION200_base30_v2.html">FASHION200_base30</a><br />
 <a href="FASHION200_base40_v2.html">FASHION200_base40</a></p>
-<h4 id="COUNTRY2014" data-line="118">COUNTRY2014</h4>
-<pre class="code CodeMirror" data-line="119">
+<h4 id="COUNTRY2014" data-line="189">COUNTRY2014</h4>
+<pre class="code CodeMirror" data-line="190">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1095,12 +1219,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [5, 10, 20, 30],
 </code>
-      </pre><p data-line="126"><a href="COUNTRY2014_base5_v2.html">COUNTRY2014_base5</a><br />
+      </pre><p data-line="197"><a href="COUNTRY2014_base5_v2.html">COUNTRY2014_base5</a><br />
 <a href="COUNTRY2014_base10_v2.html">COUNTRY2014_base10</a><br />
 <a href="COUNTRY2014_base20_v2.html">COUNTRY2014_base20</a><br />
 <a href="COUNTRY2014_base30_v2.html">COUNTRY2014_base30</a></p>
-<h4 id="BREASTCANCER" data-line="131">BREAST_CANCER</h4>
-<pre class="code CodeMirror" data-line="132">
+<h4 id="BREASTCANCER" data-line="202">BREAST_CANCER</h4>
+<pre class="code CodeMirror" data-line="203">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1109,12 +1233,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 50],
 </code>
-      </pre><p data-line="139"><a href="BREAST_CANCER_base10_v2.html">BREAST_CANCER_base10</a><br />
+      </pre><p data-line="210"><a href="BREAST_CANCER_base10_v2.html">BREAST_CANCER_base10</a><br />
 <a href="BREAST_CANCER_base20_v2.html">BREAST_CANCER_base20</a><br />
 <a href="BREAST_CANCER_base30_v2.html">BREAST_CANCER_base30</a><br />
 <a href="BREAST_CANCER_base50_v2.html">BREAST_CANCER_base50</a></p>
-<h4 id="MPI" data-line="144">MPI</h4>
-<pre class="code CodeMirror" data-line="145">
+<h4 id="MPI" data-line="215">MPI</h4>
+<pre class="code CodeMirror" data-line="216">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1123,12 +1247,12 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [5, 10, 20, 30],
 </code>
-      </pre><p data-line="152"><a href="MPI_base5_v2.html">MPI_base5</a><br />
+      </pre><p data-line="223"><a href="MPI_base5_v2.html">MPI_base5</a><br />
 <a href="MPI_base10_v2.html">MPI_base10</a><br />
 <a href="MPI_base20_v2.html">MPI_base20</a><br />
 <a href="MPI_base30_v2.html">MPI_base30</a></p>
-<h4 id="DIABETES" data-line="157">DIABETES</h4>
-<pre class="code CodeMirror" data-line="158">
+<h4 id="DIABETES" data-line="228">DIABETES</h4>
+<pre class="code CodeMirror" data-line="229">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1137,13 +1261,13 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [10, 20, 30, 40],
 </code>
-      </pre><p data-line="165"><a href="DIABETES_base10_v2.html">DIABETES_base10</a><br />
+      </pre><p data-line="236"><a href="DIABETES_base10_v2.html">DIABETES_base10</a><br />
 <a href="DIABETES_base20_v2.html">DIABETES_base20</a><br />
 <a href="DIABETES_base30_v2.html">DIABETES_base30</a><br />
 <a href="DIABETES_base40_v2.html">DIABETES_base40</a></p>
-<h4 id="COIL20" data-line="171">COIL20</h4>
-<p data-line="172">(still running)</p>
-<pre class="code CodeMirror" data-line="173">
+<h4 id="COIL20-1" data-line="242">COIL20</h4>
+<p data-line="243">(still running)</p>
+<pre class="code CodeMirror" data-line="244">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1152,13 +1276,13 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [20, 30, 50, 75],
 </code>
-      </pre><p data-line="180"><a href="COIL20_base20_v2.html">COIL20_base20</a><br />
+      </pre><p data-line="251"><a href="COIL20_base20_v2.html">COIL20_base20</a><br />
 <a href="COIL20_base30_v2.html">COIL20_base30</a><br />
 <a href="COIL20_base50_v2.html">COIL20_base50</a><br />
 <a href="COIL20_base75_v2.html">COIL20_base75</a></p>
-<h4 id="DIGITS" data-line="185">DIGITS</h4>
-<p data-line="186">(still running)</p>
-<pre class="code CodeMirror" data-line="187">
+<h4 id="DIGITS-1" data-line="256">DIGITS</h4>
+<p data-line="257">(still running)</p>
+<pre class="code CodeMirror" data-line="258">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span></span>
         <code class="">&quot;early_stop_conditions&quot;: {
@@ -1167,22 +1291,22 @@ min_grad_norm = 1e-09
 },
 &quot;base_perps&quot;: [20, 30, 50, 75],
 </code>
-      </pre><p data-line="194"><a href="DIGITS_base20_v2.html">DIGITS_base20</a><br />
+      </pre><p data-line="265"><a href="DIGITS_base20_v2.html">DIGITS_base20</a><br />
 <a href="DIGITS_base30_v2.html">DIGITS_base30</a><br />
 <a href="DIGITS_base50_v2.html">DIGITS_base50</a><br />
 <a href="DIGITS_base75_v2.html">DIGITS_base75</a></p>
-<h3 id="To-Discuss" data-line="200">To Discuss</h3>
-<p data-line="201">How to choose <code>base_perplexity</code>:</p>
+<h3 id="To-Discuss" data-line="271">To Discuss</h3>
+<p data-line="272">How to choose <code>base_perplexity</code>:</p>
 <ul>
-<li data-line="203">
-<p data-line="203">Original tSNE for FASHION200, perp=25<br />
+<li data-line="274">
+<p data-line="274">Original tSNE for FASHION200, perp=25<br />
 <img src="attachments/82ad84d2.png" alt="25_earlystop_all.png" width="300" /></p>
 </li>
-<li data-line="206">
-<p data-line="206">tSNE chain, with different base perpelixity:</p>
+<li data-line="277">
+<p data-line="277">tSNE chain, with different base perpelixity:</p>
 </li>
 </ul>
-<table data-line="207">
+<table data-line="278">
 <thead>
 <tr>
 <th>base10</th>
@@ -1201,17 +1325,17 @@ min_grad_norm = 1e-09
 </tbody>
 <tbody></tbody>
 </table>
-<p data-line="212">=============================================================================</p>
-<p data-line="215"><code>20190313</code></p>
-<h3 id="Run-tSNE-in-chain" data-line="216">Run tSNE in chain</h3>
+<p data-line="283">=============================================================================</p>
+<p data-line="286"><code>20190313</code></p>
+<h3 id="Run-tSNE-in-chain" data-line="287">Run tSNE in chain</h3>
 <ul>
-<li data-line="218">Using the notations as shown in this schema:</li>
+<li data-line="289">Using the notations as shown in this schema:</li>
 </ul>
-<p data-line="220"><img src="attachments/0281c5e1.png" alt="tsne chain (1).png" width="1200" /></p>
+<p data-line="291"><img src="attachments/0281c5e1.png" alt="tsne chain (1).png" width="1200" /></p>
 <ul>
-<li data-line="222">Run Multicore tSNE with the following params (like the defaults of sklearn) and no early-stop (no convergence condition):</li>
+<li data-line="293">Run Multicore tSNE with the following params (like the defaults of sklearn) and no early-stop (no convergence condition):</li>
 </ul>
-<pre class="code CodeMirror" data-line="223">
+<pre class="code CodeMirror" data-line="294">
         <span class="filename"></span>
         <span class="lineNumber CodeMirror-gutters"><span class="CodeMirror-linenumber">1</span><span class="CodeMirror-linenumber">2</span><span class="CodeMirror-linenumber">3</span><span class="CodeMirror-linenumber">4</span><span class="CodeMirror-linenumber">5</span><span class="CodeMirror-linenumber">6</span><span class="CodeMirror-linenumber">7</span><span class="CodeMirror-linenumber">8</span></span>
         <code class="">method='barnes_hut',
@@ -1223,15 +1347,15 @@ random_state=2019,
 n_cores=3,
 barnes_hut_theta=0.5, (angle param in sklearn)
 </code>
-      </pre><h5 id="" data-line="234"></h5>
+      </pre><h5 id="" data-line="305"></h5>
 <ul>
-<li data-line="235"><strong>FASHION200</strong> (<code>N=200, D=28*28</code>), perplexity <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo fence="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mfrac><mrow><mi>N</mi></mrow><mrow><mn>3</mn></mrow></mfrac><mo fence="false">]</mo></mrow><annotation encoding="application/x-tex">\in \Big[2, 3, \dots, \dfrac{N}{3} \Big]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="delimsizing size2">[</span></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">]</span></span></span></span></span>
+<li data-line="306"><strong>FASHION200</strong> (<code>N=200, D=28*28</code>), perplexity <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>∈</mo><mo fence="false">[</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mfrac><mrow><mi>N</mi></mrow><mrow><mn>3</mn></mrow></mfrac><mo fence="false">]</mo></mrow><annotation encoding="application/x-tex">\in \Big[2, 3, \dots, \dfrac{N}{3} \Big]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="base"><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="delimsizing size2">[</span></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width='400em' height='0.2em' viewBox='0 0 400000 200' preserveAspectRatio='xMinYMin slice'><path d='M0 80H400000 v40H0z M0 80H400000 v40H0z'/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="delimsizing size2">]</span></span></span></span></span>
 <ul>
-<li data-line="236">Base perplexity = 10: <a href="FASHION200_base10_autoscale.html">autoscale figure</a>, <a href="FASHION200_base10.html">fixed scale figure</a></li>
-<li data-line="237">Base perplexity = 20: <a href="FASHION200_base20_autoscale.html">autoscale figure</a>, <a href="FASHION200_base20.html">fixed scale figure</a></li>
-<li data-line="238">Base perplexity = 25: <a href="FASHION200_base25_autoscale.html">autoscale figure</a>, <a href="FASHION200_base25.html">fixed scale figure</a></li>
-<li data-line="239">Base perplexity = 30: <a href="FASHION200_base30_autoscale.html">autoscale figure</a>, <a href="FASHION200_base30.html">fixed scale figure</a></li>
-<li data-line="240">Base perplexity = 40: <a href="FASHION200_base40_autoscale.html">autoscale figure</a>, <a href="FASHION200_base40.html">fixed scale figure</a></li>
+<li data-line="307">Base perplexity = 10: <a href="FASHION200_base10_autoscale.html">autoscale figure</a>, <a href="FASHION200_base10.html">fixed scale figure</a></li>
+<li data-line="308">Base perplexity = 20: <a href="FASHION200_base20_autoscale.html">autoscale figure</a>, <a href="FASHION200_base20.html">fixed scale figure</a></li>
+<li data-line="309">Base perplexity = 25: <a href="FASHION200_base25_autoscale.html">autoscale figure</a>, <a href="FASHION200_base25.html">fixed scale figure</a></li>
+<li data-line="310">Base perplexity = 30: <a href="FASHION200_base30_autoscale.html">autoscale figure</a>, <a href="FASHION200_base30.html">fixed scale figure</a></li>
+<li data-line="311">Base perplexity = 40: <a href="FASHION200_base40_autoscale.html">autoscale figure</a>, <a href="FASHION200_base40.html">fixed scale figure</a></li>
 </ul>
 </li>
 </ul>
