@@ -111,7 +111,7 @@ links_view_layout = dbc.ListGroup(
         "display": "inline-block",
         "overflow-y": "scroll",
         "width": "100%",
-        "height": "80%",
+        "height": "80vh",
     },
 )
 
