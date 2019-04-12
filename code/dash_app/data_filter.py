@@ -47,32 +47,6 @@ def _compute_Q(X2d):
     return squareform(Q)
 
 
-def _get_list_embeddings(dataset_name, earlystop, base_perp=None):
-    """Loop over the directory for the precalculated embeddings
-    and return the full path to the .z file.
-
-    :params: base_perp: base perplexity in case of chain-tSNE in `chain` dir,
-             otherwise, use normal embeddings in `normal` dir
-
-    :returns: List[str] of full path to the embeddings, then being fed to joblib.load()
-    """
-    # in_name_prefix = f"{base_perp}_to_" if embedding_type == "chain" else ""
-    # in_name = f"{embedding_dir}/{dataset_name}/{in_name_prefix}{perp}.z"
-    embedding_type = "normal" if base_perp is None else "chain"
-    embedding_dir = f"{dir_path}/{embedding_type}"
-    target_dir = os.path.join(embedding_dir, dataset_name)
-    return [
-        os.path.join(embedding_dir, dataset_name, f)
-        for f in os.listdir(target_dir)
-        if f.endswith(f"{earlystop}.z")
-        and (
-            f.startswith(f"{base_perp}_to_")
-            if base_perp is not None
-            else not f.startswith(f"{base_perp}_to_")
-        )
-    ]
-
-
 def constraint_score(Q, sim, dis, debug=False):
     """Core function to calculate constraint scores.
 
@@ -122,14 +96,17 @@ def calculate_constraint_scores(
     :returns: list of dictionary, with fields being different types of constraint scores
     which can be wrapped into a DataFrame and stored in csv file.
     """
+    # TODO work around to get all_perps
+    Z = get_embedding(dataset_name, 1, earlystop, base_perp)
+    all_perps = range(1, Z.shape[0] // 3)
+
     scores = []
-    for in_name in _get_list_embeddings(dataset_name, earlystop, base_perp):
-        data = joblib.load(in_name)
-        Q = data.get("Q", _compute_Q(data["embedding"]))
+    for perp in all_perps:
+        Q = _compute_Q(get_embedding(dataset_name, perp, earlystop, base_perp))
         s_sim, s_dis = constraint_score(Q, sim_links, dis_links)
         scores.append(
             {
-                "perplexity": data["perplexity"],
+                "perplexity": perp,
                 "score_similar_links": s_sim,
                 "score_dissimilar_links": s_dis,
                 "score_all_links": 0.5 * (s_sim + s_dis),
