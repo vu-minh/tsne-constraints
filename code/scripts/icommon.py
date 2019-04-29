@@ -1,3 +1,11 @@
+# Commonly used utils
+
+import os
+import numpy as np
+from scipy.spatial.distance import pdist, squareform
+
+# hypter params for running tSNE with different params (and in chain)
+# for different datasets
 hyper_params = {
     "COIL20": {
         # "early_stop_conditions": {
@@ -72,3 +80,38 @@ hyper_params = {
         "base_perps": [5, 10, 20, 30]
     },
 }
+
+
+# utils functions for calculate Q_ij in tSNE
+
+MACHINE_EPSILON = np.finfo(np.double).eps
+
+
+def klpq(P, Q):
+    return 2.0 * np.dot(P, np.log(np.maximum(P, MACHINE_EPSILON) / Q))
+
+
+def compute_Q(X2d):
+    """ Matrix Q in t-sne, used to calculate the prob. that a point `j`
+    being neighbor of a point `i` (the value of Q[i,j])
+    Make sure to call squareform(Q) before using it.
+    """
+    degrees_of_freedom = 1
+    dist = pdist(X2d, "sqeuclidean")
+    dist /= degrees_of_freedom
+    dist += 1.0
+    dist **= (degrees_of_freedom + 1.0) / -2.0
+    Q = np.maximum(dist / (2.0 * np.sum(dist)), MACHINE_EPSILON)
+    return Q
+
+
+def get_embedding_filename_template(
+    dir_path, embedding_type, dataset_name, base_perp, perp, earlystop
+):
+    return os.path.join(
+        dir_path,
+        embedding_type,
+        dataset_name,
+        ("{base_perp}_to_{perp}" if embedding_type == "chain" else "{perp}")
+        + "{earlystop}.z",
+    )
