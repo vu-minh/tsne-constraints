@@ -6,6 +6,8 @@ import time
 import joblib
 import argparse
 import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
 
 from icommon import compute_Q
 from common.dataset import dataset
@@ -14,7 +16,7 @@ from MulticoreTSNE import MulticoreTSNE
 from tensorboardX import SummaryWriter
 
 
-def examine_qij(dataset_name, n_cpu_using=2, writer=None):
+def examine_qij(dataset_name, writer=None):
     _, X, _ = dataset.load_dataset(dataset_name)
 
     for perp in range(1, X.shape[0] // 3):
@@ -33,6 +35,40 @@ def examine_qij(dataset_name, n_cpu_using=2, writer=None):
             print("No tensorboardX debug info stored")
 
 
+def test_plot_qij(dataset_name, normalized=False, use_log=False):
+    _, X, _ = dataset.load_dataset(dataset_name)
+
+    plt.figure(figsize=(18, 18))
+
+    perps = range(1, X.shape[0] // 3)
+    qij = []
+
+    for perp in perps:
+        in_file = os.path.join(dir_path, "normal", dataset_name, f"{perp}.z")
+        data = joblib.load(in_file)
+        Q = compute_Q(data["embedding"])
+        if use_log:
+            Q = np.log(Q)
+        if normalized:
+            Q /= Q.max()
+        qij.append(Q)
+
+    qij = np.array(qij).T
+    print(qij.shape)
+
+    from bokeh.plotting import figure, output_file, show
+
+    p = figure(plot_width=1200, plot_height=800, title=f"{dataset_name} ({qij.shape})")
+    p.multi_line(xs=[list(perps)] * len(qij), ys=qij.tolist(), line_alpha=0.01)
+
+    label = f"{'log ' if use_log else ''} q_ij {' normalized' if normalized else ''}"
+    p.xaxis.axis_label = "Perplexity"
+    p.yaxis.axis_label = label
+
+    output_file(f"./plots/{dataset_name}_{label}.html", title=dataset_name)
+    show(p)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--dataset_name")
@@ -48,9 +84,11 @@ if __name__ == "__main__":
 
     time_str = time.strftime("%b%d/%H:%M:%S", time.localtime())
     log_dir = f"runs{args.run_id}/{args.dataset_name}/qij_{time_str}"
-    writer = SummaryWriter(log_dir=log_dir)
+    # writer = SummaryWriter(log_dir=log_dir)
 
-    examine_qij(args.dataset_name, writer=writer)
+    # examine_qij(args.dataset_name, writer=writer)
 
     # remember to flush all data
-    writer.close()
+    # writer.close()
+
+    test_plot_qij(args.dataset_name, use_log=False, normalized=True)
