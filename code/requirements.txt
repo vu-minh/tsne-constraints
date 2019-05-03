@@ -39,3 +39,6 @@ joblib==0.12.5
 
 # for deploying app
 gunicorn==19.9.0
+
+# for analyzing q_ij values
+tensorboardX
