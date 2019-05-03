@@ -51,7 +51,7 @@ def test_plot_qij(dataset_name, normalized=False, use_log=False):
         data = joblib.load(in_file)
         Q = compute_Q(data["embedding"])
         if use_log:
-            Q = np.log(Q)
+            Q = -np.log(Q)
         if normalized:
             Q /= Q.max()
         qij.append(Q)
@@ -64,7 +64,7 @@ def test_plot_qij(dataset_name, normalized=False, use_log=False):
     p = figure(plot_width=1200, plot_height=800, title=f"{dataset_name} ({qij.shape})")
     p.multi_line(xs=[list(perps)] * len(qij), ys=qij.tolist(), line_alpha=0.01)
 
-    label = f"{'log_' if use_log else ''}q_ij{'_normalized' if normalized else ''}"
+    label = f"{'-log' if use_log else ''}q_ij{'_normalized' if normalized else ''}"
     p.xaxis.axis_label = "Perplexity"
     p.yaxis.axis_label = label
 
@@ -96,4 +96,4 @@ if __name__ == "__main__":
     # remember to flush all data
     writer.close()
 
-    # test_plot_qij(args.dataset_name, use_log=False, normalized=True)
+    # test_plot_qij(args.dataset_name, use_log=True, normalized=True)
