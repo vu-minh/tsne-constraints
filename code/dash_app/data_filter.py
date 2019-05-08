@@ -127,10 +127,10 @@ def get_constraint_scores_df(
         + score_all_links
     """
     sim_links = np.array(
-        [[int(link[0]), int(link[1])] for link in constraints if link[2] == "sim-link"]
+        [[int(link[0]), int(link[1])] for link in constraints if (link[2] == "sim-link" or link[2] == 1)]
     )
     dis_links = np.array(
-        [[int(link[0]), int(link[1])] for link in constraints if link[2] == "dis-link"]
+        [[int(link[0]), int(link[1])] for link in constraints if (link[2] == "dis-link" or link[2] == -1)]
     )
     scores = calculate_constraint_scores(
         dataset_name, sim_links, dis_links, earlystop, base_perp
