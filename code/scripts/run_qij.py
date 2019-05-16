@@ -8,6 +8,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.spatial.distance import squareform
 
 from icommon import compute_Q
 from common.dataset import dataset
@@ -38,33 +39,71 @@ def examine_qij(dataset_name, writer=None, base_perp=None):
             print("No tensorboardX debug info stored")
 
 
-def test_plot_qij(dataset_name, normalized=False, use_log=False):
+def test_plot_qij(dataset_name, normalized=False, use_log=False, n_constraints=20):
     _, X, _ = dataset.load_dataset(dataset_name)
+
+    constraint_name = f"./links/auto_{dataset_name}_50sim_50dis.pkl"
+    constraints = joblib.load(constraint_name)
+
+    sim_links = np.array(
+        [
+            [int(link[0]), int(link[1])]
+            for link in constraints
+            if (link[2] == "sim-link" or link[2] == 1)
+        ]
+    )
+    sim_links = sim_links[np.random.choice(sim_links.shape[0], n_constraints)]
+
+    dis_links = np.array(
+        [
+            [int(link[0]), int(link[1])]
+            for link in constraints
+            if (link[2] == "dis-link" or link[2] == -1)
+        ]
+    )
+    dis_links = dis_links[np.random.choice(dis_links.shape[0], n_constraints)]
 
     plt.figure(figsize=(18, 18))
 
     perps = range(1, X.shape[0] // 3)
-    qij = []
+    qij_sim = []
+    qij_dis = []
 
     for perp in perps:
         in_file = os.path.join(dir_path, "normal", dataset_name, f"{perp}.z")
         data = joblib.load(in_file)
         Q = compute_Q(data["embedding"])
+
         if use_log:
             Q = -np.log(Q)
         if normalized:
             Q /= Q.max()
-        qij.append(Q)
 
-    qij = np.array(qij).T
-    print(qij.shape)
+        Q = squareform(Q)
+        Q_sim = Q[sim_links[:, 0], sim_links[:, 1]]
+        Q_dis = Q[dis_links[:, 0], dis_links[:, 1]]
+        qij_sim.append(Q_sim)
+        qij_dis.append(Q_dis)
+
+    qij_sim = np.array(qij_sim).T
+    qij_dis = np.array(qij_dis).T
 
     from bokeh.plotting import figure, output_file, show
 
-    p = figure(plot_width=1200, plot_height=800, title=f"{dataset_name} ({qij.shape})")
-    p.multi_line(xs=[list(perps)] * len(qij), ys=qij.tolist(), line_alpha=0.01)
+    p = figure(
+        plot_width=1200,
+        plot_height=800,
+        title=f"{dataset_name}, {2*n_constraints} constraints",
+    )
+    p.multi_line(xs=[list(perps)] * len(qij_sim), ys=qij_sim.tolist(), line_alpha=0.5)
+    p.multi_line(
+        xs=[list(perps)] * len(qij_dis),
+        ys=qij_dis.tolist(),
+        line_alpha=0.5,
+        line_color="red",
+    )
 
-    label = f"{'-log' if use_log else ''}q_ij{'_normalized' if normalized else ''}"
+    label = f"{'-log' if use_log else ''}q_ij{'_normalized' if normalized else ''}_{n_constraints}"
     p.xaxis.axis_label = "Perplexity"
     p.yaxis.axis_label = label
 
@@ -80,6 +119,7 @@ if __name__ == "__main__":
     ap.add_argument("-t", "--embedding_type")
     ap.add_argument("-s", "--seed", default=2019, type=int)
     ap.add_argument("-r", "--run_id", default=9998, type=int)
+    ap.add_argument("-n", "--n_constraints", default=5, type=int)
     args = ap.parse_args()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -88,12 +128,17 @@ if __name__ == "__main__":
 
     embedding_type = "normal" if args.perp is None else f"chain{args.perp}"
     time_str = time.strftime("%b%d-%H:%M:%S", time.localtime())
-    log_dir = f"runs{args.run_id}/{args.dataset_name}/qij_{embedding_type}/{time_str}"
-    writer = SummaryWriter(log_dir=log_dir)
+    # log_dir = f"runs{args.run_id}/{args.dataset_name}/qij_{embedding_type}/{time_str}"
+    # writer = SummaryWriter(log_dir=log_dir)
 
-    examine_qij(args.dataset_name, writer=writer, base_perp=args.perp)
+    # examine_qij(args.dataset_name, writer=writer, base_perp=args.perp)
 
     # remember to flush all data
-    writer.close()
+    # writer.close()
 
-    # test_plot_qij(args.dataset_name, use_log=True, normalized=True)
+    test_plot_qij(
+        args.dataset_name,
+        use_log=True,
+        normalized=True,
+        n_constraints=args.n_constraints,
+    )

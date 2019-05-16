@@ -204,7 +204,7 @@ select_base_perplexity = dbc.FormGroup(
         dbc.Label("Base perlexity", html_for="select-base-perp-val", className="mr-2"),
         dcc.Dropdown(
             id="select-base-perp-val",
-            value=30,
+            value=None,
             options=[
                 {"label": perp or "No chain", "value": perp} for perp in list_base_perps
             ],
@@ -325,7 +325,10 @@ app.layout = dbc.Container(
             [
                 dbc.Col([control_buttons, links_view_layout], md=2),
                 dbc.Col([cytoplot_layout], md=6),
-                dbc.Col([right_layout_for_chain, right_layout_for_normal], md=4),
+                dbc.Col([
+                         right_layout_for_normal,
+                         # right_layout_for_chain,
+                        ], md=4),
             ]
         ),
         # dbc.Row([dbc.Col([bottom_layout])]),
