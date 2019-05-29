@@ -15,6 +15,9 @@ from common.dataset import dataset
 from MulticoreTSNE import MulticoreTSNE
 
 from tensorboardX import SummaryWriter
+from bokeh.plotting import figure, output_file, show
+
+from collections import defaultdict
 
 
 def examine_qij(dataset_name, writer=None, base_perp=None):
@@ -42,7 +45,8 @@ def examine_qij(dataset_name, writer=None, base_perp=None):
 def test_plot_qij(dataset_name, normalized=False, use_log=False, n_constraints=20):
     _, X, _ = dataset.load_dataset(dataset_name)
 
-    constraint_name = f"./links/auto_{dataset_name}_50sim_50dis.pkl"
+    max_n_constraints = 50
+    constraint_name = f"./links/auto_{dataset_name}_{max_n_constraints}sim_{max_n_constraints}dis.pkl"
     constraints = joblib.load(constraint_name)
 
     sim_links = np.array(
@@ -52,8 +56,7 @@ def test_plot_qij(dataset_name, normalized=False, use_log=False, n_constraints=2
             if (link[2] == "sim-link" or link[2] == 1)
         ]
     )
-    sim_links = sim_links[np.random.choice(sim_links.shape[0], n_constraints)]
-
+    
     dis_links = np.array(
         [
             [int(link[0]), int(link[1])]
@@ -61,13 +64,13 @@ def test_plot_qij(dataset_name, normalized=False, use_log=False, n_constraints=2
             if (link[2] == "dis-link" or link[2] == -1)
         ]
     )
-    dis_links = dis_links[np.random.choice(dis_links.shape[0], n_constraints)]
-
-    plt.figure(figsize=(18, 18))
 
     perps = range(1, X.shape[0] // 3)
-    qij_sim = []
-    qij_dis = []
+    list_n_constraints = [2, 3, 5, 10, 15, 20, 30, 50]
+
+    # store all Q for different number of constraints
+    Q_sim_all = defaultdict(list)
+    Q_dis_all = defaultdict(list)
 
     for perp in perps:
         in_file = os.path.join(dir_path, "normal", dataset_name, f"{perp}.z")
@@ -78,37 +81,45 @@ def test_plot_qij(dataset_name, normalized=False, use_log=False, n_constraints=2
             Q = -np.log(Q)
         if normalized:
             Q /= Q.max()
-
         Q = squareform(Q)
-        Q_sim = Q[sim_links[:, 0], sim_links[:, 1]]
-        Q_dis = Q[dis_links[:, 0], dis_links[:, 1]]
-        qij_sim.append(Q_sim)
-        qij_dis.append(Q_dis)
 
-    qij_sim = np.array(qij_sim).T
-    qij_dis = np.array(qij_dis).T
+        # store the q_ij for this `perp` for each num of constraint in Q_*_all[n_constraints]
+        for n_constraints in list_n_constraints:
+            sim = sim_links[np.random.choice(max_n_constraints, n_constraints)]
+            dis = dis_links[np.random.choice(max_n_constraints, n_constraints)]
 
-    from bokeh.plotting import figure, output_file, show
+            Q_sim = Q[sim[:, 0], sim[:, 1]]
+            Q_dis = Q[dis[:, 0], dis[:, 1]]
 
-    p = figure(
-        plot_width=1200,
-        plot_height=800,
-        title=f"{dataset_name}, {2*n_constraints} constraints",
-    )
-    p.multi_line(xs=[list(perps)] * len(qij_sim), ys=qij_sim.tolist(), line_alpha=0.5)
-    p.multi_line(
-        xs=[list(perps)] * len(qij_dis),
-        ys=qij_dis.tolist(),
-        line_alpha=0.5,
-        line_color="red",
-    )
+            Q_sim_all[n_constraints].append(Q_sim)
+            Q_dis_all[n_constraints].append(Q_dis)
 
-    label = f"{'-log' if use_log else ''}q_ij{'_normalized' if normalized else ''}_{n_constraints}"
-    p.xaxis.axis_label = "Perplexity"
-    p.yaxis.axis_label = label
+    # plot the q_ij for each number of constraints
+    for n_constraints in list_n_constraints:
+        qij_sim = np.array(Q_sim_all[n_constraints]).T
+        qij_dis = np.array(Q_dis_all[n_constraints]).T
 
-    output_file(f"./plots/{dataset_name}_{label}.html", title=dataset_name)
-    show(p)
+        print(qij_sim.shape, qij_dis.shape)
+
+        label = f"{'-log' if use_log else ''}q_ij{'_normalized' if normalized else ''}_{n_constraints}"
+        output_file(f"./plots/{dataset_name}_{2*n_constraints}constraints_{label}.html", title=dataset_name)
+
+        p = figure(
+            plot_width=1200,
+            plot_height=800,
+            title=f"{dataset_name}, {2*n_constraints} constraints",
+        )
+        p.xaxis.axis_label = "Perplexity"
+        p.yaxis.axis_label = label
+
+        p.multi_line(xs=[list(perps)] * len(qij_sim), ys=qij_sim.tolist(), line_alpha=0.5)
+        p.multi_line(
+            xs=[list(perps)] * len(qij_dis),
+            ys=qij_dis.tolist(),
+            line_alpha=0.5,
+            line_color="red",
+        )
+        show(p)
 
 
 if __name__ == "__main__":
