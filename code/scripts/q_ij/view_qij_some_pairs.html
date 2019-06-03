@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Q_ij view pairs</title>
+    <link rel="stylesheet" href="lib/jquery-ui.css">
+    <style>
+        fieldset {
+            border: 0;
+        }
+
+        label {
+            display: block;
+            margin: 30px 0 0 0;
+        }
+
+        .overflow {
+            height: 200px;
+        }
+
+        .left {
+            display: inline-block;
+            width: 25%;
+        }
+
+        .right {
+            display: inline-block;
+            width: 70%;
+        }
+    </style>
+    <script src="lib/jquery-1.12.4.js"></script>
+    <script src="lib/jquery-ui.js"></script>
+    <script>
+        $(function () {
+
+            function update_iframe() {
+                // FASHION200_chain30_log_normalized_8constraints
+                var dataset_name = $("#dataset").val();
+                var base_perp = $("#base_perp").val();
+                var embedding_type = base_perp == "" ? "normal" : `chain${base_perp}`;
+
+                var n_links = $("#n_links").val();
+                var log = $("#negative-log").val();
+                var normalized = $("#normalized").val();
+
+                var target_plot_name =
+                    `${dataset_name}_${embedding_type}${log}${normalized}_${2*n_links}constraints.html`;
+                console.log(target_plot_name);
+
+                $("#target_plot").attr("src", target_plot_name);
+            }
+
+            $("#dataset").selectmenu({
+                change: update_iframe
+            });
+            $("#base_perp").selectmenu({
+                change: update_iframe
+            });
+            $("#n_links").selectmenu({
+                change: update_iframe
+            });
+            $("#normalized").selectmenu({
+                change: update_iframe
+            });
+            $("#negative-log").selectmenu({
+                change: update_iframe
+            });
+
+            update_iframe();
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="left">
+
+        <form action="#">
+
+            <fieldset>
+                <label for="dataset">Select a Dataset</label>
+                <select name="dataset" id="dataset">
+                    <option selected="selected">FASHION200</option>
+                    <option>DIGITS</option>
+                    <option>COIL20</option>
+                </select>
+
+                <label for="base_perp">Select a base perplexity</label>
+                <select name="base_perp" id="base_perp">
+                    <optgroup label="chain">
+                        <option value="30">30</option>
+                    </optgroup>
+                    <optgroup label="normal">
+                        <option value="">No-chain</option>
+                    </optgroup>
+                </select>
+
+                <label for="n_links">Select number of links (each type)</label>
+                <select name="n_links" id="n_links">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>30</option>
+                    <option>50</option>
+                </select>
+
+                <label for="normalized">Normalized?</label>
+                <select name="normalized" id="normalized">
+                    <option disabled selected>Default: non-normalized</option>
+                    <option selected="selected" value="">non-normalized</option>
+                    <option value="_normalized">normalized</option>
+                </select>
+
+                <label for="negative-log">Negative-log?</label>
+                <select name="negative-log" id="negative-log">
+                    <option disabled selected>Default: negative log(q_ij)</option>
+                    <option selected="selected" value="_log">negative log(q_ij)</option>
+                    <option value="">q_ij</option>
+                </select>
+
+            </fieldset>
+
+        </form>
+
+    </div>
+
+    <div class="right"><iframe id="target_plot" width="1000" height="600"></iframe></div>
+
+
+</body>
+
+</html>
