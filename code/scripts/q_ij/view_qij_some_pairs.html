@@ -4,10 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Q_ij view pairs</title>
+    <title>Q_ij for only some pairs</title>
     <link rel="stylesheet" href="lib/jquery-ui.css">
     <style>
         fieldset {
+            display: inline-block;
             border: 0;
         }
 
@@ -20,14 +21,21 @@
             height: 200px;
         }
 
+
         .left {
-            display: inline-block;
+            /* display: inline-block; */
+            display: block;
+            float: left;
             width: 25%;
         }
 
         .right {
             display: inline-block;
             width: 70%;
+        }
+
+        iframe {
+            border: 0;
         }
     </style>
     <script src="lib/jquery-1.12.4.js"></script>
@@ -74,6 +82,9 @@
 </head>
 
 <body>
+    <center>
+        <h3>View the values of q_ij for only some selected pairs.</h3>
+    </center>
 
     <div class="left">
 
@@ -134,9 +145,7 @@
         </form>
 
     </div>
-
-    <div class="right"><iframe id="target_plot" width="1000" height="600"></iframe></div>
-
+    <div class="right"><iframe id="target_plot" width="980" height="580"></iframe></div>
 
 </body>
 
