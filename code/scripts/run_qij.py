@@ -12,7 +12,7 @@ from scipy.spatial.distance import squareform
 
 from icommon import compute_Q
 from common.dataset import dataset
-from common.dataset.constraint import gen_simmilar_links, gen_dissimilar_links
+from common.dataset.constraint import gen_similar_links, gen_dissimilar_links
 from MulticoreTSNE import MulticoreTSNE
 
 from tensorboardX import SummaryWriter
@@ -73,8 +73,8 @@ def extract_qij_for_some_pairs(
 
         # store the q_ij for this `perp` for each num of constraint in Q_*_all[n_constraints]
         for n_constraints in list_n_constraints:
-            sim = gen_simmilar_links(labels, n_constraints, include_link_types=False)
-            dis = gen_dissimilar_links(labels, n_constraints, include_link_types=False)
+            sim = gen_similar_links(labels, n_constraints, include_link_type=False)
+            dis = gen_dissimilar_links(labels, n_constraints, include_link_type=False)
 
             Q_sim = Q[sim[:, 0], sim[:, 1]]
             Q_dis = Q[dis[:, 0], dis[:, 1]]
