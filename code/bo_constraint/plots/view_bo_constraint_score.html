@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bayesian Optimization with Constraint Scores</title>
+    <link rel="stylesheet" href="lib/jquery-ui.css">
+    <style>
+        fieldset {
+            display: inline-block;
+            border: 0;
+        }
+
+        label {
+            display: block;
+            margin: 30px 0 0 0;
+        }
+
+        .overflow {
+            height: 200px;
+        }
+
+
+        .left {
+            /* display: inline-block; */
+            display: block;
+            float: left;
+            width: 25%;
+        }
+
+        .right {
+            display: inline-block;
+            width: 70%;
+        }
+
+        iframe {
+            border: 0;
+        }
+
+        #custom-handle {
+            width: 3em;
+            height: 1.6em;
+            top: 50%;
+            margin-top: -.8em;
+            text-align: center;
+            line-height: 1.6em;
+        }
+  
+    </style>
+    <script src="lib/jquery-1.12.4.js"></script>
+    <script src="lib/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            var handle = $( "#step_slider_handle" );
+            $( "#n_step" ).slider({
+              min: 5,
+              max: 15,
+              value: 5,
+              create: function() {
+                handle.text( $( this ).slider( "value" ) );
+              },
+              slide: function( event, ui ) {
+                handle.text( ui.value );
+                update_figure();
+              }
+            });   
+
+            function update_figure() {
+                // bo_FASHION500_niter11
+                var dataset_name = $("#dataset").val();
+                var n_step = handle.text();
+
+                var target_plot_name =
+                    `bo_${dataset_name}_niter${n_step}.png`;
+                console.log(target_plot_name);
+
+                $("#target_plot").attr("src", target_plot_name);
+            }
+
+     
+
+            $("#dataset").selectmenu({
+                change: update_figure
+            });
+
+            update_figure();
+        });
+    </script>
+</head>
+
+<body>
+    <center>
+        <h3>View the decision of Bayesian Optimization method (with Gaussian Process model)</h3>
+    </center>
+
+    <div class="left">
+
+        <form action="#">
+
+            <fieldset>
+                <label for="dataset">Select a Dataset</label>
+                <select name="dataset" id="dataset">
+                    <option selected="selected">FASHION200</option>
+                    <option>FASHION500</option>
+                    <option>DIGITS</option>
+                    <option>COIL20</option>
+                </select>
+
+                <label for="n_step">Step</label>
+                <div id="n_step">
+                    <div id="step_slider_handle" class="ui-slider-handle"></div>
+                </div>
+
+            </fieldset>
+
+        </form>
+
+    </div>
+    <div class="right"><img id="target_plot"></img>
+    </div>
+
+</body>
+
+</html>
