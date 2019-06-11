@@ -1,11 +1,13 @@
 -*- mode: org -*-
 :PROPERTIES:
-:header-args: :session bo-workflow-default-session
+:header-args: :session bo-workflow-default-session :async t
 :END:
 
 #+TITLE: Bayesian Optimization basic workflow
 #+AUTHOR: minhvu
 #+DATE: 20190607
+#+STARTUP: inlineimages
+
 
 * Introduction
 Note: Highlight that we can apply BO with constraint-score for any parametric DR methods, not only t-SNE.
@@ -40,9 +42,22 @@ Note: Can add CIFAR10 dataset and show another way to group the points in the vi
 + To see how the BO method work in action, we will show the *true target function* (e.g., the constraint scores w.r.t the perplexity) and the *predicted target function* which is the mean function of a Gaussian process model using in BO method.
 
 #+BEGIN_SRC ipython :results silent
+import joblib
+
 import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
+
+from bayes_opt import BayesianOptimization
+from bayes_opt import UtilityFunction
+
 from common.dataset import dataset
-from common.metric import DRMetric
+from common.metric.dr_metrics import DRMetric
+from common.dataset import constraint
+
+from MulticoreTSNE import MulticoreTSNE
 #+END_SRC
 
 
@@ -52,29 +67,434 @@ from common.metric import DRMetric
 
 #+BEGIN_SRC ipython
 dataset.set_data_home("./data")
-dataset_name = "FASHION200"
+dataset_name = "DIGITS"
 _, X, y = dataset.load_dataset(dataset_name)
 print(X.shape, y.shape)
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [30]: 
+# Out [38]: 
 # output
-(200, 784) (200,)
+(1797, 64) (1797,)
 
 :end:
 
 
-#+BEGIN_SRC ipython  
+
+Prepare two lists of similar and dissimilar pairwise constraints.
+
+#+BEGIN_SRC ipython :results silent
+sim_links = constraint.gen_similar_links(labels=y, n_links=50, include_link_type=True)
+dis_links = constraint.gen_dissimilar_links(labels=y, n_links=50, include_link_type=True)
+#+END_SRC
+
+#+BEGIN_SRC ipython results output
+constraint_proportion = 0.0
+print("Constraint score proportion: ", constraint_proportion)
+#+END_SRC
+
+#+RESULTS:
+:results:
+# Out [40]: 
+# output
+Constraint score proportion:  0.0
+
+:end:
+
+
+** Comparison between user constraint preserving score and metric score
+
+Perplexity value range:
+#+BEGIN_SRC ipython :results silent
+perp_range = np.array(list(range(2, X.shape[0] // 3)))
+#+END_SRC
+
+Construct the target function, that is a combination of constraint-preserving score and quality metric score (John's metric).
+#+BEGIN_SRC ipython :results silent
+def tsne_with_metric_and_constraint(perp, debug=False):
+    tsne = MulticoreTSNE(perplexity=perp, n_iter=1000, random_state=2019, n_jobs=3,
+                         n_iter_without_progress=1000, min_grad_norm=1e-32, eval_interval=20,
+                         verbose=debug)
+
+    Z = tsne.fit_transform(X)
+    losses = tsne.progress_errors_
+    losses = losses[np.where( (0.0 < losses) & (losses < 2.0) )]
+
+    auc_rnx = DRMetric(X, Z).auc_rnx()
+
+    Q = data_filter._compute_Q(Z)
+    s_sim, s_dis = data_filter.constraint_score(Q, sim_links, dis_links, debug=False)
+    s_links = 0.5 * s_sim + 0.5 * s_dis
+
+    if debug:
+        plt.figure(figsize=(12, 10))
+        gs = gridspec.GridSpec(2, 1, height_ratios=[5, 1])
+        scatter_ax = plt.subplot(gs[0])
+        loss_ax = plt.subplot(gs[1])
+        
+        scatter_ax.scatter(Z[:, 0], Z[:, 1], c=y, alpha=0.4, cmap="jet")
+        loss_ax.plot(losses)
+        
+        plt.show()
+        print(f"Debug: constraint_proportion={constraint_proportion}, link_score=[{s_sim}, {s_dis}, {s_links}], auc_rnx={auc_rnx}")
+    
+    return constraint_proportion * s_links + (1 - constraint_proportion) * auc_rnx
+#+END_SRC
+
+
+Build the *true target function* (which is unknown in real application) to demostrate how BO can approximate its maximum value.
+#+BEGIN_SRC ipython :async t
+from constraint_app import data_filter
+
+df_metric = data_filter.get_metrics_df(dataset_name=dataset_name, base_perp=None, earlystop="")
+print("Metric scores: ", len(df_metric))
+print(df_metric.head())
+
+df_constraint_score, _ = data_filter.get_constraint_scores_df(
+    dataset_name=dataset_name,
+    base_perp=None,
+    earlystop="",
+    constraints=np.vstack([sim_links, dis_links]),
+    debug=False,
+)
+print("\n\nConstraint preserving scores: ", len(df_constraint_score))
+print(df_constraint_score.head())
+
+df_target = pd.merge(df_metric, df_constraint_score, how="inner", on="perplexity")
+print("\n\nMetrics + constraint scores with new target_score column: ", len(df_target))
+df_target["target_score"] = (
+    constraint_proportion * df_target["score_all_links"]
+    + (1 - constraint_proportion) * df_target["auc_rnx"]
+)
+
+print(df_target[["auc_rnx", "score_all_links", "target_score"]].head())
+
+true_target_values = df_target.loc[perp_range, "target_score"].values
+true_target_values = true_target_values.reshape(-1, 1)
+print(true_target_values.shape)
+#+END_SRC
+
+#+RESULTS:
+:results:
+# Out [43]: 
+# output
+Metric scores:  598
+            kl_divergence   auc_rnx       bic
+perplexity                                   
+1                1.064604  0.257567  2.133378
+2                1.078248  0.419820  2.164837
+3                1.093551  0.451856  2.199613
+4                1.106531  0.454272  2.229743
+5                1.096437  0.479698  2.213724
+
+
+Constraint preserving scores:  598
+            score_all_links  score_dissimilar_links  score_similar_links
+perplexity                                                              
+1                 -0.144199               16.396497           -16.684896
+2                  0.980652               17.029715           -15.068411
+3                  0.822071               16.731039           -15.086898
+4                  0.937994               16.784311           -14.908324
+5                  1.138295               17.043149           -14.766559
+
+
+Metrics + constraint scores with new target_score column:  598
+             auc_rnx  score_all_links  target_score
+perplexity                                         
+1           0.257567        -0.144199      0.257567
+2           0.419820         0.980652      0.419820
+3           0.451856         0.822071      0.451856
+4           0.454272         0.937994      0.454272
+5           0.479698         1.138295      0.479698
+(597, 1)
+
+:end:
+
+
+** Experiment with BO method
+
+Util function for ploting the decision of BO method at each step
+#+BEGIN_SRC ipython :results silent
+def posterior(optimizer, x_obs, y_obs, grid):
+    optimizer._gp.fit(x_obs, y_obs)
+
+    mu, sigma = optimizer._gp.predict(grid, return_std=True)
+    return mu, sigma
+
+
+def plot_gp(optimizer, x, y):
+    fig = plt.figure(figsize=(14, 8))
+    steps = len(optimizer.space)
+    #     fig.suptitle(
+    #         'Gaussian Process and Utility Function After {} Steps'.format(steps),
+    #         fontdict={'size':35}
+    #     )
+
+    gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1])
+    axis = plt.subplot(gs[0])
+    acq = plt.subplot(gs[1])
+
+    x_obs = np.array([[res["params"]["perp"]] for res in optimizer.res])
+    y_obs = np.array([res["target"] for res in optimizer.res])
+
+    mu, sigma = posterior(optimizer, x_obs, y_obs, x)
+    axis.plot(x, y, linewidth=3, label="Target")
+    axis.plot(x_obs.flatten(), y_obs, "D", markersize=8, label="Observations", color="r")
+    axis.plot(x, mu, "--", color="k", label="Prediction")
+
+    axis.fill(
+        np.concatenate([x, x[::-1]]),
+        np.concatenate([mu - 1.9600 * sigma, (mu + 1.9600 * sigma)[::-1]]),
+        alpha=0.6,
+        fc="c",
+        ec="None",
+        label="95% confidence interval",
+    )
+    
+    # axis.set_xlim((x_obs.min(), x_obs.max()))
+    axis.set_ylim((0.85 * y_obs.min(), 1.15 * y_obs.max()))
+    axis.set_ylabel("tsne_with_metric_and_constraint", fontdict={"size": 16})
+    # axis.set_xlabel("perplexity", fontdict={"size": 16})
+
+    utility_function = UtilityFunction(kind="ucb", kappa=5, xi=0)
+    utility = utility_function.utility(x, optimizer._gp, 0)
+    acq.plot(x, utility, label="Utility Function", color="purple")
+    acq.plot(
+        x[np.argmax(utility)],
+        np.max(utility),
+        "*",
+        markersize=15,
+        label="Next Best Guess",
+        markerfacecolor="gold",
+        markeredgecolor="k",
+        markeredgewidth=1,
+    )
+    # acq.set_xlim((x_obs.min(), x_obs.max()))
+    # acq.set_ylim((0, np.max(utility) + 0.5))
+    acq.set_ylabel("Utility", fontdict={"size": 16})
+    acq.set_xlabel("perplexity", fontdict={"size": 16})
+
+    axis.legend(loc=2, bbox_to_anchor=(1.01, 1), borderaxespad=0.0)
+    acq.legend(loc=2, bbox_to_anchor=(1.01, 1), borderaxespad=0.0)
+
+    # debug next best guess
+    next_best_guess_param = x[np.argmax(utility)]
+    acq.set_title(f"Next best guess param: {next_best_guess_param}", fontdict={"size": 16})
+    acq.axvline(next_best_guess_param, color='g', linestyle='--')
+    axis.axvline(next_best_guess_param, color='g', linestyle='--')
+    
+    plt.suptitle(
+        f"Gaussian Process after {steps} steps with best predicted perlexity = {optimizer.max['params']['perp']:.2f}",
+        size=22,
+    )
+    plt.savefig(f"./plots/bo_{dataset_name}_niter{steps}.png", bbox_inches="tight")
+#+END_SRC
+
+Construct a Bayesian Optimizer, that will take into account the target function that we want to maximize (=tsne_with_metric_and_constraint= in our case) and a space of its parameter =perp=.
+
+Using the default utility function *Upper Confidence Bound (UCB)* which has a free param  \( \kappa \). Set \(\kappa = 5\) to compromise the /exploitation/ and /exploration/.
+Start the optimization process with 5 random init points, that means BO will evaluate the target function 5 times with 5 randomly seletecd =perp= params.
+Then run the optimization loop some more iterations and plot the decision of GP model of the BO method.
+
+*** TODO BUG Evaluation of target function does not match the value of *true target function*
+See the following figure after having 5 random evaluated points:
+[[./plots/bo_DIGITS_niter6.png]]
+(The values of the 'evaluated' target function do not lie in the *real target function*)
+
+- Source of error:: MulticoreTSNE is setup in /early-stop/ fashion -> should set =n_iter_without_progress=1000= *and* =min_grad_norm=1e-32= to disable this feature.
+- That will assure that all =n_iter= will be run completely.
+
+#+BEGIN_SRC ipython :async t
+# DEBUG the evaluated target function value
+
+# true target function
+target_param = 300
+print(df_target.loc[target_param])
+
+# evaluated target function value
+print(tsne_with_metric_and_constraint(perp=target_param, debug=True))
+#+END_SRC
+
+#+RESULTS:
+:results:
+# Out [45]: 
+# output
+kl_divergence              0.488372
+auc_rnx                    0.422214
+bic                        2.227807
+score_all_links            0.956217
+score_dissimilar_links    16.086969
+score_similar_links      -14.174536
+target_score               0.422214
+Name: 300, dtype: float64
+
+[python]Running modified version:  MODIFIED_WITH_EARLY_STOP
+SO file:  /opt/anaconda3/lib/python3.6/site-packages/MulticoreTSNE-0.2-py3.6-linux-x86_64.egg/MulticoreTSNE/libtsne_multicore_minh.so
+Debug: constraint_proportion=0.0, link_score=[-14.19198769850501, 16.1057154612376, 0.9568638813662957], auc_rnx=0.4310195864075633
+0.4310195864075633
+
+# text/plain
+: <Figure size 864x720 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/0737259174a0958e19597c392a59cbd99f1885d5.png]]
+:end:
+
+
+#+BEGIN_SRC ipython :async t
+n_total_runs = 15
+n_random_inits = 5
+kappa = 5
+
+optimizer = BayesianOptimization(
+    tsne_with_metric_and_constraint,
+    {"perp": (2, X.shape[0] // 3)},
+    random_state=2048,
+)
+
+optimizer.maximize(init_points=n_random_inits, n_iter=0, kappa=kappa)
+plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values)
+
+for i in range(n_total_runs - n_random_inits):
+    optimizer.maximize(init_points=0, n_iter=1, kappa=kappa)
+    plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values)
+#+END_SRC
+
+#+RESULTS:
+:results:
+# Out [46]: 
+# output
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 1       [0m | [0m 0.4172  [0m | [0m 354.0   [0m |
+| [95m 2       [0m | [95m 0.4689  [0m | [95m 83.67   [0m |
+| [0m 3       [0m | [0m 0.4186  [0m | [0m 397.2   [0m |
+| [0m 4       [0m | [0m 0.3968  [0m | [0m 591.3   [0m |
+| [0m 5       [0m | [0m 0.4034  [0m | [0m 537.8   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 6       [0m | [0m 0.421   [0m | [0m 2.0     [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 7       [0m | [0m 0.4375  [0m | [0m 179.8   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 8       [0m | [0m 0.443   [0m | [0m 112.9   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 9       [0m | [0m 0.4392  [0m | [0m 261.1   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [95m 10      [0m | [95m 0.482   [0m | [95m 44.78   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 11      [0m | [0m 0.4086  [0m | [0m 467.8   [0m |
+=====================================
+/opt/anaconda3/lib/python3.6/site-packages/sklearn/gaussian_process/gpr.py:457: UserWarning: fmin_l_bfgs_b terminated abnormally with the  state: {'grad': array([2.43414363e-05]), 'task': b'ABNORMAL_TERMINATION_IN_LNSRCH', 'funcalls': 46, 'nit': 3, 'warnflag': 2}
+  " state: %s" % convergence_dict)
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [95m 12      [0m | [95m 0.4886  [0m | [95m 57.76   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 13      [0m | [0m 0.4841  [0m | [0m 58.95   [0m |
+=====================================
+/opt/anaconda3/lib/python3.6/site-packages/sklearn/gaussian_process/gpr.py:457: UserWarning: fmin_l_bfgs_b terminated abnormally with the  state: {'grad': array([-6.99881784e-05]), 'task': b'ABNORMAL_TERMINATION_IN_LNSRCH', 'funcalls': 58, 'nit': 7, 'warnflag': 2}
+  " state: %s" % convergence_dict)
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [95m 14      [0m | [95m 0.4899  [0m | [95m 56.55   [0m |
+=====================================
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 15      [0m | [0m 0.4885  [0m | [0m 57.08   [0m |
+=====================================
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/fd59d36077cd4cbc5536f63c1c1ca67b6ed1c7f4.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/e9dd80ed4f36d41cdeca8f4bae91aba6fdf02bac.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/bac7599a6a89ef206d1c9ffe97fc6a00a590d009.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/25fe203966e9d8b7b671a3aa707bdb51d9e3735f.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/c3bf6116e3fc7469a7cb0f5a14ed7638e96f94f5.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/ad5d4b663c192f755cec6712328ff66c8a791de6.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/37a2c352443a0d19621ec1ee7542faf50e04581e.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/29f53e2b50968d89ca1d8540bea8664c59358b54.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/093fd392fe470972ffa2fdafb4c972273d7b577e.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/82cba3ee5bf4d1957430fd11f8a16ae629dd649c.png]]
+
+# text/plain
+: <Figure size 1008x576 with 2 Axes>
+
+# image/png
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/7ce1480a1c6df493b300c9ae86a7878a658dcaac.png]]
+:end:
+
+
+
+
+#+BEGIN_SRC ipython  :results silent :async t
 
 #+END_SRC
 
-:end:
 
-
-** Comparison between user constraint preserving score and metric score 
 ** Evaluation of the visualization
+
 
 
 * Discussion
