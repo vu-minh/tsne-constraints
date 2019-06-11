@@ -1,0 +1,83 @@
+-*- mode: org -*-
+:PROPERTIES:
+:header-args: :session bo-workflow-default-session
+:END:
+
+#+TITLE: Bayesian Optimization basic workflow
+#+AUTHOR: minhvu
+#+DATE: 20190607
+
+* Introduction
+Note: Highlight that we can apply BO with constraint-score for any parametric DR methods, not only t-SNE.
+
+** Problem of finding a good visualization with t-SNE
+** Motivation of using user constraints to evaluate the visualization
+** Proposed method
+
+* Background
+** Baysian Optimization
+** Visualization quality metric
+** Semantic clustering
+Note: Can add CIFAR10 dataset and show another way to group the points in the visualization (i.e., not by classes: dog, cat, plane, but by `semantic`: blue-sky, green-grass, ...).
+
+* Related Works
+
+* Proposed Method
+
+* Evaluation
+
+#+BEGIN_SRC ipython :results silent
+# setup ipython autoreload and inline plot
+%load_ext autoreload
+%autoreload 2
+%matplotlib inline
+#+END_SRC
+
+
+** Workflow
++ Goal: find the best perplexity using BO method with a target of maximizing the /user constraint preserving score/.
++ It should make clear that the goal of BO method is to find the maximum of a /true target function/, not approximate it. In fact we can observe the *predicted target function* produced by BO method and compare it with the *true target function*.
++ To see how the BO method work in action, we will show the *true target function* (e.g., the constraint scores w.r.t the perplexity) and the *predicted target function* which is the mean function of a Gaussian process model using in BO method.
+
+#+BEGIN_SRC ipython :results silent
+import numpy as np
+from common.dataset import dataset
+from common.metric import DRMetric
+#+END_SRC
+
+
+** Dataset
++ A subset of the Fashion-MNIST dataset (200 grayscale images of size 28x28). The data are standardized.
++ Normally, we expect to see label-based groups, i.e., the clothes of the same type are places close together. However, the user can give the feedbacks to form *semantic groups*, i.e., trouser + long dress, sandal + ankle boot + sneaker, coat + T-shirt,...
+
+#+BEGIN_SRC ipython
+dataset.set_data_home("./data")
+dataset_name = "FASHION200"
+_, X, y = dataset.load_dataset(dataset_name)
+print(X.shape, y.shape)
+#+END_SRC
+
+#+RESULTS:
+:results:
+# Out [30]: 
+# output
+(200, 784) (200,)
+
+:end:
+
+
+#+BEGIN_SRC ipython  
+
+#+END_SRC
+
+:end:
+
+
+** Comparison between user constraint preserving score and metric score 
+** Evaluation of the visualization
+
+
+* Discussion
+** Pros and Cons 
+** Conclusion
+** Future works
