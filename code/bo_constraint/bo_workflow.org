@@ -26,6 +26,20 @@ Note: Can add CIFAR10 dataset and show another way to group the points in the vi
 
 * Proposed Method
 
+** Introduction to constraint preserving score
+
+** Other proposition for constraint score
+
+*** Constrastive pair
+
+*** Triplet
+
+*** Cosine distance
+
+*** Cosin distance ratio
+
+** Idea of using constraint score as target function for BO method
+
 * Evaluation
 
 #+BEGIN_SRC ipython :results silent
@@ -75,7 +89,7 @@ print(X.shape, y.shape)
 
 #+RESULTS:
 :results:
-# Out [82]: 
+# Out [141]: 
 # output
 (500, 784) (500,)
 
@@ -91,15 +105,15 @@ dis_links = constraint.gen_dissimilar_links(labels=y, n_links=50, include_link_t
 #+END_SRC
 
 #+BEGIN_SRC ipython results output
-constraint_proportion = 0.5
+constraint_proportion = 1.0
 print("Constraint score proportion: ", constraint_proportion)
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [84]: 
+# Out [151]: 
 # output
-Constraint score proportion:  0.5
+Constraint score proportion:  1.0
 
 :end:
 
@@ -109,6 +123,7 @@ Constraint score proportion:  0.5
 Perplexity value range:
 #+BEGIN_SRC ipython :results silent
 perp_range = np.array(list(range(2, X.shape[0] // 3)))
+print(perp_range.shape)
 #+END_SRC
 
 Construct the target function, that is a combination of constraint-preserving score and quality metric score (John's metric).
@@ -178,7 +193,7 @@ print(true_target_values.shape)
 
 #+RESULTS:
 :results:
-# Out [87]: 
+# Out [156]: 
 # output
 Metric scores:  165
             kl_divergence   auc_rnx       bic
@@ -193,21 +208,21 @@ perplexity
 Constraint preserving scores:  165
             score_all_links  score_dissimilar_links  score_similar_links
 perplexity                                                              
-1                  0.289916               14.881463           -14.301630
-2                  1.008273               14.573152           -12.556606
-3                  1.029306               14.346097           -12.287484
-4                  1.107659               14.333565           -12.118247
-5                  1.187528               14.343862           -11.968807
+1                  0.061881               14.505000           -14.381239
+2                  0.649009               14.299798           -13.001780
+3                  0.769436               14.282823           -12.743951
+4                  0.863654               14.217717           -12.490409
+5                  0.926178               14.237613           -12.385256
 
 
 Metrics + constraint scores with new target_score column:  165
              auc_rnx  score_all_links  target_score
 perplexity                                         
-1           0.310806         0.289916      0.300361
-2           0.483611         1.008273      0.745942
-3           0.517260         1.029306      0.773283
-4           0.514850         1.107659      0.811255
-5           0.522340         1.187528      0.854934
+1           0.310806         0.061881      0.061881
+2           0.483611         0.649009      0.649009
+3           0.517260         0.769436      0.769436
+4           0.514850         0.863654      0.863654
+5           0.522340         0.926178      0.926178
 (164, 1)
 
 :end:
@@ -304,7 +319,7 @@ def plot_gp(optimizer, x, y, util_func="ucb", kappa=5, xi=0.01):
         f"GP ({debug_method_name} utility function) after {steps} steps with best predicted perlexity = {optimizer.max['params']['perp']:.2f}",
         size=20,
     )
-    plt.savefig(f"./plots/{debug_method_name}_{dataset_name}_step{steps}.png", bbox_inches="tight")
+    plt.savefig(f"./plots/{debug_method_name}_constraint{constraint_proportion}_{dataset_name}_step{steps}.png", bbox_inches="tight")
 #+END_SRC
 
 Construct a Bayesian Optimizer, that will take into account the target function that we want to maximize (=tsne_with_metric_and_constraint= in our case) and a space of its parameter =perp=.
@@ -313,7 +328,50 @@ Using the default utility function *Upper Confidence Bound (UCB)* which has a fr
 Start the optimization process with 5 random init points, that means BO will evaluate the target function 5 times with 5 randomly seletecd =perp= params.
 Then run the optimization loop some more iterations and plot the decision of GP model of the BO method.
 
-*** TODO BUG Evaluation of target function does not match the value of *true target function*
+
+#+BEGIN_SRC ipython :results silent :async t
+n_total_runs = 15
+n_random_inits = 5
+kappa = 5
+xi = 0.025 # [0.001, 0.0025, 0.005]
+util_func = "ei" # ["ucb", "ei", "poi"]
+
+optimizer = BayesianOptimization(
+    tsne_with_metric_and_constraint,
+    {"perp": (2, X.shape[0] // 3)},
+    random_state=2048,
+)
+
+optimizer.maximize(acq=util_func, init_points=n_random_inits, n_iter=0,
+                   kappa=kappa, xi=xi)
+plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values,
+        util_func=util_func,
+        kappa=kappa, xi=xi)
+
+for i in range(n_total_runs - n_random_inits):
+    optimizer.maximize(acq=util_func, init_points=0, n_iter=1,
+                       kappa=kappa, xi=xi)
+    print("Current max: ", optimizer.max)
+    plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values,
+            util_func=util_func,
+            kappa=kappa, xi=xi)
+
+print("Final best perp:" , optimizer.max)
+#+END_SRC
+
+
+** Evaluation of the visualization
+
+
+
+* Discussion
+** Pros and Cons 
+** Conclusion
+** Future works
+
+* Dev Notes
+
+*** DONE BUG Evaluation of target function does not match the value of *true target function*
 See the following figure after having 5 random evaluated points:
 [[./plots/bo_DIGITS_niter6.png]]
 (The values of the 'evaluated' target function do not lie in the *real target function*)
@@ -358,178 +416,3 @@ Debug: constraint_proportion=0.5, link_score=[-11.557222483639782, 13.1284729180
 # image/png
 [[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/431f07dddf3ac97dad5cf08fb3fddb72b7274fd9.png]]
 :end:
-
-
-#+BEGIN_SRC ipython :async t
-n_total_runs = 15
-n_random_inits = 5
-kappa = 7.5
-xi = 0.01 # [0.001, 0.0025, 0.005]
-util_func = "ucb" # ["ucb", "ei", "poi"]
-
-optimizer = BayesianOptimization(
-    tsne_with_metric_and_constraint,
-    {"perp": (2, X.shape[0] // 3)},
-    random_state=2048,
-)
-
-optimizer.maximize(acq=util_func, init_points=n_random_inits, n_iter=0,
-                   kappa=kappa, xi=xi)
-plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values,
-        util_func=util_func,
-        kappa=kappa, xi=xi)
-
-for i in range(n_total_runs - n_random_inits):
-    optimizer.maximize(acq=util_func, init_points=0, n_iter=1,
-                       kappa=kappa, xi=xi)
-    print("Current max: ", optimizer.max)
-    plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values,
-            util_func=util_func,
-            kappa=kappa, xi=xi)
-
-print("Final best perp:" , optimizer.max)
-#+END_SRC
-
-#+RESULTS:
-:results:
-# Out [114]: 
-# output
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 1       [0m | [0m 0.6394  [0m | [0m 98.7    [0m |
-| [95m 2       [0m | [95m 0.8393  [0m | [95m 24.44   [0m |
-| [0m 3       [0m | [0m 0.6311  [0m | [0m 110.6   [0m |
-| [0m 4       [0m | [0m 0.564   [0m | [0m 163.9   [0m |
-| [0m 5       [0m | [0m 0.5684  [0m | [0m 149.2   [0m |
-=====================================
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 6       [0m | [0m 0.7459  [0m | [0m 2.0     [0m |
-=====================================
-Current max:  {'target': 0.8393013259429516, 'params': {'perp': 24.436272112860756}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 7       [0m | [0m 0.7634  [0m | [0m 43.98   [0m |
-=====================================
-Current max:  {'target': 0.8393013259429516, 'params': {'perp': 24.436272112860756}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [95m 8       [0m | [95m 0.8536  [0m | [95m 19.03   [0m |
-=====================================
-Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 9       [0m | [0m 0.8462  [0m | [0m 15.88   [0m |
-=====================================
-Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 10      [0m | [0m 0.7284  [0m | [0m 66.83   [0m |
-=====================================
-Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 11      [0m | [0m 0.8526  [0m | [0m 19.4    [0m |
-=====================================
-Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 12      [0m | [0m 0.844   [0m | [0m 19.34   [0m |
-=====================================
-Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
-/opt/anaconda3/lib/python3.6/site-packages/sklearn/gaussian_process/gpr.py:457: UserWarning: fmin_l_bfgs_b terminated abnormally with the  state: {'grad': array([1.22389824e-05]), 'task': b'ABNORMAL_TERMINATION_IN_LNSRCH', 'funcalls': 51, 'nit': 6, 'warnflag': 2}
-  " state: %s" % convergence_dict)
-|   iter    |  target   |   perp    |
--------------------------------------
-| [95m 13      [0m | [95m 0.8577  [0m | [95m 18.81   [0m |
-=====================================
-Current max:  {'target': 0.8576961269914314, 'params': {'perp': 18.81374231535205}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [95m 14      [0m | [95m 0.8737  [0m | [95m 10.16   [0m |
-=====================================
-Current max:  {'target': 0.8736827055445522, 'params': {'perp': 10.158373853204498}}
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 15      [0m | [0m 0.7462  [0m | [0m 53.47   [0m |
-=====================================
-Current max:  {'target': 0.8736827055445522, 'params': {'perp': 10.158373853204498}}
-Final best perp: {'target': 0.8736827055445522, 'params': {'perp': 10.158373853204498}}
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/4526b34446fec8d5da41eefd4bd5ad9f4f6c4192.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/7f22dcd024c191e41bf455a32d07ecc4305516a8.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/9a09648aee32786e4ca096baa65679b674284722.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/aeec40b1d754450bbccd77770951656b486c650c.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/644282ec9cb81af3e54cbb5453ced8668ca822a6.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/be030c0cb962b69fea170fd92706a9ad54cf4592.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/482086bdac591584c7b31665c042c576ea1ae23c.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/05b1c58e420a8b4917ea0b3cb821789ec03c02f3.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/3fe9143671fd0a1f9af8d81af8aedfaead54f2be.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/b60b5b6d4c83d0a16fb9d4ea8b35e8eeb6191269.png]]
-
-# text/plain
-: <Figure size 1008x576 with 2 Axes>
-
-# image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/d67068b2f1d743ee8f6bd24bda607d05bd7cd698.png]]
-:end:
-
-
-
-** Evaluation of the visualization
-
-
-
-* Discussion
-** Pros and Cons 
-** Conclusion
-** Future works

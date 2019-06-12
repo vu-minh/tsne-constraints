@@ -4,6 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- force reload -- no-cache: so we will always see the new updated figures -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>Bayesian Optimization with Constraint Scores</title>
     <link rel="stylesheet" href="lib/jquery-ui.css">
     <style>
@@ -69,10 +75,19 @@
             function update_figure() {
                 // bo_FASHION500_niter11
                 var dataset_name = $("#dataset").val();
+                var util_func = $("#util_func").val();
+                var kappa = $("#kappa").val();
+                var xi = $("#xi").val();
+                var constraint_proportion = $("#constraint_proportion").val();
+
+                var util_func_with_param = {
+                    "ucb": `ucb_kappa${kappa}`,
+                    "ei": `ei_xi${xi}`,
+                    "poi": `poi_xi${xi}`
+                }[util_func]
                 var n_step = handle.text();
 
-                var target_plot_name =
-                    `bo_${dataset_name}_niter${n_step}.png`;
+                var target_plot_name =`${util_func_with_param}_constraint${constraint_proportion}_${dataset_name}_step${n_step}.png`;
                 console.log(target_plot_name);
 
                 $("#target_plot").attr("src", target_plot_name);
@@ -84,6 +99,22 @@
                 change: update_figure
             });
 
+            $("#util_func").selectmenu({
+                change: update_figure
+            });
+
+            $("#kappa").selectmenu({
+                change: update_figure
+            });
+
+            $("#xi").selectmenu({
+                change: update_figure
+            });
+
+            $("#constraint_proportion").selectmenu({
+                change: update_figure
+            });
+
             update_figure();
         });
     </script>
@@ -91,7 +122,8 @@
 
 <body>
     <center>
-        <h3>View the decision of Bayesian Optimization method (with Gaussian Process model)</h3>
+        <h3>Auto select the best param of a visualization method using pairwise constraints</h3>
+        <p>View the decision of Bayesian Optimization method (with Gaussian Process model)</p>
     </center>
 
     <div class="left">
@@ -105,6 +137,34 @@
                     <option>FASHION500</option>
                     <option>DIGITS</option>
                     <option>COIL20</option>
+                </select>
+
+                <label for="constraint_proportion">Constribution of user constraints</label>
+                <select name="constraint_proportion", id="constraint_proportion">
+                    <option value="0.0">0.0 (only John's metric)</opttion>
+                    <option value="0.5" selected="selected">0.5</option>
+                    <option value="1.0">1.0 (only constraint score)</opttion>
+                </select>
+                
+                <label for="util_func">Select an Utility function</label>
+                <select name="util_func" id="util_func">
+                    <option value="ucb" selected="selected" >UCB</option>
+                    <option value="ei" >EI</option>
+                    <option value="poi" >POI</option>
+                </select>
+
+                <label for="kappa">Kappa (UCB)</label>
+                <select name="kappa", id="kappa">
+                    <option value="2.5">2.5 (more exploitation)</opttion>
+                    <option value="5" selected="selected">5</option>
+                    <option value="7.5">7.5 (more exploration)</opttion>
+                </select>
+
+                <label for="xi">Xi (EI, POI)</label>
+                <select name="xi", id="xi">
+                    <option value="0.01" selected="selected">0.01 (more exploitation)</option>
+                    <option value="0.025">0.025 (exploration + exploration)</option>
+                    <option value="0.05">0.05 (more exploration)</option>
                 </select>
 
                 <label for="n_step">Step</label>
