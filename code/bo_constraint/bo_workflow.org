@@ -43,6 +43,7 @@ Note: Can add CIFAR10 dataset and show another way to group the points in the vi
 
 #+BEGIN_SRC ipython :results silent
 import joblib
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -67,16 +68,16 @@ from MulticoreTSNE import MulticoreTSNE
 
 #+BEGIN_SRC ipython
 dataset.set_data_home("./data")
-dataset_name = "DIGITS"
+dataset_name = "FASHION500"
 _, X, y = dataset.load_dataset(dataset_name)
 print(X.shape, y.shape)
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [38]: 
+# Out [82]: 
 # output
-(1797, 64) (1797,)
+(500, 784) (500,)
 
 :end:
 
@@ -90,15 +91,15 @@ dis_links = constraint.gen_dissimilar_links(labels=y, n_links=50, include_link_t
 #+END_SRC
 
 #+BEGIN_SRC ipython results output
-constraint_proportion = 0.0
+constraint_proportion = 0.5
 print("Constraint score proportion: ", constraint_proportion)
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [40]: 
+# Out [84]: 
 # output
-Constraint score proportion:  0.0
+Constraint score proportion:  0.5
 
 :end:
 
@@ -177,37 +178,37 @@ print(true_target_values.shape)
 
 #+RESULTS:
 :results:
-# Out [43]: 
+# Out [87]: 
 # output
-Metric scores:  598
+Metric scores:  165
             kl_divergence   auc_rnx       bic
 perplexity                                   
-1                1.064604  0.257567  2.133378
-2                1.078248  0.419820  2.164837
-3                1.093551  0.451856  2.199613
-4                1.106531  0.454272  2.229743
-5                1.096437  0.479698  2.213724
+1                0.805106  0.310806  1.622642
+2                0.851039  0.483611  1.726937
+3                0.878397  0.517260  1.794083
+4                0.882262  0.514850  1.814241
+5                0.859684  0.522340  1.781513
 
 
-Constraint preserving scores:  598
+Constraint preserving scores:  165
             score_all_links  score_dissimilar_links  score_similar_links
 perplexity                                                              
-1                 -0.144199               16.396497           -16.684896
-2                  0.980652               17.029715           -15.068411
-3                  0.822071               16.731039           -15.086898
-4                  0.937994               16.784311           -14.908324
-5                  1.138295               17.043149           -14.766559
+1                  0.289916               14.881463           -14.301630
+2                  1.008273               14.573152           -12.556606
+3                  1.029306               14.346097           -12.287484
+4                  1.107659               14.333565           -12.118247
+5                  1.187528               14.343862           -11.968807
 
 
-Metrics + constraint scores with new target_score column:  598
+Metrics + constraint scores with new target_score column:  165
              auc_rnx  score_all_links  target_score
 perplexity                                         
-1           0.257567        -0.144199      0.257567
-2           0.419820         0.980652      0.419820
-3           0.451856         0.822071      0.451856
-4           0.454272         0.937994      0.454272
-5           0.479698         1.138295      0.479698
-(597, 1)
+1           0.310806         0.289916      0.300361
+2           0.483611         1.008273      0.745942
+3           0.517260         1.029306      0.773283
+4           0.514850         1.107659      0.811255
+5           0.522340         1.187528      0.854934
+(164, 1)
 
 :end:
 
@@ -223,7 +224,7 @@ def posterior(optimizer, x_obs, y_obs, grid):
     return mu, sigma
 
 
-def plot_gp(optimizer, x, y):
+def plot_gp(optimizer, x, y, util_func="ucb", kappa=5, xi=0.01):
     fig = plt.figure(figsize=(14, 8))
     steps = len(optimizer.space)
     #     fig.suptitle(
@@ -238,6 +239,8 @@ def plot_gp(optimizer, x, y):
     x_obs = np.array([[res["params"]["perp"]] for res in optimizer.res])
     y_obs = np.array([res["target"] for res in optimizer.res])
 
+    current_max_target_function = optimizer.max["target"]
+    
     mu, sigma = posterior(optimizer, x_obs, y_obs, x)
     axis.plot(x, y, linewidth=3, label="Target")
     axis.plot(x_obs.flatten(), y_obs, "D", markersize=8, label="Observations", color="r")
@@ -246,7 +249,7 @@ def plot_gp(optimizer, x, y):
     axis.fill(
         np.concatenate([x, x[::-1]]),
         np.concatenate([mu - 1.9600 * sigma, (mu + 1.9600 * sigma)[::-1]]),
-        alpha=0.6,
+        alpha=0.4,
         fc="c",
         ec="None",
         label="95% confidence interval",
@@ -257,9 +260,10 @@ def plot_gp(optimizer, x, y):
     axis.set_ylabel("tsne_with_metric_and_constraint", fontdict={"size": 16})
     # axis.set_xlabel("perplexity", fontdict={"size": 16})
 
-    utility_function = UtilityFunction(kind="ucb", kappa=5, xi=0)
-    utility = utility_function.utility(x, optimizer._gp, 0)
-    acq.plot(x, utility, label="Utility Function", color="purple")
+    utility_function = UtilityFunction(kind=util_func, kappa=kappa, xi=xi)
+    utility = utility_function.utility(x, optimizer._gp, y_max=current_max_target_function)
+    
+    acq.plot(x, utility, label=f"Utility Function ({util_func})", color="purple")
     acq.plot(
         x[np.argmax(utility)],
         np.max(utility),
@@ -272,7 +276,7 @@ def plot_gp(optimizer, x, y):
     )
     # acq.set_xlim((x_obs.min(), x_obs.max()))
     # acq.set_ylim((0, np.max(utility) + 0.5))
-    acq.set_ylabel("Utility", fontdict={"size": 16})
+    acq.set_ylabel(f"Utility ({util_func})", fontdict={"size": 16})
     acq.set_xlabel("perplexity", fontdict={"size": 16})
 
     axis.legend(loc=2, bbox_to_anchor=(1.01, 1), borderaxespad=0.0)
@@ -281,14 +285,26 @@ def plot_gp(optimizer, x, y):
     # debug next best guess
     next_best_guess_param = x[np.argmax(utility)]
     acq.set_title(f"Next best guess param: {next_best_guess_param}", fontdict={"size": 16})
-    acq.axvline(next_best_guess_param, color='g', linestyle='--')
-    axis.axvline(next_best_guess_param, color='g', linestyle='--')
-    
+
+    # draw indicator vline @ the next perplexity
+    acq.axvline(next_best_guess_param, color='g', linestyle='--', alpha=0.4)
+    axis.axvline(next_best_guess_param, color='g', linestyle='--', alpha=0.4)
+    # draw indicator hline @ the current  max value of the  target function
+    axis.axhline([current_max_target_function], color='r', linestyle='--', alpha=0.4)
+
+    debug_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    debug_method_name = {
+        "ucb": f"ucb_kappa{kappa}",
+        "ei": f"ei_xi{xi}",
+        "poi": f"poi_xi{xi}"
+    }[util_func]
+
+    axis.set_title(f"Figure created @ {debug_time}", size=12)
     plt.suptitle(
-        f"Gaussian Process after {steps} steps with best predicted perlexity = {optimizer.max['params']['perp']:.2f}",
-        size=22,
+        f"GP ({debug_method_name} utility function) after {steps} steps with best predicted perlexity = {optimizer.max['params']['perp']:.2f}",
+        size=20,
     )
-    plt.savefig(f"./plots/bo_{dataset_name}_niter{steps}.png", bbox_inches="tight")
+    plt.savefig(f"./plots/{debug_method_name}_{dataset_name}_step{steps}.png", bbox_inches="tight")
 #+END_SRC
 
 Construct a Bayesian Optimizer, that will take into account the target function that we want to maximize (=tsne_with_metric_and_constraint= in our case) and a space of its parameter =perp=.
@@ -302,6 +318,8 @@ See the following figure after having 5 random evaluated points:
 [[./plots/bo_DIGITS_niter6.png]]
 (The values of the 'evaluated' target function do not lie in the *real target function*)
 
++ Still bug (12/06) values when calculating (call function) manually and values getting from =target_df= are slightly different.
+
 - Source of error:: MulticoreTSNE is setup in /early-stop/ fashion -> should set =n_iter_without_progress=1000= *and* =min_grad_norm=1e-32= to disable this feature.
 - That will assure that all =n_iter= will be run completely.
 
@@ -309,7 +327,7 @@ See the following figure after having 5 random evaluated points:
 # DEBUG the evaluated target function value
 
 # true target function
-target_param = 300
+target_param = 100
 print(df_target.loc[target_param])
 
 # evaluated target function value
@@ -318,34 +336,36 @@ print(tsne_with_metric_and_constraint(perp=target_param, debug=True))
 
 #+RESULTS:
 :results:
-# Out [45]: 
+# Out [90]: 
 # output
-kl_divergence              0.488372
-auc_rnx                    0.422214
-bic                        2.227807
-score_all_links            0.956217
-score_dissimilar_links    16.086969
-score_similar_links      -14.174536
-target_score               0.422214
-Name: 300, dtype: float64
+kl_divergence              0.313322
+auc_rnx                    0.479084
+bic                        1.869565
+score_all_links            0.822676
+score_dissimilar_links    13.185580
+score_similar_links      -11.540227
+target_score               0.650880
+Name: 100, dtype: float64
 
 [python]Running modified version:  MODIFIED_WITH_EARLY_STOP
 SO file:  /opt/anaconda3/lib/python3.6/site-packages/MulticoreTSNE-0.2-py3.6-linux-x86_64.egg/MulticoreTSNE/libtsne_multicore_minh.so
-Debug: constraint_proportion=0.0, link_score=[-14.19198769850501, 16.1057154612376, 0.9568638813662957], auc_rnx=0.4310195864075633
-0.4310195864075633
+Debug: constraint_proportion=0.5, link_score=[-11.557222483639782, 13.128472918072493, 0.7856252172163556], auc_rnx=0.4477163892244825
+0.616670803220419
 
 # text/plain
 : <Figure size 864x720 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/0737259174a0958e19597c392a59cbd99f1885d5.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/431f07dddf3ac97dad5cf08fb3fddb72b7274fd9.png]]
 :end:
 
 
 #+BEGIN_SRC ipython :async t
 n_total_runs = 15
 n_random_inits = 5
-kappa = 5
+kappa = 7.5
+xi = 0.01 # [0.001, 0.0025, 0.005]
+util_func = "ucb" # ["ucb", "ei", "poi"]
 
 optimizer = BayesianOptimization(
     tsne_with_metric_and_constraint,
@@ -353,144 +373,156 @@ optimizer = BayesianOptimization(
     random_state=2048,
 )
 
-optimizer.maximize(init_points=n_random_inits, n_iter=0, kappa=kappa)
-plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values)
+optimizer.maximize(acq=util_func, init_points=n_random_inits, n_iter=0,
+                   kappa=kappa, xi=xi)
+plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values,
+        util_func=util_func,
+        kappa=kappa, xi=xi)
 
 for i in range(n_total_runs - n_random_inits):
-    optimizer.maximize(init_points=0, n_iter=1, kappa=kappa)
-    plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values)
+    optimizer.maximize(acq=util_func, init_points=0, n_iter=1,
+                       kappa=kappa, xi=xi)
+    print("Current max: ", optimizer.max)
+    plot_gp(optimizer, x=perp_range.reshape(-1, 1), y=true_target_values,
+            util_func=util_func,
+            kappa=kappa, xi=xi)
+
+print("Final best perp:" , optimizer.max)
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [46]: 
+# Out [114]: 
 # output
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 1       [0m | [0m 0.4172  [0m | [0m 354.0   [0m |
-| [95m 2       [0m | [95m 0.4689  [0m | [95m 83.67   [0m |
-| [0m 3       [0m | [0m 0.4186  [0m | [0m 397.2   [0m |
-| [0m 4       [0m | [0m 0.3968  [0m | [0m 591.3   [0m |
-| [0m 5       [0m | [0m 0.4034  [0m | [0m 537.8   [0m |
+| [0m 1       [0m | [0m 0.6394  [0m | [0m 98.7    [0m |
+| [95m 2       [0m | [95m 0.8393  [0m | [95m 24.44   [0m |
+| [0m 3       [0m | [0m 0.6311  [0m | [0m 110.6   [0m |
+| [0m 4       [0m | [0m 0.564   [0m | [0m 163.9   [0m |
+| [0m 5       [0m | [0m 0.5684  [0m | [0m 149.2   [0m |
 =====================================
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 6       [0m | [0m 0.421   [0m | [0m 2.0     [0m |
+| [0m 6       [0m | [0m 0.7459  [0m | [0m 2.0     [0m |
 =====================================
+Current max:  {'target': 0.8393013259429516, 'params': {'perp': 24.436272112860756}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 7       [0m | [0m 0.4375  [0m | [0m 179.8   [0m |
+| [0m 7       [0m | [0m 0.7634  [0m | [0m 43.98   [0m |
 =====================================
+Current max:  {'target': 0.8393013259429516, 'params': {'perp': 24.436272112860756}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 8       [0m | [0m 0.443   [0m | [0m 112.9   [0m |
+| [95m 8       [0m | [95m 0.8536  [0m | [95m 19.03   [0m |
 =====================================
+Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 9       [0m | [0m 0.4392  [0m | [0m 261.1   [0m |
+| [0m 9       [0m | [0m 0.8462  [0m | [0m 15.88   [0m |
 =====================================
+Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [95m 10      [0m | [95m 0.482   [0m | [95m 44.78   [0m |
+| [0m 10      [0m | [0m 0.7284  [0m | [0m 66.83   [0m |
 =====================================
+Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 11      [0m | [0m 0.4086  [0m | [0m 467.8   [0m |
+| [0m 11      [0m | [0m 0.8526  [0m | [0m 19.4    [0m |
 =====================================
-/opt/anaconda3/lib/python3.6/site-packages/sklearn/gaussian_process/gpr.py:457: UserWarning: fmin_l_bfgs_b terminated abnormally with the  state: {'grad': array([2.43414363e-05]), 'task': b'ABNORMAL_TERMINATION_IN_LNSRCH', 'funcalls': 46, 'nit': 3, 'warnflag': 2}
+Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
+|   iter    |  target   |   perp    |
+-------------------------------------
+| [0m 12      [0m | [0m 0.844   [0m | [0m 19.34   [0m |
+=====================================
+Current max:  {'target': 0.8535750062546701, 'params': {'perp': 19.025805444606}}
+/opt/anaconda3/lib/python3.6/site-packages/sklearn/gaussian_process/gpr.py:457: UserWarning: fmin_l_bfgs_b terminated abnormally with the  state: {'grad': array([1.22389824e-05]), 'task': b'ABNORMAL_TERMINATION_IN_LNSRCH', 'funcalls': 51, 'nit': 6, 'warnflag': 2}
   " state: %s" % convergence_dict)
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [95m 12      [0m | [95m 0.4886  [0m | [95m 57.76   [0m |
+| [95m 13      [0m | [95m 0.8577  [0m | [95m 18.81   [0m |
 =====================================
+Current max:  {'target': 0.8576961269914314, 'params': {'perp': 18.81374231535205}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [0m 13      [0m | [0m 0.4841  [0m | [0m 58.95   [0m |
+| [95m 14      [0m | [95m 0.8737  [0m | [95m 10.16   [0m |
 =====================================
-/opt/anaconda3/lib/python3.6/site-packages/sklearn/gaussian_process/gpr.py:457: UserWarning: fmin_l_bfgs_b terminated abnormally with the  state: {'grad': array([-6.99881784e-05]), 'task': b'ABNORMAL_TERMINATION_IN_LNSRCH', 'funcalls': 58, 'nit': 7, 'warnflag': 2}
-  " state: %s" % convergence_dict)
+Current max:  {'target': 0.8736827055445522, 'params': {'perp': 10.158373853204498}}
 |   iter    |  target   |   perp    |
 -------------------------------------
-| [95m 14      [0m | [95m 0.4899  [0m | [95m 56.55   [0m |
+| [0m 15      [0m | [0m 0.7462  [0m | [0m 53.47   [0m |
 =====================================
-|   iter    |  target   |   perp    |
--------------------------------------
-| [0m 15      [0m | [0m 0.4885  [0m | [0m 57.08   [0m |
-=====================================
+Current max:  {'target': 0.8736827055445522, 'params': {'perp': 10.158373853204498}}
+Final best perp: {'target': 0.8736827055445522, 'params': {'perp': 10.158373853204498}}
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/fd59d36077cd4cbc5536f63c1c1ca67b6ed1c7f4.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/4526b34446fec8d5da41eefd4bd5ad9f4f6c4192.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/e9dd80ed4f36d41cdeca8f4bae91aba6fdf02bac.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/7f22dcd024c191e41bf455a32d07ecc4305516a8.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/bac7599a6a89ef206d1c9ffe97fc6a00a590d009.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/9a09648aee32786e4ca096baa65679b674284722.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/25fe203966e9d8b7b671a3aa707bdb51d9e3735f.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/aeec40b1d754450bbccd77770951656b486c650c.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/c3bf6116e3fc7469a7cb0f5a14ed7638e96f94f5.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/644282ec9cb81af3e54cbb5453ced8668ca822a6.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/ad5d4b663c192f755cec6712328ff66c8a791de6.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/be030c0cb962b69fea170fd92706a9ad54cf4592.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/37a2c352443a0d19621ec1ee7542faf50e04581e.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/482086bdac591584c7b31665c042c576ea1ae23c.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/29f53e2b50968d89ca1d8540bea8664c59358b54.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/05b1c58e420a8b4917ea0b3cb821789ec03c02f3.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/093fd392fe470972ffa2fdafb4c972273d7b577e.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/3fe9143671fd0a1f9af8d81af8aedfaead54f2be.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/82cba3ee5bf4d1957430fd11f8a16ae629dd649c.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/b60b5b6d4c83d0a16fb9d4ea8b35e8eeb6191269.png]]
 
 # text/plain
 : <Figure size 1008x576 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/7ce1480a1c6df493b300c9ae86a7878a658dcaac.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/d67068b2f1d743ee8f6bd24bda607d05bd7cd698.png]]
 :end:
 
-
-
-
-#+BEGIN_SRC ipython  :results silent :async t
-
-#+END_SRC
 
 
 ** Evaluation of the visualization
