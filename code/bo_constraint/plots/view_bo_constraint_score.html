@@ -147,6 +147,7 @@
 
                 <label for="util_func">Select an Utility function</label>
                 <select name="util_func" id="util_func">
+                    <option disabled selected>Default: UCB</option>
                     <option value="ucb" selected="selected" >UCB</option>
                     <option value="ei" >EI</option>
                     <option value="poi" >POI</option>
@@ -154,6 +155,7 @@
 
                 <label for="kappa">Kappa (UCB)</label>
                 <select name="kappa", id="kappa">
+                    <option disabled selected>Default: 5</option>
                     <option value="2.5">2.5 (more exploitation)</opttion>
                     <option value="5" selected="selected">5</option>
                     <option value="7.5">7.5 (more exploration)</opttion>
@@ -161,6 +163,7 @@
 
                 <label for="xi">Xi (EI, POI)</label>
                 <select name="xi", id="xi">
+                    <option disabled selected>Default: 0.025</option>
                     <option value="0.01" selected="selected">0.01 (more exploitation)</option>
                     <option value="0.025">0.025 (exploration + exploration)</option>
                     <option value="0.05">0.05 (more exploration)</option>
