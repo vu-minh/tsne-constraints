@@ -32,11 +32,89 @@ Note: Can add CIFAR10 dataset and show another way to group the points in the vi
 
 *** Constrastive pair
 
+#+BEGIN_SRC ipython :results silent
+from common.dataset import constraint
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer
+import math
+
+contrastive_constraints = constraint.generate_contrastive_constraints(labels=y, n_links=100)
+
+def contrastive_score(y, eps=1e-32):
+    y = Normalizer().fit_transform(y)
+    
+    score = 0.0
+    for constraint in contrastive_constraints:
+        fx, fx_positive, fx_negative = y[constraint]
+        numerator =  math.exp(np.dot(fx, fx_positive))
+        denominator = math.exp(np.dot(fx, fx_positive)) + math.exp(np.dot(fx, fx_negative)) + eps
+        score += math.log(numerator / denominator)
+
+    return score / len(contrastive_constraints)
+#+END_SRC
+
+
 *** Triplet
 
-*** Cosine distance
+*** Cosine similarity
++ Take two point \( y_i, y_j \), calculate \( \textnormal{cosine_similarity}(y_i, y_j) \).
++ If \( y_i, y_j \) are similar, their cosine_similarity must close to 1, so the larger the better.
++ If \( y_i, y_j \) are dissimilar, ther cosine_similarity must close to -1, so the smaller the better.
++ The constraint score is thus similar_score + (-dissimilar_score).
+
+#+BEGIN_SRC ipython :results silent
+from scipy.spatial.distance import cosine
+
+def cosine_score(y, sim_links, dis_links):
+    sim_score = (0.0 if 0 == len(sim_links)
+                 else sum([1 - cosine(y[i], y[j]) for i, j, _ in sim_links]) / len(sim_links))
+    dis_score = (0.0 if 0 == len(dis_links)
+                 else sum([1 - cosine(y[i], y[j]) for i, j, _ in dis_links]) / len(dis_links))
+    return sim_score, dis_score, sim_score + (-dis_score)    
+#+END_SRC
+
 
 *** Cosin distance ratio
+
+#+BEGIN_SRC ipython :results silent
+from scipy.spatial.distance import cosine
+from scipy.special import expit as sigmoid
+import math
+
+def cosine_ratio_score(x, y, sim_links, dis_links, eps=1e-32):
+    sim_score = 0.0
+    dis_score = 0.0
+    
+    for i, j, link_type in np.vstack([sim_links, dis_links]):
+        y_sim = 1 - cosine(y[i], y[j]) + eps
+        x_sim = 1 - cosine(x[i], x[j]) + eps
+        ratio_cap_in_range = y_sim / x_sim # testing no cap
+
+        if link_type in ["sim_link", 1]:
+            sim_score += ratio_cap_in_range
+        elif link_type in ["dis_link", -1]:
+            dis_score += ratio_cap_in_range
+
+    sim_score = 0.0 if len(sim_links) == 0 else sim_score / len(sim_links)
+    dis_score = 0.0 if len(dis_links) == 0 else dis_score / len(dis_links)
+        
+    return sim_score, dis_score, 0.5 * (sim_score + dis_score)    
+#+END_SRC
+
+#+BEGIN_SRC ipython :results silent
+def debug_cosine_ratio_score(x, y, sim_links, dis_links):
+    for i, j, _ in [sim_links[0]] + [dis_links[0]]:
+        y_sim = 1 - cosine(y[i], y[j])
+        x_sim = 1 - cosine(x[i], x[j])
+
+        print(i, y[i])
+        print(j, y[j])
+        print(y_sim, sigmoid(y_sim))
+        print(x_sim, sigmoid(x_sim))
+        print(y_sim / x_sim, sigmoid(y_sim/x_sim), np.tanh(y_sim/x_sim))
+        print(x_sim / y_sim, sigmoid(x_sim/y_sim), np.tanh(x_sim/y_sim))
+              
+#+END_SRC
+
 
 ** Idea of using constraint score as target function for BO method
 
@@ -89,7 +167,7 @@ print(X.shape, y.shape)
 
 #+RESULTS:
 :results:
-# Out [141]: 
+# Out [37]: 
 # output
 (500, 784) (500,)
 
@@ -105,15 +183,16 @@ dis_links = constraint.gen_dissimilar_links(labels=y, n_links=50, include_link_t
 #+END_SRC
 
 #+BEGIN_SRC ipython results output
+score_name = "contrastive" # ["qij", "cosine", "cosine_ratio", "contrastive"]
 constraint_proportion = 1.0
-print("Constraint score proportion: ", constraint_proportion)
+print("Constraint score proportion: ", constraint_proportion, score_name)
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [151]: 
+# Out [33]: 
 # output
-Constraint score proportion:  1.0
+Constraint score proportion:  1.0 contrastive
 
 :end:
 
@@ -139,10 +218,12 @@ def tsne_with_metric_and_constraint(perp, debug=False):
 
     auc_rnx = DRMetric(X, Z).auc_rnx()
 
-    Q = data_filter._compute_Q(Z)
-    s_sim, s_dis = data_filter.constraint_score(Q, sim_links, dis_links, debug=False)
-    s_links = 0.5 * s_sim + 0.5 * s_dis
-
+    # Q = data_filter._compute_Q(Z)
+    # s_sim, s_dis = data_filter.constraint_score(Q, sim_links, dis_links, debug=False)
+    # s_links = 0.5 * s_sim + 0.5 * s_dis
+    # s_sim, s_dis, s_links = cosine_ratio_score(X, Z, sim_links, dis_links)
+    s_links = contrastive_score(Z)
+    
     if debug:
         plt.figure(figsize=(12, 10))
         gs = gridspec.GridSpec(2, 1, height_ratios=[5, 1])
@@ -153,7 +234,8 @@ def tsne_with_metric_and_constraint(perp, debug=False):
         loss_ax.plot(losses)
         
         plt.show()
-        print(f"Debug: constraint_proportion={constraint_proportion}, link_score=[{s_sim}, {s_dis}, {s_links}], auc_rnx={auc_rnx}")
+        print(f"Debug: contrastive_score={s_links}, auc_rnx={auc_rnx}")
+        # print(f"Debug: constraint_proportion={constraint_proportion}, link_score=[{s_sim}, {s_dis}, {s_links}], auc_rnx={auc_rnx}")
     
     return constraint_proportion * s_links + (1 - constraint_proportion) * auc_rnx
 #+END_SRC
@@ -193,7 +275,7 @@ print(true_target_values.shape)
 
 #+RESULTS:
 :results:
-# Out [156]: 
+# Out [18]: 
 # output
 Metric scores:  165
             kl_divergence   auc_rnx       bic
@@ -208,21 +290,21 @@ perplexity
 Constraint preserving scores:  165
             score_all_links  score_dissimilar_links  score_similar_links
 perplexity                                                              
-1                  0.061881               14.505000           -14.381239
-2                  0.649009               14.299798           -13.001780
-3                  0.769436               14.282823           -12.743951
-4                  0.863654               14.217717           -12.490409
-5                  0.926178               14.237613           -12.385256
+1                  0.406838               14.763054           -13.949377
+2                  1.084810               14.625494           -12.455874
+3                  1.073202               14.590280           -12.443877
+4                  1.110531               14.502674           -12.281612
+5                  1.182109               14.611629           -12.247411
 
 
 Metrics + constraint scores with new target_score column:  165
              auc_rnx  score_all_links  target_score
 perplexity                                         
-1           0.310806         0.061881      0.061881
-2           0.483611         0.649009      0.649009
-3           0.517260         0.769436      0.769436
-4           0.514850         0.863654      0.863654
-5           0.522340         0.926178      0.926178
+1           0.310806         0.406838      0.406838
+2           0.483611         1.084810      1.084810
+3           0.517260         1.073202      1.073202
+4           0.514850         1.110531      1.110531
+5           0.522340         1.182109      1.182109
 (164, 1)
 
 :end:
@@ -257,7 +339,7 @@ def plot_gp(optimizer, x, y, util_func="ucb", kappa=5, xi=0.01):
     current_max_target_function = optimizer.max["target"]
     
     mu, sigma = posterior(optimizer, x_obs, y_obs, x)
-    axis.plot(x, y, linewidth=3, label="Target")
+    # axis.plot(x, y, linewidth=3, label="Target")
     axis.plot(x_obs.flatten(), y_obs, "D", markersize=8, label="Observations", color="r")
     axis.plot(x, mu, "--", color="k", label="Prediction")
 
@@ -271,7 +353,7 @@ def plot_gp(optimizer, x, y, util_func="ucb", kappa=5, xi=0.01):
     )
     
     # axis.set_xlim((x_obs.min(), x_obs.max()))
-    axis.set_ylim((0.85 * y_obs.min(), 1.15 * y_obs.max()))
+    # axis.set_ylim((0.85 * y_obs.min(), 1.15 * y_obs.max()))
     axis.set_ylabel("tsne_with_metric_and_constraint", fontdict={"size": 16})
     # axis.set_xlabel("perplexity", fontdict={"size": 16})
 
@@ -319,7 +401,7 @@ def plot_gp(optimizer, x, y, util_func="ucb", kappa=5, xi=0.01):
         f"GP ({debug_method_name} utility function) after {steps} steps with best predicted perlexity = {optimizer.max['params']['perp']:.2f}",
         size=20,
     )
-    plt.savefig(f"./plots/{debug_method_name}_constraint{constraint_proportion}_{dataset_name}_step{steps}.png", bbox_inches="tight")
+    plt.savefig(f"./plots/{score_name}/{debug_method_name}_constraint{constraint_proportion}_{dataset_name}_step{steps}.png", bbox_inches="tight")
 #+END_SRC
 
 Construct a Bayesian Optimizer, that will take into account the target function that we want to maximize (=tsne_with_metric_and_constraint= in our case) and a space of its parameter =perp=.
@@ -385,7 +467,7 @@ See the following figure after having 5 random evaluated points:
 # DEBUG the evaluated target function value
 
 # true target function
-target_param = 100
+target_param = 3
 print(df_target.loc[target_param])
 
 # evaluated target function value
@@ -394,25 +476,31 @@ print(tsne_with_metric_and_constraint(perp=target_param, debug=True))
 
 #+RESULTS:
 :results:
-# Out [90]: 
+# Out [70]: 
 # output
-kl_divergence              0.313322
-auc_rnx                    0.479084
-bic                        1.869565
-score_all_links            0.822676
-score_dissimilar_links    13.185580
-score_similar_links      -11.540227
-target_score               0.650880
-Name: 100, dtype: float64
+kl_divergence              0.878397
+auc_rnx                    0.517260
+bic                        1.794083
+score_all_links            1.073202
+score_dissimilar_links    14.590280
+score_similar_links      -12.443877
+target_score               1.073202
+Name: 3, dtype: float64
 
 [python]Running modified version:  MODIFIED_WITH_EARLY_STOP
 SO file:  /opt/anaconda3/lib/python3.6/site-packages/MulticoreTSNE-0.2-py3.6-linux-x86_64.egg/MulticoreTSNE/libtsne_multicore_minh.so
-Debug: constraint_proportion=0.5, link_score=[-11.557222483639782, 13.128472918072493, 0.7856252172163556], auc_rnx=0.4477163892244825
-0.616670803220419
+Debug: contrastive_score=54.65154180463306, auc_rnx=0.5172599166684981
+54.65154180463306
 
 # text/plain
 : <Figure size 864x720 with 2 Axes>
 
 # image/png
-[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/431f07dddf3ac97dad5cf08fb3fddb72b7274fd9.png]]
+[[file:obipy-resources/0706fd9409e5f8cd7b603830b1d899a5abe2c020/aa5e6aaf3464a8adc8f142eb700307aa888c04ac.png]]
 :end:
+
+
+#+BEGIN_SRC ipython  :async t
+
+#+END_SRC
+
