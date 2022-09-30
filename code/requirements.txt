@@ -34,7 +34,7 @@ pandas==0.23.4 # 0.20.3
 scikit-learn==0.19.1
 scipy==1.1.0 # 1.0.1
 pillow==4.2.1
-joblib==0.12.5
+joblib==1.2.0
 
 
 # for deploying app
