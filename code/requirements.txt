@@ -1,5 +1,5 @@
 # Base HTTP Server
-Flask==1.0.2
+Flask==2.3.2
 
 # Dash newest version (022019):
 dash==0.39.0  # The core dash backend
